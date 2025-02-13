@@ -30,6 +30,23 @@ rem Первый параметр исходной нотации равный 3 не сооветствует значению 13
 if NOT ERRORLEVEL 1 goto err
 echo Test 5 passed
 
+rem При запуске с параметром значения не соответствующим исходной системе счисления ожидается ненулевой код возврата
+rem Значение uf не соответствует нотации
+%PROGRAM% 10 10 uf >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 6 passed
+
+rem При запуске с параметром значения не соответствующим исходной системе счисления ожидается ненулевой код возврата
+rem Значение - не соответствует нотации
+%PROGRAM% 10 10 - >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 7 passed
+
+rem При переполнении ожидается ненулевой код возврата
+%PROGRAM% 36 10 ZZZZZZ >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 8 passed
+
 echo OK
 exit 0
 
