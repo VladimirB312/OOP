@@ -19,33 +19,88 @@ rem При запуске со вторым нечисловым параметром ожидается ненулевой код возврата
 if NOT ERRORLEVEL 1 goto err
 echo Test 3 passed
 
-rem Если параметры исходной или выходной системы счисления выходят за пределы от 2 до 36 ожидается ненулевой код возврата
+rem При запуске со значением исходной системы счисления больше 36 ожидается ненулевой код возврата
 %PROGRAM% 37 3 1F >nul
 if NOT ERRORLEVEL 1 goto err
 echo Test 4 passed
+
+rem При запуске со значением исходной системы счисления меньше 2 ожидается ненулевой код возврата
+%PROGRAM% 1 3 0 >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 5 passed
+
+rem При запсуске с максимальным значением исходной системы счисления ожидается нулевой код возврата
+%PROGRAM% 36 3 1F >nul
+if ERRORLEVEL 1 goto err
+echo Test 6 passed
+
+rem При запсуске с минимальным значением исходной системы счисления ожидается нулевой код возврата
+%PROGRAM% 2 3 11 >nul
+if ERRORLEVEL 1 goto err
+echo Test 7 passed
+
+rem При запуске со значением выходной системы счисления больше 36 ожидается ненулевой код возврата
+%PROGRAM% 16 37 1F >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 8 passed
+
+rem При запуске со значением выходной системы счисления меньше 2 ожидается ненулевой код возврата
+%PROGRAM% 4 1 0 >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 9 passed
+
+rem ППри запсуске с максимальным значением выходной системы счисления ожидается нулевой код возврата
+%PROGRAM% 16 36 1F >nul
+if ERRORLEVEL 1 goto err
+echo Test 10 passed
+
+rem При запсуске с минимальным значением выходной системы счисления ожидается нулевой код возврата
+%PROGRAM% 5 2 11 >nul
+if ERRORLEVEL 1 goto err
+echo Test 11 passed
 
 rem При запуске с параметром значения не соответствующим исходной системе счисления ожидается ненулевой код возврата
 rem Первый параметр исходной нотации равный 3 не сооветствует значению 13
 %PROGRAM% 3 10 13 >nul
 if NOT ERRORLEVEL 1 goto err
-echo Test 5 passed
+echo Test 12 passed
 
 rem При запуске с параметром значения не соответствующим исходной системе счисления ожидается ненулевой код возврата
 rem Значение uf не соответствует нотации
 %PROGRAM% 10 10 uf >nul
 if NOT ERRORLEVEL 1 goto err
-echo Test 6 passed
+echo Test 13 passed
 
 rem При запуске с параметром значения не соответствующим исходной системе счисления ожидается ненулевой код возврата
 rem Значение - не соответствует нотации
 %PROGRAM% 10 10 - >nul
 if NOT ERRORLEVEL 1 goto err
-echo Test 7 passed
+echo Test 14 passed
 
 rem При переполнении ожидается ненулевой код возврата
 %PROGRAM% 36 10 ZZZZZZ >nul
 if NOT ERRORLEVEL 1 goto err
-echo Test 8 passed
+echo Test 15 passed
+
+rem При минимальном значении ожидается нулевой код возврата
+%PROGRAM% 36 10 0 >nul
+if ERRORLEVEL 1 goto err
+echo Test 16 passed
+
+rem При максимальном значении ожидается нулевой код возврата
+%PROGRAM% 10 10 2147483647 >nul
+if ERRORLEVEL 1 goto err
+echo Test 17 passed
+
+rem При следующем после максимального значении ожидается ненулевой код возврата
+%PROGRAM% 10 10 2147483648 >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 18 passed
+
+rem При значении следующем перед максимальным значением ожидается нулевой код возврата
+%PROGRAM% 10 10 2147483646 >nul
+if ERRORLEVEL 1 goto err
+echo Test 19 passed
 
 echo OK
 exit 0

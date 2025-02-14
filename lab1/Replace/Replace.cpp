@@ -157,7 +157,7 @@ void ReplaceWordFromStdin()
 int main(int argc, char* argv[])
 {
 	bool isCopySuccess = true;
-	const std::string HELP_ARG = "-h";
+	const std::string CALL_HELP_ARG = "-h";
 
 	switch (argc)
 	{
@@ -166,7 +166,7 @@ int main(int argc, char* argv[])
 		break;
 	case 2:
 	{
-		if (argv[1] != HELP_ARG)
+		if (argv[1] != CALL_HELP_ARG)
 		{
 			std::cout << "ERROR\n";
 			return 1;

@@ -17,14 +17,13 @@ Matrix3x3 ReadMatrixFromStdin(bool& wasError)
 	for (int i = 0; i < MATRIX_SIZE; i++)
 	{
 		for (int j = 0; j < MATRIX_SIZE; j++)
-		{
+		{			
 			if (std::cin.eof())
 			{
 				wasError = true;
 				std::cout << "ERROR\n";
 				return matrix;
-			}
-			std::cout << "Matrix [" << i << "]" << "[" << j << "] = ";
+			}			
 			std::cin >> matrix[i][j];
 		}
 	}

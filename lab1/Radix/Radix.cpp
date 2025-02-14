@@ -28,7 +28,7 @@ bool IsNumber(const char* str)
 	return true;
 }
 
-int CharToInt(const char ch)
+int CharToInt(char ch)
 {
 	if (isdigit(ch))
 	{
@@ -40,10 +40,10 @@ int CharToInt(const char ch)
 		return ch - 'A' + 10;
 	}
 
-	return INT_MAX;
+	throw std::runtime_error("Char is not a digit!");
 }
 
-char IntToChar(const int n)
+char IntToChar(int n)
 {
 	if (n >= 10)
 	{
@@ -53,7 +53,7 @@ char IntToChar(const int n)
 	return '0' + n;
 }
 
-bool IsCorrectValue(const int sourceNotation, const std::string& value)
+bool IsCorrectValue(int sourceNotation, const std::string& value)
 {
 	std::string num = value;
 
@@ -83,7 +83,12 @@ bool IsCorrectValue(const int sourceNotation, const std::string& value)
 	return true;
 }
 
-std::optional<Args> ParseArgs(const int argc, char* argv[])
+bool IsValidInterval(int num)
+{
+	return num < 2 || num > 36;
+}
+
+std::optional<Args> ParseArgs(int argc, char* argv[])
 {
 	if (argc != 4)
 	{
@@ -104,7 +109,7 @@ std::optional<Args> ParseArgs(const int argc, char* argv[])
 	args.destinationNotation = std::stoi(argv[2]);
 	args.value = argv[3];
 
-	if (args.sourceNotation < 2 || args.sourceNotation > 36 || args.destinationNotation < 2 || args.destinationNotation > 36)
+	if (IsValidInterval(args.sourceNotation) || IsValidInterval(args.destinationNotation))
 	{
 		std::cout << "Invalid notation argument\n"
 			<< "Source notation and destination notation must be from 2 to 36\n";
@@ -121,7 +126,7 @@ std::optional<Args> ParseArgs(const int argc, char* argv[])
 	return args;
 }
 
-int StringToInt(const std::string& str, const int radix, bool& wasError)
+int StringToInt(const std::string& str, int radix, bool& wasError)
 {
 	int result = 0;
 	int sign = 1;
@@ -147,29 +152,29 @@ int StringToInt(const std::string& str, const int radix, bool& wasError)
 	return result * sign;
 }
 
-std::string IntToString(int n, const int radix)
+std::string IntToString(int n, int radix)
 {
-	std::list<int> number;
 	std::string result;
-
+	int isNegativeNum = false;
 	if (n < 0)
 	{
-		result.push_back('-');
+		isNegativeNum = true;
 		n *= -1;
 	}
 
 	do
 	{
-		number.push_front(n % radix);
+		result.push_back(IntToChar(n % radix));
 		n = n / radix;
 
 	} while (n != 0);
 
-	for (const auto& digit : number)
+	if (isNegativeNum)
 	{
-		result.push_back(IntToChar(digit));
+		result.push_back('-');
 	}
 
+	reverse(result.begin(), result.end());
 	return result;
 }
 
