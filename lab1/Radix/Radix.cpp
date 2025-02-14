@@ -40,7 +40,7 @@ int CharToInt(char ch)
 		return ch - 'A' + 10;
 	}
 
-	throw std::runtime_error("Char is not a digit!");
+	throw std::invalid_argument("Invalid argument, value is not number!");
 }
 
 char IntToChar(int n)
@@ -92,16 +92,12 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 {
 	if (argc != 4)
 	{
-		std::cout << "Invalid argument count\n"
-			<< "Usage: radix.exe <source notation> <destination notation> <value>\n";
-		return std::nullopt;
+		throw std::invalid_argument("Invalid argument count\nUsage: radix.exe <source notation> <destination notation> <value>\n");
 	}
 
 	if (!IsNumber(argv[1]) || !IsNumber(argv[2]))
 	{
-		std::cout << "Invalid notation argument\n"
-			<< "Source notation and destination notation must be number\n";
-		return std::nullopt;
+		throw std::invalid_argument("Invalid notation argument\nSource notation and destination notation must be number\n");
 	}
 
 	Args args;
@@ -111,45 +107,35 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 
 	if (IsValidInterval(args.sourceNotation) || IsValidInterval(args.destinationNotation))
 	{
-		std::cout << "Invalid notation argument\n"
-			<< "Source notation and destination notation must be from 2 to 36\n";
-		return std::nullopt;
+		throw std::invalid_argument("Invalid notation argument\nSource notation and destination notation must be from 2 to 36\n");
 	}
 
 	if (!IsCorrectValue(args.sourceNotation, args.value))
 	{
-		std::cout << "Invalid value argument\n"
-			<< "The value must match the source notation\n";
-		return std::nullopt;
+		throw std::invalid_argument("Invalid value argument\nThe value must match the source notation\n");
 	}
 
 	return args;
 }
 
-int StringToInt(const std::string& str, int radix, bool& wasError)
+int StringToInt(const std::string& str, int radix)
 {
 	int result = 0;
-	int sign = 1;
 	std::string num = str;
+	int isPositiveNum = (num[0] != '-');
 
-	if (num[0] == '-')
+	for (size_t i = isPositiveNum ? 0 : 1; i < num.size(); i++)
 	{
-		sign = -1;
-		num = num.substr(1);
-	}
-
-	for (size_t i = 0, j = num.size() - 1; i < num.size(); i++, j--)
-	{
-		if (result > (INT_MAX - CharToInt(num[j]) * pow(radix, i)))
+		if (INT_MAX / radix < result || (INT_MAX / radix == result && INT_MAX % radix < CharToInt(num[i])))
 		{
-			wasError = true;
-			std::cout << "Overflow error!\n";
-			return 0;
+			throw std::runtime_error("Overflow error!\n");
 		}
-		result += CharToInt(num[j]) * pow(radix, i);
+
+		result *= radix;
+		result += CharToInt(num[i]);
 	}
 
-	return result * sign;
+	return isPositiveNum ? result : -result;
 }
 
 std::string IntToString(int n, int radix)
@@ -180,21 +166,18 @@ std::string IntToString(int n, int radix)
 
 int main(int argc, char* argv[])
 {
-	const std::optional<Args> args = ParseArgs(argc, argv);
-	if (!args)
+	try {
+		const std::optional<Args> args = ParseArgs(argc, argv);
+
+		int num = StringToInt(args->value, args->sourceNotation);
+
+		std::cout << IntToString(num, args->destinationNotation) << "\n";
+	}
+	catch (const std::exception& ex)
 	{
+		std::cout << ex.what();
 		return 1;
 	}
-
-	bool wasError = false;
-
-	int num = StringToInt(args->value, args->sourceNotation, wasError);
-	if (wasError)
-	{
-		return 1;
-	}
-
-	std::cout << IntToString(num, args->destinationNotation) << "\n";
 
 	return 0;
 }

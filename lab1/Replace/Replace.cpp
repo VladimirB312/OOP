@@ -154,10 +154,14 @@ void ReplaceWordFromStdin()
 	std::cout << outputStream.str();
 }
 
+bool NeedHelp(const std::string& arg)
+{
+	return arg == "-h";
+}
+
 int main(int argc, char* argv[])
 {
 	bool isCopySuccess = true;
-	const std::string CALL_HELP_ARG = "-h";
 
 	switch (argc)
 	{
@@ -166,13 +170,15 @@ int main(int argc, char* argv[])
 		break;
 	case 2:
 	{
-		if (argv[1] != CALL_HELP_ARG)
+		if (NeedHelp(argv[1]))
 		{
-			std::cout << "ERROR\n";
-			return 1;
+			std::cout << "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>\n";
+			break;
 		}
-		std::cout << "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>\n";
-		break;
+		std::cout << "ERROR\n";
+
+		return 1;
+
 	}
 	case 5:
 		ReplaceWordFromFile(argc, argv, isCopySuccess);

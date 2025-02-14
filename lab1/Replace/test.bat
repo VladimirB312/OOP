@@ -57,6 +57,20 @@ rem При отсутствии, заданного параметрами, входного файла, программа должна верн
 if NOT ERRORLEVEL 1 goto err
 echo Test 8 passed
 
+rem Тест замены во входном файле пустой строки на "cat"
+%PROGRAM% test-data\empty-search.txt "%TEMP%\empty-search.txt" "" cat
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\empty-search.txt" test-data\empty-search-replace.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 9 passed
+
+rem Тест замены во входном файле "cat" пустую строку
+%PROGRAM% test-data\empty-replacement.txt "%TEMP%\empty-replacement.txt" cat ""
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\empty-replacement.txt" test-data\empty-replacement-replace.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 10 passed
+
 echo OK
 exit 0
 

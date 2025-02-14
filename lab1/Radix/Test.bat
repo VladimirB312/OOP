@@ -102,6 +102,21 @@ rem При значении следующем перед максимальным значением ожидается нулевой код во
 if ERRORLEVEL 1 goto err
 echo Test 19 passed
 
+rem При минимальном значении ожидается нулевой код возврата
+%PROGRAM% 10 10 -2147483647 >nul
+if ERRORLEVEL 1 goto err
+echo Test 20 passed
+
+rem При следующем перед минимального значении ожидается ненулевой код возврата
+%PROGRAM% 10 10 -2147483648 >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 21 passed
+
+rem При значении следующем после минимальным значением ожидается нулевой код возврата
+%PROGRAM% 10 10 -2147483646 >nul
+if ERRORLEVEL 1 goto err
+echo Test 22 passed
+
 echo OK
 exit 0
 
