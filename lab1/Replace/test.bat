@@ -24,31 +24,38 @@ fc.exe "%TEMP%\fox.txt" test-data\fox-replace-dog-with-cat.txt >nul
 if ERRORLEVEL 1 goto err
 echo Test 3 passed
 
+rem Тест замены во входном файле первых символов строки "fox" на "cat"
+%PROGRAM% test-data\fox-first.txt "%TEMP%\fox-first.txt" fox cat
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\fox-first.txt" test-data\fox-first-replace.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 4 passed
+
 rem Тест замены во входном файле строки "1231234" на "XYZ"
 %PROGRAM% test-data\digits.txt "%TEMP%\digits.txt" 1231234 XYZ
 if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\digits.txt" test-data\digits-replace-1231234-with-XYZ.txt >nul
 if ERRORLEVEL 1 goto err
-echo Test 4 passed
+echo Test 5 passed
 
 rem Тест замены во входном файле, состоящим из нескольких строк, строки "brown" на "red"
 %PROGRAM% test-data\multiline.txt "%TEMP%\multiline.txt" brown red
 if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\multiline.txt" test-data\multiline-replace.txt >nul
 if ERRORLEVEL 1 goto err
-echo Test 5 passed
+echo Test 6 passed
 
 rem Тест замены в с многократным вхождением искомой строки в строку-заменитель "ma" "mama"
 %PROGRAM% test-data\mama.txt "%TEMP%\mama.txt" ma mama
 if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\mama.txt" test-data\mama-replace.txt >nul
 if ERRORLEVEL 1 goto err
-echo Test 6 passed
+echo Test 7 passed
 
-rem Тест отсутствия, заданного параметрами, входного файла, должен вернуть ненулевой код возврата
+rem При отсутствии, заданного параметрами, входного файла, программа должна вернуть ненулевой код возврата
 %PROGRAM% test-data\missing.txt "%TEMP%\mama.txt" ma mama >nul
 if NOT ERRORLEVEL 1 goto err
-echo Test 7 passed
+echo Test 8 passed
 
 echo OK
 exit 0
