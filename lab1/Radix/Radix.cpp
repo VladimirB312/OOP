@@ -126,7 +126,7 @@ int StringToInt(const std::string& str, int radix)
 
 	for (size_t i = isPositiveNum ? 0 : 1; i < num.size(); i++)
 	{
-		if (INT_MAX / radix < result || (INT_MAX / radix == result && INT_MAX % radix < CharToInt(num[i])))
+		if ((INT_MAX - CharToInt(num[i])) / radix < result)
 		{
 			throw std::runtime_error("Overflow error!\n");
 		}
