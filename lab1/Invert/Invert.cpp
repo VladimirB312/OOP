@@ -80,7 +80,7 @@ void PrintMatrix(const Matrix3x3& m)
 	{
 		for (int j = 0; j < MATRIX_SIZE; j++)
 		{
-			std::cout << std::setprecision(5) << m[i][j] << "\t";
+			std::cout << std::fixed << std::setprecision(3) << m[i][j] << "\t";
 		}
 		std::cout << "\n";
 	}
@@ -123,7 +123,7 @@ Matrix3x3 GetMinorMatrix(const Matrix3x3& m)
 		for (int j = 0; j < MATRIX_SIZE; j++)
 		{
 			double firstLine = m[(i + 1) % 3][(j + 1) % 3] * m[(i + 2) % 3][(j + 2) % 3];
-			double secondLine = m[(i + 2) % 3][(j + 1) % 3] * m[(i + 1) % 3][(j + 2) % 3];	
+			double secondLine = m[(i + 2) % 3][(j + 1) % 3] * m[(i + 1) % 3][(j + 2) % 3];
 			minorMatrix[i][j] = firstLine - secondLine;
 		}
 	}
@@ -131,7 +131,7 @@ Matrix3x3 GetMinorMatrix(const Matrix3x3& m)
 	return minorMatrix;
 }
 
-Matrix3x3 GetInverseMatrix(const Matrix3x3& m)
+Matrix3x3 GetInversedMatrix(const Matrix3x3& m)
 {
 	double determinant = GetDeterminant(m);
 	Matrix3x3 minorMatrix = GetMinorMatrix(m);
@@ -186,8 +186,8 @@ int main(int argc, char* argv[])
 	try {
 		ProcessArgs(argc, argv);
 		originalMatrix = ReadMatrix(argc, argv);
-		Matrix3x3 inverseMatrix = GetInverseMatrix(originalMatrix);
-		PrintMatrix(inverseMatrix);
+		Matrix3x3 inversedMatrix = GetInversedMatrix(originalMatrix);
+		PrintMatrix(inversedMatrix);
 	}
 	catch (std::exception& ex)
 	{
