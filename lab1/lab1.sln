@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Invert", "Invert\Invert.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Crypt", "Crypt\Crypt.vcxproj", "{B7C6068B-FB72-424E-92D6-332457772469}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Labyrinth", "Labyrinth\Labyrinth.vcxproj", "{6B407D81-F9BB-4748-90C6-8C93304B4E19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -51,6 +53,14 @@ Global
 		{B7C6068B-FB72-424E-92D6-332457772469}.Release|Win32.Build.0 = Release|Win32
 		{B7C6068B-FB72-424E-92D6-332457772469}.Release|x64.ActiveCfg = Release|x64
 		{B7C6068B-FB72-424E-92D6-332457772469}.Release|x64.Build.0 = Release|x64
+		{6B407D81-F9BB-4748-90C6-8C93304B4E19}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6B407D81-F9BB-4748-90C6-8C93304B4E19}.Debug|Win32.Build.0 = Debug|Win32
+		{6B407D81-F9BB-4748-90C6-8C93304B4E19}.Debug|x64.ActiveCfg = Debug|x64
+		{6B407D81-F9BB-4748-90C6-8C93304B4E19}.Debug|x64.Build.0 = Debug|x64
+		{6B407D81-F9BB-4748-90C6-8C93304B4E19}.Release|Win32.ActiveCfg = Release|Win32
+		{6B407D81-F9BB-4748-90C6-8C93304B4E19}.Release|Win32.Build.0 = Release|Win32
+		{6B407D81-F9BB-4748-90C6-8C93304B4E19}.Release|x64.ActiveCfg = Release|x64
+		{6B407D81-F9BB-4748-90C6-8C93304B4E19}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
