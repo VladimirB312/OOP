@@ -10,7 +10,7 @@ if ERRORLEVEL 1 goto err
 echo Test 1 passed
 
 rem ѕри запуске с параметром отличным от -h и несуществующим файлом ожидаетс€ ненулевой код возврата
-%PROGRAM% missing.file >nul
+%PROGRAM% missing.file
 if NOT ERRORLEVEL 1 goto err
 echo Test 2 passed
 

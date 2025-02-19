@@ -7,6 +7,7 @@
 #include <string>
 #include <limits> 
 #include <iomanip>
+#include <sstream>
 
 const int MATRIX_SIZE = 3;
 using Matrix3x3 = std::array<std::array<double, MATRIX_SIZE>, MATRIX_SIZE>;
@@ -14,16 +15,28 @@ using Matrix3x3 = std::array<std::array<double, MATRIX_SIZE>, MATRIX_SIZE>;
 Matrix3x3 ReadMatrixFromStdin()
 {
 	Matrix3x3 matrix{};
-	std::cout << "Enter matrix values: \n";
 
 	for (int i = 0; i < MATRIX_SIZE; i++)
 	{
+		std::string line;
+		if (!std::getline(std::cin, line))
+		{
+			throw std::runtime_error("Invalid matrix format\n");
+		}
+		std::stringstream ss(line);
 		for (int j = 0; j < MATRIX_SIZE; j++)
 		{
-			if (std::cin.eof() || !(std::cin >> matrix[i][j]))
+			if (ss.eof() || !(ss >> matrix[i][j]))
 			{
+				ss.clear();
+				if (ss.peek() == '\t' || ss.peek() == EOF || ss.peek() == '\n') {
+					throw std::runtime_error("Invalid matrix format\n");
+				}
 				throw std::runtime_error("Invalid matrix\n");
 			}
+		}
+		if (!ss.eof()) {
+			throw std::runtime_error("Invalid matrix format\n");
 		}
 	}
 
