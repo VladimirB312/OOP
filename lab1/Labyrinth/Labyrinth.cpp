@@ -139,7 +139,7 @@ void PrintLabyrinthToStream(std::ostream& outputStream, Labyrinth& labyrinth)
 	labyrinth.area[labyrinth.start.x][labyrinth.start.y] = -1;
 	labyrinth.area[labyrinth.finish.x][labyrinth.finish.y] = -2;
 
-	for (int i = 0; i < labyrinth.area.size(); i ++)
+	for (int i = 0; i < labyrinth.area.size(); i++)
 	{
 		for (int j = 0; j < labyrinth.area[i].size(); j++)
 		{
@@ -148,7 +148,7 @@ void PrintLabyrinthToStream(std::ostream& outputStream, Labyrinth& labyrinth)
 		if (i != labyrinth.area.size() - 1)
 		{
 			outputStream << '\n';
-		}		
+		}
 	}
 }
 
@@ -168,14 +168,15 @@ bool IsEqual(Point point, int x, int y)
 	return point.x == x && point.y == y;
 }
 
-bool IsOutOfRange(const Area& area, int x, int y)
+void CheckOutOfRange(const Area& area, int x, int y)
 {
-	if (y < 0 || x < 0)
-	{
-		return true;
-	}
+	bool outMinRange = y < 0 || x < 0;
+	bool outMaxRange = !(y < area.size() && x < area[y].size());
 
-	return !(y < area.size() && x < area[y].size());
+	if (outMinRange || outMaxRange)
+	{
+		throw std::runtime_error("Out of range!");
+	}
 }
 
 bool CheckFinish(Labyrinth& labyrinth, std::queue<Point>& queue)
@@ -189,12 +190,9 @@ bool CheckFinish(Labyrinth& labyrinth, std::queue<Point>& queue)
 	for (int i = 0; i < 4; i++)
 	{
 		int shiftX = current.x + dx[i];
-		int shiftY = current.y + dy[i];			
+		int shiftY = current.y + dy[i];
 
-		if (IsOutOfRange(labyrinth.area, shiftY, shiftX))
-		{
-			throw std::runtime_error("Out of range!");
-		}
+		CheckOutOfRange(labyrinth.area, shiftY, shiftX);
 
 		if (IsEqual(labyrinth.finish, shiftX, shiftY))
 		{
@@ -273,52 +271,62 @@ Labyrinth FindWayBack(Labyrinth& labyrinth)
 	throw std::runtime_error("Can't find a way out");
 }
 
-void ProcessLabyrinth(int argc, char* argv[])
+void ProcessLabyrinthFromStdin()
 {
 	Labyrinth  labyrinth;
+	labyrinth = ReadLabyrinthFromStream(std::cin);
 
+	if (!FindPath(labyrinth))
+	{
+		PrintLabyrinthToStream(std::cout, labyrinth);
+
+		return;
+	}
+
+	labyrinth = FindWayBack(labyrinth);
+	PrintLabyrinthToStream(std::cout, labyrinth);
+}
+
+void ProcessLabyrinthFromFile(const std::string& inputFileName, const std::string& outputFileName)
+{
+	Labyrinth  labyrinth;
+	labyrinth = ReadLabyrinthFromFile(inputFileName);
+
+	if (!FindPath(labyrinth))
+	{
+		PrintLabyrinthToFile(outputFileName, labyrinth);
+
+		return;
+	}
+
+	labyrinth = FindWayBack(labyrinth);
+	PrintLabyrinthToFile(outputFileName, labyrinth);
+}
+
+void ProcessLabyrinth(int argc, const char* argv[])
+{
 	if (argc == 1)
 	{
-		labyrinth = ReadLabyrinthFromStream(std::cin);
-		if (!FindPath(labyrinth))
-		{
-			PrintLabyrinthToStream(std::cout, labyrinth);
-			return;
-		}
-		labyrinth = FindWayBack(labyrinth);
-		PrintLabyrinthToStream(std::cout, labyrinth);
+		ProcessLabyrinthFromStdin();
 		return;
 	}
 
 	if (argc == 3)
 	{
-		labyrinth = ReadLabyrinthFromFile(argv[1]);
-		if (!FindPath(labyrinth))
-		{
-			PrintLabyrinthToFile(argv[2], labyrinth);
-			return;
-		}
-		labyrinth = FindWayBack(labyrinth);
-		PrintLabyrinthToFile(argv[2], labyrinth);
-
+		ProcessLabyrinthFromFile(argv[1], argv[2]);
 		return;
 	}
 
 	throw std::invalid_argument("Invalid argument count.\n");
 }
 
-int main(int argc, char* argv[])
+int main(int argc, const char* argv[])
 {
 	try {
 		ProcessLabyrinth(argc, argv);
 	}
 	catch (const std::exception& ex) {
-		if (argc == 1) {
-			std::cout << "ERROR";
-			return 0;
-		}
-
-		std::cout << "ERROR";
+		std::cout << ex.what() << "\n";
 		return 1;
 	}
 
