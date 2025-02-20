@@ -6,6 +6,8 @@
 #include <string>
 #include <fstream>
 #include <queue>
+#include <optional>
+#include <iomanip>
 
 using Area = std::vector<std::vector<int>>;
 
@@ -28,7 +30,7 @@ int MapPointToDigit(char ch)
 		return -1;
 	case 'B':
 		return -2;
-	case ' ':	
+	case ' ':
 		return 0;
 	default:
 		throw std::runtime_error("ERROR");
@@ -45,38 +47,38 @@ std::vector<int> GetLabyrinthLine(const std::string& line)
 	for (const auto ch : line)
 	{
 		row.push_back(MapPointToDigit(ch));
-		
+
 	}
 
 	return row;
 }
 
 Point SetStartAndFinishPoints(Labyrinth& labyrinth)
-{	
-	bool foundA = false;
-	bool foundB = false;
+{
+	int countA = 0;
+	int countB = 0;
 
-	for (int i = 0; i < labyrinth.area.size(); i ++)
+	for (int i = 0; i < labyrinth.area.size(); i++)
 	{
-		for (int j = 0; j < labyrinth.area[i].size(); j ++)
+		for (int j = 0; j < labyrinth.area[i].size(); j++)
 		{
 			if (labyrinth.area[i][j] == -1)
 			{
 				labyrinth.start = { i, j };
 				labyrinth.area[i][j] = 0;
-				foundA = true;
+				countA++;
 			}
 
 			if (labyrinth.area[i][j] == -2)
 			{
 				labyrinth.finish = { i, j };
 				labyrinth.area[i][j] = 0;
-				foundB = true;
+				countB++;
 			}
 		}
 	}
 
-	if (!foundA || !foundB)
+	if (countA != 1 && countB != 1)
 	{
 		throw std::runtime_error("ERROR");
 	}
@@ -126,13 +128,13 @@ char DigitToMapPoint(int digit)
 }
 
 void PrintLabyrinthToFile(const std::string& fileName, Labyrinth& labyrinth)
-{	
+{
 	std::ofstream outputFile(fileName);
 	if (!outputFile.is_open())
 	{
 		throw std::invalid_argument("Failed to open file " + fileName + "\n");
 	}
-	
+
 	labyrinth.area[labyrinth.start.x][labyrinth.start.y] = -1;
 	labyrinth.area[labyrinth.finish.x][labyrinth.finish.y] = -2;
 
@@ -152,6 +154,101 @@ Labyrinth ReadLabyrinthFromStdin()
 	return labyrinth;
 }
 
+bool IsEqual(Point point, int x, int y)
+{
+	return point.x == x && point.y == y;
+}
+
+bool CheckFinish(Labyrinth& labyrinth, std::queue<Point>& queue)
+{
+	Point current = queue.front();
+	queue.pop();
+
+	std::vector dx = { -1, 0, 1, 0 };
+	std::vector dy = { 0, 1, 0, -1 };
+
+	for (int i = 0; i < 4; i++)
+	{
+		int shiftX = current.x + dx[i];
+		int shiftY = current.y + dy[i];
+
+		if (IsEqual(labyrinth.finish, shiftX, shiftY))
+		{
+			labyrinth.area[shiftX][shiftY] = labyrinth.area[current.x][current.y] + 1;
+			return true;
+		}
+
+		if (labyrinth.area[shiftX][shiftY] == 0 &&
+			!(IsEqual(labyrinth.start, shiftX, shiftY)))
+		{
+			labyrinth.area[shiftX][shiftY] = labyrinth.area[current.x][current.y] + 1;
+			queue.push({ shiftX , shiftY });
+		}
+	}
+
+	return false;
+}
+
+bool FindPath(Labyrinth& labyrinth)
+{
+	std::queue<Point> queue;
+	queue.push(labyrinth.start);
+
+	while (!queue.empty())
+	{
+		if (CheckFinish(labyrinth, queue))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+Point GetPrevPoint(Labyrinth& labyrinth, Point& current)
+{
+	std::vector dx = { 0, 0, -1, 1 };
+	std::vector dy = { -1, 1, 0, 0 };
+
+	for (int i = 0; i < 4; i++)
+	{
+		int shiftX = current.x + dx[i];
+		int shiftY = current.y + dy[i];
+
+		if (labyrinth.area[shiftX][shiftY] + 1 == labyrinth.area[current.x][current.y])
+		{
+			current.x = shiftX;
+			current.y = shiftY;
+			return current;
+		}
+	}
+
+	throw std::runtime_error("Can't find a previous step");
+}
+
+bool IsEqualPoints(Point p1, Point p2)
+{
+	return p1.x == p2.x && p1.y == p2.y;
+}
+
+Labyrinth FindWayBack(Labyrinth& labyrinth)
+{
+	Point current = labyrinth.finish;
+	Labyrinth resultLabyrinth = labyrinth;
+	while (!IsEqualPoints(current, labyrinth.start))
+	{
+		current = GetPrevPoint(labyrinth, current);
+		if (IsEqualPoints(current, labyrinth.start))
+		{
+			return resultLabyrinth;
+		}
+
+		resultLabyrinth.area[current.x][current.y] = -3;
+	}
+
+	throw std::runtime_error("Can't find a way out");
+}
+
 void ProcessLabyrinth(int argc, char* argv[])
 {
 	Labyrinth  labyrinth;
@@ -165,17 +262,22 @@ void ProcessLabyrinth(int argc, char* argv[])
 	if (argc == 3)
 	{
 		labyrinth = ReadLabyrinthFromFile(argv[1]);
+		if (!FindPath(labyrinth))
+		{
+			PrintLabyrinthToFile(argv[2], labyrinth);
+			return;
+		}
+		labyrinth = FindWayBack(labyrinth);
 		PrintLabyrinthToFile(argv[2], labyrinth);
+
 		return;
 	}
 
 	throw std::invalid_argument("Invalid argument count.\n");
 }
 
-
 int main(int argc, char* argv[])
 {
-
 	try {
 		ProcessLabyrinth(argc, argv);
 	}
