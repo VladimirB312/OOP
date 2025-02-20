@@ -14,6 +14,87 @@ rem При запуске с параметром имени несуществующего входного файла ожидается нену
 if NOT ERRORLEVEL 1 goto err
 echo Test 2 passed
 
+rem При ширине лабиринта 99 клеток ожидается нулевой код возврата
+%PROGRAM% test-data\test99.txt "%TEMP%\output.txt" >nul
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\test99-out.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 3 passed
+
+rem При ширине лабиринта 100 клеток ожидается нулевой код возврата
+%PROGRAM% test-data\test100.txt "%TEMP%\output.txt" >nul
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\test100-out.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 4 passed
+
+rem При ширине лабиринта 101 клетка ожидается ненулевой код возврата
+%PROGRAM% test-data\test101.txt "%TEMP%\output.txt" >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 5 passed
+
+rem При высоте лабиринта 99 клеток ожидается нулевой код возврата
+%PROGRAM% test-data\test99h.txt "%TEMP%\output.txt" >nul
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\test99h-out.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 6 passed
+
+rem При высоте лабиринта 100 клеток ожидается нулевой код возврата
+%PROGRAM% test-data\test100h.txt "%TEMP%\output.txt" >nul
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\test100h-out.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 7 passed
+
+rem При высоте лабиринта 101 клетка ожидается ненулевой код возврата
+%PROGRAM% test-data\test101h.txt "%TEMP%\output.txt" >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 8 passed
+
+rem При отсутствии точки B ожидается ненулевой код возврата
+%PROGRAM% test-data\testB.txt "%TEMP%\output.txt" >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 9 passed
+
+rem При отсутствии точки A ожидается ненулевой код возврата
+%PROGRAM% test-data\testA.txt "%TEMP%\output.txt" >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 10 passed
+
+rem При незамкнутых стенах лабиринта ожидается ненулевой код возврата
+%PROGRAM% test-data\testWall.txt "%TEMP%\output.txt" >nul
+if NOT ERRORLEVEL 1 goto err
+echo Test 11 passed
+
+rem При отсутствии пути выводится лабиринт без указания пути
+%PROGRAM% test-data\testNoExit.txt "%TEMP%\output.txt" >nul
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\testNoExit.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 12 passed
+
+rem При правильности обработки лабиринта с меняющейся шириной
+%PROGRAM% test-data\testDifWidth.txt "%TEMP%\output.txt" >nul
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\testDifWidth-out.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 13 passed
+
+rem При правильности обработки лабиринта с меняющейся шириной и высотой
+%PROGRAM% test-data\testDifSize.txt "%TEMP%\output.txt" >nul
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\testDifSize-out.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 14 passed
+
+rem При правильности обработки лабиринта с пустыми строками
+%PROGRAM% test-data\testDifSize.txt "%TEMP%\output.txt" >nul
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\testDifSize-out.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 15 passed
+
 echo OK
 exit 0
 

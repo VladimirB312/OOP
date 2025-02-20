@@ -11,6 +11,8 @@
 
 using Area = std::vector<std::vector<int>>;
 
+const int MAX_AREA_SIZE = 100;
+
 struct Point {
 	int x, y;
 };
@@ -39,21 +41,21 @@ int MapPointToDigit(char ch)
 
 std::vector<int> GetLabyrinthLine(const std::string& line)
 {
-	if (line.size() > 100)
-	{
-		throw std::runtime_error("ERROR");
-	}
 	std::vector<int> row;
 	for (const auto ch : line)
 	{
-		row.push_back(MapPointToDigit(ch));
+		if (row.size() >= MAX_AREA_SIZE)
+		{
+			throw std::runtime_error("ERROR");
+		}
 
+		row.push_back(MapPointToDigit(ch));
 	}
 
 	return row;
 }
 
-Point SetStartAndFinishPoints(Labyrinth& labyrinth)
+void SetStartAndFinishPoints(Labyrinth& labyrinth)
 {
 	int countA = 0;
 	int countB = 0;
@@ -78,26 +80,20 @@ Point SetStartAndFinishPoints(Labyrinth& labyrinth)
 		}
 	}
 
-	if (countA != 1 && countB != 1)
+	if (countA != 1 || countB != 1)
 	{
 		throw std::runtime_error("ERROR");
 	}
 }
 
-Labyrinth ReadLabyrinthFromFile(const std::string& fileName)
+Labyrinth ReadLabyrinthFromStream(std::istream& inputStream)
 {
-	std::ifstream inputFile(fileName);
-	if (!inputFile.is_open())
-	{
-		throw std::invalid_argument("Failed to open file " + fileName + "\n");
-	}
-
 	Labyrinth labyrinth;
 
 	std::string line;
-	while (std::getline(inputFile, line))
+	while (std::getline(inputStream, line))
 	{
-		if (labyrinth.area.size() == 100)
+		if (labyrinth.area.size() >= MAX_AREA_SIZE)
 		{
 			throw std::runtime_error("ERROR");
 		}
@@ -108,6 +104,17 @@ Labyrinth ReadLabyrinthFromFile(const std::string& fileName)
 	SetStartAndFinishPoints(labyrinth);
 
 	return labyrinth;
+}
+
+Labyrinth ReadLabyrinthFromFile(const std::string& fileName)
+{
+	std::ifstream inputFile(fileName);
+	if (!inputFile.is_open())
+	{
+		throw std::invalid_argument("Failed to open file " + fileName + "\n");
+	}
+
+	return ReadLabyrinthFromStream(inputFile);
 }
 
 char DigitToMapPoint(int digit)
@@ -127,6 +134,24 @@ char DigitToMapPoint(int digit)
 	}
 }
 
+void PrintLabyrinthToStream(std::ostream& outputStream, Labyrinth& labyrinth)
+{
+	labyrinth.area[labyrinth.start.x][labyrinth.start.y] = -1;
+	labyrinth.area[labyrinth.finish.x][labyrinth.finish.y] = -2;
+
+	for (int i = 0; i < labyrinth.area.size(); i ++)
+	{
+		for (int j = 0; j < labyrinth.area[i].size(); j++)
+		{
+			outputStream << DigitToMapPoint(labyrinth.area[i][j]);
+		}
+		if (i != labyrinth.area.size() - 1)
+		{
+			outputStream << '\n';
+		}		
+	}
+}
+
 void PrintLabyrinthToFile(const std::string& fileName, Labyrinth& labyrinth)
 {
 	std::ofstream outputFile(fileName);
@@ -135,23 +160,7 @@ void PrintLabyrinthToFile(const std::string& fileName, Labyrinth& labyrinth)
 		throw std::invalid_argument("Failed to open file " + fileName + "\n");
 	}
 
-	labyrinth.area[labyrinth.start.x][labyrinth.start.y] = -1;
-	labyrinth.area[labyrinth.finish.x][labyrinth.finish.y] = -2;
-
-	for (const auto& row : labyrinth.area)
-	{
-		for (const auto col : row)
-		{
-			outputFile << DigitToMapPoint(col);
-		}
-		outputFile << '\n';
-	}
-}
-
-Labyrinth ReadLabyrinthFromStdin()
-{
-	Labyrinth labyrinth;
-	return labyrinth;
+	PrintLabyrinthToStream(outputFile, labyrinth);
 }
 
 bool IsEqual(Point point, int x, int y)
@@ -159,18 +168,33 @@ bool IsEqual(Point point, int x, int y)
 	return point.x == x && point.y == y;
 }
 
+bool IsOutOfRange(const Area& area, int x, int y)
+{
+	if (y < 0 || x < 0)
+	{
+		return true;
+	}
+
+	return !(y < area.size() && x < area[y].size());
+}
+
 bool CheckFinish(Labyrinth& labyrinth, std::queue<Point>& queue)
 {
 	Point current = queue.front();
 	queue.pop();
 
-	std::vector dx = { -1, 0, 1, 0 };
-	std::vector dy = { 0, 1, 0, -1 };
+	std::vector<int> dx = { -1, 0, 1, 0 };
+	std::vector<int> dy = { 0, 1, 0, -1 };
 
 	for (int i = 0; i < 4; i++)
 	{
 		int shiftX = current.x + dx[i];
-		int shiftY = current.y + dy[i];
+		int shiftY = current.y + dy[i];			
+
+		if (IsOutOfRange(labyrinth.area, shiftY, shiftX))
+		{
+			throw std::runtime_error("Out of range!");
+		}
 
 		if (IsEqual(labyrinth.finish, shiftX, shiftY))
 		{
@@ -207,8 +231,8 @@ bool FindPath(Labyrinth& labyrinth)
 
 Point GetPrevPoint(Labyrinth& labyrinth, Point& current)
 {
-	std::vector dx = { 0, 0, -1, 1 };
-	std::vector dy = { -1, 1, 0, 0 };
+	std::vector<int> dx = { 0, 0, -1, 1 };
+	std::vector<int> dy = { -1, 1, 0, 0 };
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -255,7 +279,14 @@ void ProcessLabyrinth(int argc, char* argv[])
 
 	if (argc == 1)
 	{
-		labyrinth = ReadLabyrinthFromStdin();
+		labyrinth = ReadLabyrinthFromStream(std::cin);
+		if (!FindPath(labyrinth))
+		{
+			PrintLabyrinthToStream(std::cout, labyrinth);
+			return;
+		}
+		labyrinth = FindWayBack(labyrinth);
+		PrintLabyrinthToStream(std::cout, labyrinth);
 		return;
 	}
 
@@ -282,7 +313,12 @@ int main(int argc, char* argv[])
 		ProcessLabyrinth(argc, argv);
 	}
 	catch (const std::exception& ex) {
-		std::cout << ex.what() << "\n";
+		if (argc == 1) {
+			std::cout << "ERROR";
+			return 0;
+		}
+
+		std::cout << "ERROR";
 		return 1;
 	}
 
