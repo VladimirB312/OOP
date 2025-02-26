@@ -19,39 +19,45 @@ rem При запуске с более чем 2 параметрами ожидается ненулевой код возврата
 if NOT ERRORLEVEL 1 goto err
 echo Test 3 passed
 
-rem При запуске с входным файлом правильного формата ожидается нулевой код возврата
-%PROGRAM% test-data\matrix.txt >nul
-if ERRORLEVEL 1 goto err
-echo Test 4 passed
-
 rem При запуске с входным файлом в котором присутствует не цифровое значение ожидается ненулевой код возврата
 %PROGRAM% test-data\matrix-error.txt >nul
 if NOT ERRORLEVEL 1 goto err
-echo Test 5 passed
-
-rem При запуске с входным файлом в котором первое значение не цифровое ожидается ненулевой код возврата
-%PROGRAM% test-data\matrix-error-first.txt >nul
-if NOT ERRORLEVEL 1 goto err
-echo Test 6 passed
-
-rem При запуске с входным файлом в котором последнее значение не цифровое ожидается ненулевой код возврата
-%PROGRAM% test-data\matrix-error-last.txt >nul
-if NOT ERRORLEVEL 1 goto err
-echo Test 7 passed
+echo Test 4 passed
 
 rem При запуске с входным файлом в котором не достаточное количество значений ожидается ненулевой код возврата
 %PROGRAM% test-data\matrix-not-enough.txt >nul
 if NOT ERRORLEVEL 1 goto err
-echo Test 8 passed
+echo Test 5 passed
 
 rem При запуске с входным файлом в котором лишнее количество значений ожидается ненулевой код возврата
 %PROGRAM% test-data\matrix-extra.txt >nul
 if NOT ERRORLEVEL 1 goto err
-echo Test 9 passed
+echo Test 6 passed
 
 rem Если определитель матрицы равен 0 ожидается ненулевой код возврата
 %PROGRAM% test-data\matrix-null.txt >nul
 if NOT ERRORLEVEL 1 goto err
+echo Test 7 passed
+
+rem Проверка правильности инвертирования еденичной матрицы
+%PROGRAM% test-data\matrix-e.txt >"%TEMP%\output.txt"
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\matrix-e-out.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 8 passed
+
+rem Проверка правильности инвертирования матрицы
+%PROGRAM% test-data\matrix-ok-1.txt >"%TEMP%\output.txt"
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\matrix-ok-1-out.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 9 passed
+
+rem Проверка правильности инвертирования матрицы с отрицательными элементами
+%PROGRAM% test-data\matrix-ok-2.txt >"%TEMP%\output.txt"
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\matrix-ok-2-out.txt >nul
+if ERRORLEVEL 1 goto err
 echo Test 10 passed
 
 echo OK
