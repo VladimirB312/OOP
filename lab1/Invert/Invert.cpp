@@ -43,7 +43,7 @@ Matrix3x3 ReadMatrixFromStdin()
 	return matrix;
 }
 
-double ReadValueFromFile(std::istream& inputFile) //сделать функцию не void а return value
+double ReadValueFromFile(std::istream& inputFile)
 {
 	double value;
 
@@ -148,15 +148,18 @@ Matrix3x3 GetMinorMatrix(const Matrix3x3& matrix)
 	return minorMatrix;
 }
 
-void MultiplayingMatrixByNumber(Matrix3x3& matrix, double number)
+Matrix3x3 MultiplayingMatrixByNumber(Matrix3x3& matrix, double number)
 {
-	for (int i = 0; i < MATRIX_SIZE; i++) //вынести в отдельную функцию
+	Matrix3x3 resultMatrix{};
+	for (int i = 0; i < MATRIX_SIZE; i++)
 	{
 		for (int j = 0; j < MATRIX_SIZE; j++)
 		{
-			matrix[i][j] = matrix[i][j] * number;
+			resultMatrix[i][j] = matrix[i][j] * number;
 		}
 	}
+
+	return resultMatrix;
 }
 
 Matrix3x3 GetInversedMatrix(const Matrix3x3& matrix)
@@ -164,15 +167,8 @@ Matrix3x3 GetInversedMatrix(const Matrix3x3& matrix)
 	double determinant = GetDeterminant(matrix);
 	Matrix3x3 minorMatrix = GetMinorMatrix(matrix);
 	Matrix3x3 transposedMatrix = GetTransposedMatrix(minorMatrix);
-
-	Matrix3x3 inversedMatrix{};
-	for (int i = 0; i < MATRIX_SIZE; i++) //вынести в отдельную функцию
-	{
-		for (int j = 0; j < MATRIX_SIZE; j++)
-		{
-			inversedMatrix[i][j] = transposedMatrix[i][j] * (1.0 / determinant);
-		}
-	}
+	double coefficient = 1.0 / determinant;
+	Matrix3x3 inversedMatrix = MultiplayingMatrixByNumber(transposedMatrix, coefficient);
 
 	return inversedMatrix;
 }
