@@ -6,7 +6,6 @@
 #include <string>
 #include <fstream>
 #include <queue>
-#include <optional>
 #include <iomanip>
 
 using Area = std::vector<std::vector<int>>;
