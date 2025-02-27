@@ -1,9 +1,18 @@
-// Task1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include "ProcessNumbers.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    try {
+        std::vector<double> numbers = ReadNumbers(std::cin);
+        numbers = ProcessNumbers(numbers);
+        PrintSortedNumbers(std::cout, numbers);
+    }
+    catch(const std::exception& ex)
+    {
+        std::cout << ex.what();
+        return 0;
+    }
+
+    return 0;
 }
