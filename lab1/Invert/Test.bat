@@ -60,6 +60,11 @@ fc.exe "%TEMP%\output.txt" test-data\matrix-ok-2-out.txt >nul
 if ERRORLEVEL 1 goto err
 echo Test 10 passed
 
+rem Проверка попытки инвертирования нулевой матрицы
+%PROGRAM% test-data\matrix-0.txt >"%TEMP%\output.txt"
+if NOT ERRORLEVEL 1 goto err
+echo Test 11 passed
+
 echo OK
 exit 0
 
