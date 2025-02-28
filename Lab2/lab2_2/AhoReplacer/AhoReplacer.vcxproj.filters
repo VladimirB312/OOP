@@ -18,12 +18,15 @@
     <ClCompile Include="Task2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HtmlDecode.cpp">
+    <ClCompile Include="Replacer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HtmlDecode.h">
+    <ClInclude Include="Replacer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TrieNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
