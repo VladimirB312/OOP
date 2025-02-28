@@ -1,0 +1,4 @@
+cat:кошка;
+dog:собака;
+The Red Square:Красная площадь;
+english word:russian word;
