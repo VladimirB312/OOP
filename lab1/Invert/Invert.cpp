@@ -148,7 +148,7 @@ Matrix3x3 GetMinorMatrix(const Matrix3x3& matrix)
 	return minorMatrix;
 }
 
-Matrix3x3 MultiplayingMatrixByNumber(Matrix3x3& matrix, double number)
+Matrix3x3 MultiplayingMatrixByNumber(const Matrix3x3& matrix, double number)
 {
 	Matrix3x3 resultMatrix{};
 	for (int i = 0; i < MATRIX_SIZE; i++)

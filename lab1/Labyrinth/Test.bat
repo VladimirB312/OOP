@@ -52,48 +52,62 @@ rem При высоте лабиринта 101 клетка ожидается ненулевой код возврата
 if NOT ERRORLEVEL 1 goto err
 echo Test 8 passed
 
+rem При высоте и ширине лабиринта 100 клеток ожидается нулевой код возврата
+%PROGRAM% test-data\testMAX.txt "%TEMP%\output.txt" >nul
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\testMAX-out.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 9 passed
+
 rem При отсутствии точки B ожидается ненулевой код возврата
 %PROGRAM% test-data\testB.txt "%TEMP%\output.txt" >nul
 if NOT ERRORLEVEL 1 goto err
-echo Test 9 passed
+echo Test 10 passed
 
 rem При отсутствии точки A ожидается ненулевой код возврата
 %PROGRAM% test-data\testA.txt "%TEMP%\output.txt" >nul
 if NOT ERRORLEVEL 1 goto err
-echo Test 10 passed
+echo Test 11 passed
 
 rem При незамкнутых стенах лабиринта ожидается ненулевой код возврата
 %PROGRAM% test-data\testWall.txt "%TEMP%\output.txt" >nul
 if NOT ERRORLEVEL 1 goto err
-echo Test 11 passed
+echo Test 12 passed
 
 rem При отсутствии пути выводится лабиринт без указания пути
 %PROGRAM% test-data\testNoExit.txt "%TEMP%\output.txt" >nul
 if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\output.txt" test-data\testNoExit.txt >nul
 if ERRORLEVEL 1 goto err
-echo Test 12 passed
+echo Test 13 passed
 
 rem При правильности обработки лабиринта с меняющейся шириной
 %PROGRAM% test-data\testDifWidth.txt "%TEMP%\output.txt" >nul
 if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\output.txt" test-data\testDifWidth-out.txt >nul
 if ERRORLEVEL 1 goto err
-echo Test 13 passed
+echo Test 14 passed
 
 rem При правильности обработки лабиринта с меняющейся шириной и высотой
 %PROGRAM% test-data\testDifSize.txt "%TEMP%\output.txt" >nul
 if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\output.txt" test-data\testDifSize-out.txt >nul
 if ERRORLEVEL 1 goto err
-echo Test 14 passed
+echo Test 15 passed
 
 rem При правильности обработки лабиринта с пустыми строками
 %PROGRAM% test-data\testDifSize.txt "%TEMP%\output.txt" >nul
 if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\output.txt" test-data\testDifSize-out.txt >nul
 if ERRORLEVEL 1 goto err
-echo Test 15 passed
+echo Test 16 passed
+
+rem Тест максимально возможной глубины и ширины пути при обходе лабиринта
+%PROGRAM% test-data\test-max-load.txt "%TEMP%\output.txt" >nul
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\output.txt" test-data\test-max-load-out.txt >nul
+if ERRORLEVEL 1 goto err
+echo Test 17 passed
 
 echo OK
 exit 0

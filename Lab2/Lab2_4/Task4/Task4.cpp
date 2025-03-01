@@ -3,35 +3,7 @@
 #include <vector>
 #include <string>
 
-std::set<int> GeneratePrimeNumbersSet(int upperBound)
-{
-    std::set<int> primeNumbers;
-    std::vector<bool> numbers(upperBound, true);
-    numbers[0] = numbers[1] = false;
-
-    int p = 2;
-    while (p * p < upperBound) 
-    {
-        if (numbers[p]) 
-        {           
-            for (int i = p * p; i < upperBound; i += p) 
-            {
-                numbers[i] = false;
-            }
-        }
-        p++;
-    }
-
-    for (int i = 0; i < upperBound; i++)
-    {
-        if (numbers[i])
-        {
-            primeNumbers.insert(i);
-        }
-    }
-
-    return primeNumbers;
-}
+#include "PrimeNumberGenerator.h"
 
 int ParseNumberCount(int argc, char* argv[])
 {
@@ -41,7 +13,7 @@ int ParseNumberCount(int argc, char* argv[])
     }
 
     int numbersCount = std::stoi(argv[1]);
-    if (numbersCount < 2 || numbersCount > 100000000)
+    if (numbersCount < MIN_NUMBER_COUNT || numbersCount > MAX_NUMBER_COUNT)
     {
         throw std::invalid_argument("Input number from 2 to 100000000!");
     }
@@ -49,20 +21,12 @@ int ParseNumberCount(int argc, char* argv[])
     return numbersCount;
 }
 
-void PrintPrimeNumbers(const std::set<int>& primeNumbers)
-{
-    for (auto num : primeNumbers)
-    {
-        std::cout << num << " ";
-    }
-}
-
 int main(int argc, char* argv[]) 
 {
     try {
         int numbersCount = ParseNumberCount(argc, argv);
         std::set<int> primeNumbers = GeneratePrimeNumbersSet(numbersCount);
-        PrintPrimeNumbers(primeNumbers);
+        PrintPrimeNumbers(std::cout, primeNumbers);
     }
     catch (const std::exception& ex)
     {

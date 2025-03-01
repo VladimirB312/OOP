@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Task4.cpp">
+    <ClCompile Include="Task4_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PrimeNumbersGenerator.cpp">
+    <ClCompile Include="..\Task4\PrimeNumbersGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PrimeNumberGenerator.h">
+    <ClInclude Include="..\Task4\PrimeNumberGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

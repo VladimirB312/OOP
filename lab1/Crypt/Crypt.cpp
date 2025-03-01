@@ -101,7 +101,7 @@ unsigned char DecryptByte(unsigned char byte, int key)
 	return xorByte;
 }
 
-unsigned char EncryptionByte(unsigned char byte, const Args& args)
+unsigned char EncryptionByte(unsigned char byte, const Args& args)// распаковать args на отельные аргументы
 {
 	switch (args.cryptType)
 	{
@@ -134,7 +134,6 @@ void FileEncryption(const Args& args)
 		unsigned char cryptedByte = EncryptionByte(byte, args);
 		outputFile.put(reinterpret_cast<char&>(cryptedByte));
 	}
-
 }
 
 int main(int argc, char* argv[])

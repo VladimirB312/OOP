@@ -8,6 +8,12 @@
 #include <queue>
 #include <iomanip>
 
+const int WALL_MARKER = -5;
+const int A_MARKER = -1;
+const int B_MARKER = -2;
+const int DOT_MARKER = -3;
+const int EMPTY_MARKER = 0;
+
 using Area = std::vector<std::vector<int>>;
 
 const int MAX_AREA_SIZE = 100;
@@ -26,13 +32,13 @@ int MapPointToDigit(char ch)
 	switch (ch)
 	{
 	case '#':
-		return -5;
+		return WALL_MARKER;
 	case 'A':
-		return -1;
+		return A_MARKER;
 	case 'B':
-		return -2;
+		return B_MARKER;
 	case ' ':
-		return 0;
+		return EMPTY_MARKER;
 	default:
 		throw std::runtime_error("ERROR");
 	}
@@ -120,13 +126,13 @@ char DigitToMapPoint(int digit)
 {
 	switch (digit)
 	{
-	case -5:
+	case WALL_MARKER:
 		return '#';
-	case -1:
+	case A_MARKER:
 		return 'A';
-	case -2:
+	case B_MARKER:
 		return 'B';
-	case -3:
+	case DOT_MARKER:
 		return '.';
 	default:
 		return ' ';
@@ -178,33 +184,46 @@ void CheckOutOfRange(const Area& area, int x, int y)
 	}
 }
 
-bool CheckFinish(Labyrinth& labyrinth, std::queue<Point>& queue)
+bool ChoiceDirection(Labyrinth& labyrinth, std::queue<Point>& queue, Point& current, int shiftX, int shiftY)
+{
+	CheckOutOfRange(labyrinth.area, shiftY, shiftX);
+
+	if (IsEqual(labyrinth.finish, shiftX, shiftY))
+	{
+		labyrinth.area[shiftX][shiftY] = labyrinth.area[current.x][current.y] + 1;
+		return true;
+	}
+
+	if (labyrinth.area[shiftX][shiftY] == 0 &&
+		!(IsEqual(labyrinth.start, shiftX, shiftY)))
+	{
+		labyrinth.area[shiftX][shiftY] = labyrinth.area[current.x][current.y] + 1;
+		queue.push({ shiftX , shiftY });
+	}
+
+	return false;
+}
+
+bool BaypassLabyrinth(Labyrinth& labyrinth, std::queue<Point>& queue)
 {
 	Point current = queue.front();
 	queue.pop();
 
-	std::vector<int> dx = { -1, 0, 1, 0 };
-	std::vector<int> dy = { 0, 1, 0, -1 };
-
-	for (int i = 0; i < 4; i++)
+	if (ChoiceDirection(labyrinth, queue, current, current.x - 1, current.y))
 	{
-		int shiftX = current.x + dx[i];
-		int shiftY = current.y + dy[i];
-
-		CheckOutOfRange(labyrinth.area, shiftY, shiftX);
-
-		if (IsEqual(labyrinth.finish, shiftX, shiftY))
-		{
-			labyrinth.area[shiftX][shiftY] = labyrinth.area[current.x][current.y] + 1;
-			return true;
-		}
-
-		if (labyrinth.area[shiftX][shiftY] == 0 &&
-			!(IsEqual(labyrinth.start, shiftX, shiftY)))
-		{
-			labyrinth.area[shiftX][shiftY] = labyrinth.area[current.x][current.y] + 1;
-			queue.push({ shiftX , shiftY });
-		}
+		return true;
+	}
+	if (ChoiceDirection(labyrinth, queue, current, current.x, current.y + 1))
+	{
+		return true;
+	}
+	if (ChoiceDirection(labyrinth, queue, current, current.x + 1, current.y))
+	{
+		return true;
+	}
+	if (ChoiceDirection(labyrinth, queue, current, current.x, current.y - 1))
+	{
+		return true;
 	}
 
 	return false;
@@ -217,7 +236,7 @@ bool FindPath(Labyrinth& labyrinth)
 
 	while (!queue.empty())
 	{
-		if (CheckFinish(labyrinth, queue))
+		if (BaypassLabyrinth(labyrinth, queue))
 		{
 			return true;
 		}
@@ -226,22 +245,35 @@ bool FindPath(Labyrinth& labyrinth)
 	return false;
 }
 
-Point GetPrevPoint(Labyrinth& labyrinth, Point& current)
+bool ChoiceDirection(const Area& area, Point& current, int shiftX, int shiftY)
 {
-	std::vector<int> dx = { 0, 0, -1, 1 };
-	std::vector<int> dy = { -1, 1, 0, 0 };
-
-	for (int i = 0; i < 4; i++)
+	if (area[shiftX][shiftY] + 1 == area[current.x][current.y])
 	{
-		int shiftX = current.x + dx[i];
-		int shiftY = current.y + dy[i];
+		current.x = shiftX;
+		current.y = shiftY;
+		return true;
+	}
 
-		if (labyrinth.area[shiftX][shiftY] + 1 == labyrinth.area[current.x][current.y])
-		{
-			current.x = shiftX;
-			current.y = shiftY;
-			return current;
-		}
+	return false;
+}
+
+Point GetPrevPoint(const Labyrinth& labyrinth, Point& current)
+{
+	if (ChoiceDirection(labyrinth.area, current, current.x, current.y - 1))
+	{
+		return current;
+	}
+	if (ChoiceDirection(labyrinth.area, current, current.x, current.y + 1))
+	{
+		return current;
+	}
+	if (ChoiceDirection(labyrinth.area, current, current.x - 1, current.y))
+	{
+		return current;
+	}
+	if (ChoiceDirection(labyrinth.area, current, current.x + 1, current.y))
+	{
+		return current;
 	}
 
 	throw std::runtime_error("Can't find a previous step");
@@ -252,7 +284,7 @@ bool IsEqualPoints(Point p1, Point p2)
 	return p1.x == p2.x && p1.y == p2.y;
 }
 
-Labyrinth FindWayBack(Labyrinth& labyrinth)
+Labyrinth FillPathInLabyrinth(const Labyrinth& labyrinth)
 {
 	Point current = labyrinth.finish;
 	Labyrinth resultLabyrinth = labyrinth;
@@ -264,7 +296,7 @@ Labyrinth FindWayBack(Labyrinth& labyrinth)
 			return resultLabyrinth;
 		}
 
-		resultLabyrinth.area[current.x][current.y] = -3;
+		resultLabyrinth.area[current.x][current.y] = DOT_MARKER;
 	}
 
 	throw std::runtime_error("Can't find a way out");
@@ -281,8 +313,8 @@ void ProcessLabyrinthFromStdin()
 
 		return;
 	}
-
-	labyrinth = FindWayBack(labyrinth);
+	
+	labyrinth = FillPathInLabyrinth(labyrinth); 
 	PrintLabyrinthToStream(std::cout, labyrinth);
 }
 
@@ -298,31 +330,26 @@ void ProcessLabyrinthFromFile(const std::string& inputFileName, const std::strin
 		return;
 	}
 
-	labyrinth = FindWayBack(labyrinth);
+	labyrinth = FillPathInLabyrinth(labyrinth);
 	PrintLabyrinthToFile(outputFileName, labyrinth);
-}
-
-void ProcessLabyrinth(int argc, const char* argv[])
-{
-	if (argc == 1)
-	{
-		ProcessLabyrinthFromStdin();
-		return;
-	}
-
-	if (argc == 3)
-	{
-		ProcessLabyrinthFromFile(argv[1], argv[2]);
-		return;
-	}
-
-	throw std::invalid_argument("Invalid argument count.\n");
 }
 
 int main(int argc, const char* argv[])
 {
 	try {
-		ProcessLabyrinth(argc, argv);
+		if (argc == 1)
+		{
+			ProcessLabyrinthFromStdin();
+			return 0;
+		}
+
+		if (argc == 3)
+		{
+			ProcessLabyrinthFromFile(argv[1], argv[2]);
+			return 0;
+		}
+
+		throw std::invalid_argument("Invalid argument count.\n");
 	}
 	catch (const std::exception& ex) {
 		std::cout << ex.what() << "\n";

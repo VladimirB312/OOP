@@ -1,5 +1,6 @@
 #include "Replacer.h"
 #include "TrieNode.h"
+#include "algorithm"
 
 AhoReplacer::AhoReplacer(const Patterns& patterns)
 	: root(std::make_unique<TrieNode>()), patterns(patterns)
