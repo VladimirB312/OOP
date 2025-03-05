@@ -5,6 +5,12 @@
 #include <iomanip>
 #include <numeric>
 
+struct PositiveNumbersInfo
+{
+	size_t count = 0;
+	double sum = 0;
+};
+
 std::vector<double> ReadNumbers(std::istream& input)
 {
 	std::vector<double> result;
@@ -36,16 +42,10 @@ void PrintSortedNumbers(std::ostream& output, std::vector<double> numbers)
 	}
 }
 
-struct PositiveNumbers
+PositiveNumbersInfo GetAverageOfPositiveNumbers(const std::vector<double>& numbers)
 {
-	size_t count = 0;
-	double sum = 0;
-};
-
-PositiveNumbers GetAverageOfPositiveNumbers(const std::vector<double>& numbers)
-{
-	return std::accumulate(numbers.begin(), numbers.end(), PositiveNumbers(),
-		[](PositiveNumbers acc, double current)
+	return std::accumulate(numbers.begin(), numbers.end(), PositiveNumbersInfo(),
+		[](PositiveNumbersInfo acc, double current)
 		{
 			if (current > 0)
 			{
@@ -59,7 +59,7 @@ PositiveNumbers GetAverageOfPositiveNumbers(const std::vector<double>& numbers)
 std::vector<double> ProcessNumbers(const std::vector<double>& numbers)
 {
 	
-	PositiveNumbers positiveNumbers = GetAverageOfPositiveNumbers(numbers);
+	PositiveNumbersInfo positiveNumbers = GetAverageOfPositiveNumbers(numbers);
 
 	if (positiveNumbers.count == 0)
 	{

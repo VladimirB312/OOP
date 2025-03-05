@@ -21,9 +21,15 @@
     <ClCompile Include="..\AhoReplacer\Replacer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\AhoReplacer\HtmlDecode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\AhoReplacer\Replacer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AhoReplacer\HtmlDecode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

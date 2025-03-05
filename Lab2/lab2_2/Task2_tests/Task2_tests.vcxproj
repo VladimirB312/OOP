@@ -147,10 +147,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\AhoReplacer\HtmlDecode.cpp" />
     <ClCompile Include="..\AhoReplacer\Replacer.cpp" />
     <ClCompile Include="Task2_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\AhoReplacer\HtmlDecode.h" />
     <ClInclude Include="..\AhoReplacer\Replacer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -132,10 +132,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HtmlDecode.cpp" />
     <ClCompile Include="Task2.cpp" />
     <ClCompile Include="Replacer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HtmlDecode.h" />
     <ClInclude Include="Replacer.h" />
     <ClInclude Include="TrieNode.h" />
   </ItemGroup>

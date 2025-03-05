@@ -3,58 +3,160 @@
 #include "../../../catch2/catch.hpp"
 
 #include "Replacer.h"
+#include "HtmlDecode.h"
 
-Patterns patterns = {
-		{{"&quot;" }, { "\"" }},
-		{{"&apos;"},{"\'"}},
-		{{"&lt;"},{"<"}},
-		{{"&gt;"},{">"}},
-		{{"&amp;"},{"&"}}
-};
-
-AhoReplacer replacer(patterns);
-
-SCENARIO("Replace on empty string")
+SCENARIO("Replace string")
 {
-	REQUIRE(replacer.ReplaceMatches("") == "");
+	WHEN("replacement string is empty and the pattern is empty")
+	{
+		Patterns patterns = {};
+		THEN("the result string must be an empty")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.ReplaceMatches("");
+			REQUIRE(result.empty());
+		}
+	}
+
+	WHEN("replacement string is empty and the pattern is not empty")
+	{
+		Patterns patterns = {
+			{{"dog"}, {"cat"}}
+		};
+		THEN("the result string must be an empty")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.ReplaceMatches("");
+			REQUIRE(result.empty());
+		}
+	}
+
+	WHEN("replacement string is not empty and the pattern is empty")
+	{
+		Patterns patterns = {};
+		THEN("the result string must be unchanged")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.ReplaceMatches("cat and dog");
+			REQUIRE(result == "cat and dog");
+		}
+	}
+
+	WHEN("replacement string contain pattern string at the end of string")
+	{
+		Patterns patterns = {
+			{{"dog"}, {"cat"}}
+		};
+		THEN("the result string must be replaced with a pattern string")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.ReplaceMatches("cat and dog");
+			REQUIRE(result == "cat and cat");
+		}
+	}
+
+	WHEN("replacement string contain pattern string at the begining of string")
+	{
+		Patterns patterns = {
+			{{"dog"}, {"cat"}}
+		};
+		THEN("the result string must be replaced with a pattern string")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.ReplaceMatches("dog and cat");
+			REQUIRE(result == "cat and cat");
+		}
+	}
+
+	WHEN("replacement string contains part of a pattern"
+		"and the pattern itself is included in this string")
+	{
+		Patterns patterns = {
+			{{"1231234"}, {"XYZ"}}
+		};
+		THEN("the result string must be replaced with a pattern string")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.ReplaceMatches("12312312345");
+			REQUIRE(result == "123XYZ5");
+		}
+	}
+
+	WHEN("replacement string contains multiple occureances of a pattern")
+	{
+		Patterns patterns = {
+			{{"ma"}, {"mama"}}
+		};
+		THEN("the result string must be replaced with a pattern string")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.ReplaceMatches("mama delala pelmeni");
+			REQUIRE(result == "mamamama delala pelmeni");
+		}
+	}
 }
 
-SCENARIO("Replacement in a string that does not contain an entity")
+SCENARIO("Html decode")
 {
-	REQUIRE(replacer.ReplaceMatches("not contain an entity") == "not contain an entity");
-}
+	std::ostringstream output;
 
-SCENARIO("Replacement in a string containing part of an entity")
-{
-	REQUIRE(replacer.ReplaceMatches("contain part &qu entity") == "contain part &qu entity");
-}
+	WHEN("input stream is empty")
+	{
+		THEN("output must should be empty too")
+		{
+			std::istringstream input("");
+			HtmlDecode(input, output);
+			REQUIRE(output.str().empty());
+		}
+	}
 
-SCENARIO("Replacement in a line containing an entity at the beginning of the line")
-{
-	REQUIRE(replacer.ReplaceMatches("&apos; contain entity") == "' contain entity");
-}
+	WHEN("input stream contains no entities")
+	{
+		THEN("output must be equal to input")
+		{
+			std::istringstream input("some text");
+			HtmlDecode(input, output);
+			REQUIRE(output.str() == "some text");
+		}
+	}
 
-SCENARIO("Replacement in a string containing an entity at the end of the string")
-{
-	REQUIRE(replacer.ReplaceMatches("contain entity &apos;") == "contain entity '");
-}
+	WHEN("input stream contains entity at the beginning of the stream")
+	{
+		THEN("output must be decoded")
+		{
+			std::istringstream input("&apos; some text");
+			HtmlDecode(input, output);
+			REQUIRE(output.str() == "' some text");
+		}
+	}
 
-SCENARIO("Replacement in a line containing an entity at the beginning of the line after a space")
-{
-	REQUIRE(replacer.ReplaceMatches(" &apos; contain entity") == " ' contain entity");
-}
+	WHEN("input stream contains entity at the end of the stream")
+	{
+		THEN("output must be decoded")
+		{
+			std::istringstream input("some text &apos;");
+			HtmlDecode(input, output);
+			REQUIRE(output.str() == "some text '");
+		}
+	}
 
-SCENARIO("Replacement in a line containing an entity at the end of the line before a space")
-{
-	REQUIRE(replacer.ReplaceMatches("contain entity &apos; ") == "contain entity ' ");
-}
+	WHEN("input stream contains entity at the middle of the stream")
+	{
+		THEN("output must be decoded")
+		{
+			std::istringstream input("some &apos; text");
+			HtmlDecode(input, output);
+			REQUIRE(output.str() == "some ' text");
+		}
+	}
 
-SCENARIO("Replacement in a line containing an entity in the middle")
-{
-	REQUIRE(replacer.ReplaceMatches("contain entity &apos; contain entity") == "contain entity ' contain entity");
-}
-
-SCENARIO("Replacement in a line containing all entities")
-{
-	REQUIRE(replacer.ReplaceMatches("Cat &lt;says&gt; &quot;Meow&quot;. M&amp;M&apos;s") == "Cat <says> \"Meow\". M&M's");
+	WHEN("input stream contains all entities")
+	{
+		THEN("output must be decoded")
+		{
+			std::istringstream input("Cat &lt;says&gt; &quot;Meow&quot;. M&amp;M&apos;s");
+			HtmlDecode(input, output);
+			REQUIRE(output.str() == "Cat <says> \"Meow\". M&M's");
+		}
+	}
 }

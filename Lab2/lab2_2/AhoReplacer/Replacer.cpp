@@ -2,14 +2,14 @@
 #include "TrieNode.h"
 #include "algorithm"
 
-AhoReplacer::AhoReplacer(const Patterns& patterns)
+Replacer::Replacer(const Patterns& patterns)
 	: root(std::make_unique<TrieNode>()), patterns(patterns)
 {
 	BuildTrie();
 	BuildSuffixLinks();
 };
 
-void AhoReplacer::BuildTrie() {
+void Replacer::BuildTrie() {
 	for (const auto& [pattern, value] : patterns)
 	{
 		TrieNode* node = root.get();
@@ -25,7 +25,7 @@ void AhoReplacer::BuildTrie() {
 	}
 };
 
-void AhoReplacer::BuildSuffixRootChilds(std::queue<TrieNode*>& queue) {
+void Replacer::BuildSuffixRootChilds(std::queue<TrieNode*>& queue) {
 	for (const auto& [key, node] : root->Child)
 	{
 		queue.push(node.get());
@@ -33,7 +33,7 @@ void AhoReplacer::BuildSuffixRootChilds(std::queue<TrieNode*>& queue) {
 	}
 };
 
-void AhoReplacer::BuildSuffixOtherChilds(std::queue<TrieNode*>& queue)
+void Replacer::BuildSuffixOtherChilds(std::queue<TrieNode*>& queue)
 {
 	TrieNode* current = queue.front();
 	queue.pop();
@@ -59,7 +59,7 @@ void AhoReplacer::BuildSuffixOtherChilds(std::queue<TrieNode*>& queue)
 	}
 };
 
-void AhoReplacer::BuildSuffixLinks()
+void Replacer::BuildSuffixLinks()
 {
 	std::queue<TrieNode*> queue;
 
@@ -71,7 +71,7 @@ void AhoReplacer::BuildSuffixLinks()
 	}
 };
 
-std::string AhoReplacer::ReplaceMatches(const std::string& text)
+std::string Replacer::ReplaceMatches(const std::string& text)
 {
 	ClearMatcherData();
 	std::string result;
@@ -98,7 +98,7 @@ std::string AhoReplacer::ReplaceMatches(const std::string& text)
 	return result;
 };
 
-void AhoReplacer::AppendReplacementString(std::string& result, const std::string& text)
+void Replacer::AppendReplacementString(std::string& result, const std::string& text)
 {
 	if (matches.empty())
 	{
@@ -118,7 +118,7 @@ void AhoReplacer::AppendReplacementString(std::string& result, const std::string
 	currentNode = root.get();
 };
 
-bool AhoReplacer::FollowSuffixLink(char ch) {
+bool Replacer::FollowSuffixLink(char ch) {
 	while (currentNode && !currentNode->Child.contains(ch))
 	{
 		currentNode = currentNode->SuffixLink;
@@ -134,7 +134,7 @@ bool AhoReplacer::FollowSuffixLink(char ch) {
 	return true;
 };
 
-void AhoReplacer::AddMatches()
+void Replacer::AddMatches()
 {
 	if (!currentNode->Pattern.empty())
 	{
@@ -149,7 +149,7 @@ void AhoReplacer::AddMatches()
 	}
 };
 
-void AhoReplacer::ClearMatcherData()
+void Replacer::ClearMatcherData()
 {
 	currentNode = root.get();
 	matches.clear();

@@ -7,11 +7,11 @@
 
 using Patterns = std::map<std::string, std::string>;
 
-class AhoReplacer {
+class Replacer {
 	using Matches = std::vector<std::string>;
 
 public:
-	AhoReplacer(const Patterns& patterns);
+	Replacer(const Patterns& patterns);
 
 	std::string ReplaceMatches(const std::string& str);
 
