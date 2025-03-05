@@ -144,10 +144,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Dictionary.cpp" />
+    <ClCompile Include="..\DictionaryWorker.cpp" />
+    <ClCompile Include="..\EntriesParser.cpp" />
     <ClCompile Include="Lab2_3_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Dictionary.h" />
+    <ClInclude Include="..\DictionaryWorker.h" />
+    <ClInclude Include="..\EntriesParser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

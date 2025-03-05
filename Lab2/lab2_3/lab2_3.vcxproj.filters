@@ -19,15 +19,27 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dictionary.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DictionaryWorker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EntriesParser.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dictionary.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DictionaryWorker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Dictionary.h">
-      <Filter>Resource Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EntriesParser.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

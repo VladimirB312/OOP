@@ -51,7 +51,7 @@ SCENARIO("Read numbers")
 
 	WHEN("input stream contains not a number")
 	{
-		THEN("vector contains 3 numbers") {
+		THEN("throw runtime error") {
 			std::istringstream input("a");
 			CHECK_THROWS_AS(ReadNumbers(input), std::runtime_error);
 		}

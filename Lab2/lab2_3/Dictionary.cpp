@@ -2,160 +2,48 @@
 #include <fstream>
 #include <iostream>
 
-Dictionary::Dictionary()
+Dictionary::Dictionary(const Entries& entries)
+	:entries(entries)
 {
-	fileName = "dictionary.txt";
+
 }
 
-Dictionary::Dictionary(const std::string& fileName)
-	:fileName(fileName) {
-	std::ifstream inputFile(fileName);
-	if (!inputFile.is_open())
-	{
-		throw std::runtime_error("Failed to open file: " + fileName);
-	}
-
-	ParseFile(inputFile);
-}
-
-std::string Dictionary::ParseKey(const std::string& line, size_t& pos)
+Dictionary::Dictionary()	
 {
-	std::string key;
-	pos = line.find(":");
-	if (pos == std::string::npos)
-	{
-		throw std::runtime_error("Failed to read word");
-	}
-
-	key.append(line, 0, pos);
-
-	return key;
 }
 
-std::vector<std::string> Dictionary::ParseValues(const std::string& line, size_t& pos)
+Entries Dictionary::GetAllEntries()
 {
-	std::vector<std::string> values;
-	std::string value;
-	while (++pos < line.size())
-	{
-		if (line[pos] == ';')
-		{
-			values.push_back(value);
-			value.clear();
-			continue;
-		}
-		value.push_back(line[pos]);
-	}
-
-	return values;
+	return entries;
 }
 
-void Dictionary::ParseWord(const std::string& line)
+bool Dictionary::WasChanged()
 {
-	std::string key;
-	std::vector<std::string> values;
-	size_t pos;
-
-	key = ParseKey(line, pos);
-	values = ParseValues(line, pos);
-
-	if (key.empty() || values.empty())
-	{
-		throw std::runtime_error("Failed to read word");
-	}
-
-	words[key] = values;
+	return wasChanged;
 }
 
-void Dictionary::ParseFile(std::ifstream& inputFile)
+void Dictionary::AddWord(const std::string& word, const std::string& translation)
 {
-	std::string line;
-	while (std::getline(inputFile, line))
-	{
-		ParseWord(line);
-	}
-}
-
-void Dictionary::PrintTranslations(std::ostream& output, const std::string& query)
-{
-	for (const auto& word : words[query])
-	{
-		output << word << " ";
-	}
-	output << "\n";
-}
-
-void Dictionary::AddWord(std::istream& input, const std::string& query)
-{	
-	std::string translation;
-	std::getline(input, translation);
-
-	if (translation.empty())
-	{
-		std::cout << "Слово " << query << " проигнорировано.\n";
-		return;
-	}
-
-	words[query].push_back(translation);
-	isChanged = true;
-}
-
-void Dictionary::Request(std::istream& input, std::ostream& output, const std::string& query)
-{
-	if (query.empty())
+	if (word.empty() || translation.empty())
 	{
 		return;
 	}
 
-	if (words.contains(query))
-	{
-		PrintTranslations(output, query);
-		return;
-	}
-
-	output << "Неизвестное слово " << query << ". Введите перевод или пустую строку для отказа.\n";
-	AddWord(input, query);
+	entries[word].push_back(translation);
+	wasChanged = true;
 }
 
-void Dictionary::Close()
+bool Dictionary::IsInclude(const std::string& word)
 {
-	if (!isChanged)
-	{
-		return;
-	}
-
-	std::cout << "В словарь были внесены изменения.Введите Y или y для сохранения перед выходом.\n";
-	char ch;
-	std::cin >> ch;
-
-	if (ch == 'Y' || ch == 'y')
-	{
-		SaveToFile();
-	}
+	return entries.contains(word);
 }
 
-void Dictionary::SaveToFile()
+std::vector<std::string> Dictionary::GetTranslations(const std::string& word)
 {
-	std::ofstream outputFile(fileName);
-	if (!outputFile.is_open())
+	if (!IsInclude(word))
 	{
-		throw std::runtime_error("Error opening file to save");
+		throw std::runtime_error("Dictionary does not include " + word);
 	}
 
-	for (const auto& [key, values] : words)
-	{
-		outputFile << key << ":";
-		for (const auto& value : values)
-		{
-			outputFile << value << ";";
-		}
-		outputFile << "\n";
-	}
-
-	if (!outputFile.flush())
-	{
-		throw std::runtime_error("Failed to save data on disk");
-	}
-
-	std::cout << "Изменения сохранены. До свидания.";
+	return entries[word];
 }
