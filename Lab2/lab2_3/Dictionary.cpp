@@ -3,7 +3,7 @@
 #include <iostream>
 
 Dictionary::Dictionary(const Entries& entries)
-	:entries(entries)
+	:m_entries(entries)
 {
 
 }
@@ -14,12 +14,12 @@ Dictionary::Dictionary()
 
 Entries Dictionary::GetAllEntries()
 {
-	return entries;
+	return m_entries;
 }
 
 bool Dictionary::WasChanged()
 {
-	return wasChanged;
+	return m_wasChanged;
 }
 
 void Dictionary::AddWord(const std::string& word, const std::string& translation)
@@ -29,13 +29,13 @@ void Dictionary::AddWord(const std::string& word, const std::string& translation
 		return;
 	}
 
-	entries[word].push_back(translation);
-	wasChanged = true;
+	m_entries[word].push_back(translation);
+	m_wasChanged = true;
 }
 
 bool Dictionary::IsInclude(const std::string& word)
 {
-	return entries.contains(word);
+	return m_entries.contains(word);
 }
 
 std::vector<std::string> Dictionary::GetTranslations(const std::string& word)
@@ -45,5 +45,5 @@ std::vector<std::string> Dictionary::GetTranslations(const std::string& word)
 		throw std::runtime_error("Dictionary does not include " + word);
 	}
 
-	return entries[word];
+	return m_entries[word];
 }

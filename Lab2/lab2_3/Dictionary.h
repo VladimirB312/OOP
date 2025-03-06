@@ -15,6 +15,6 @@ public:
 	bool IsInclude(const std::string& word);
 	bool WasChanged();
 private:
-	Entries entries;
-	bool wasChanged = false;
+	Entries m_entries;
+	bool m_wasChanged = false;
 };
