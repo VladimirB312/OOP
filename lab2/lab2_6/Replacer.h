@@ -16,12 +16,12 @@ public:
 	std::string ReplaceMatches(const std::string& str);
 
 private:
-	std::unique_ptr<TrieNode> root;
-	TrieNode* currentNode = nullptr;
-	Matches matches;
-	size_t pos = 0;
-	size_t lastPos = 0;
-	Patterns patterns;
+	std::unique_ptr<TrieNode> m_root;
+	TrieNode* m_currentNode = nullptr;
+	Matches m_matches;
+	size_t m_pos = 0;
+	size_t m_lastPos = 0;
+	Patterns m_patterns;
 
 	void BuildTrie();
 

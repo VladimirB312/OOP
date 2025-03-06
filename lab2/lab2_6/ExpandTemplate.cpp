@@ -63,7 +63,7 @@ Patterns GetPatternsFromStream(std::istream& input)
 
 std::string GetReplacementString(std::istream& input)
 {
-	if (input.eof())
+	if (input.eof() || input.fail())
 	{
 		throw std::runtime_error("No template specified");
 	}

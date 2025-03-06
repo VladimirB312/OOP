@@ -3,16 +3,16 @@
 #include "algorithm"
 
 Replacer::Replacer(const Patterns& patterns)
-	: root(std::make_unique<TrieNode>()), patterns(patterns)
+	: m_root(std::make_unique<TrieNode>()), m_patterns(patterns)
 {
 	BuildTrie();
 	BuildSuffixLinks();
 };
 
 void Replacer::BuildTrie() {
-	for (const auto& [pattern, value] : patterns)
+	for (const auto& [pattern, value] : m_patterns)
 	{
-		TrieNode* node = root.get();
+		TrieNode* node = m_root.get();
 		for (auto ch : pattern)
 		{
 			if (!node->Child.contains(ch))
@@ -26,10 +26,10 @@ void Replacer::BuildTrie() {
 };
 
 void Replacer::BuildSuffixRootChilds(std::queue<TrieNode*>& queue) {
-	for (const auto& [key, node] : root->Child)
+	for (const auto& [key, node] : m_root->Child)
 	{
 		queue.push(node.get());
-		node->SuffixLink = root.get();
+		node->SuffixLink = m_root.get();
 	}
 };
 
@@ -51,7 +51,7 @@ void Replacer::BuildSuffixOtherChilds(std::queue<TrieNode*>& queue)
 		}
 		else
 		{
-			child->SuffixLink = root.get();
+			child->SuffixLink = m_root.get();
 		}
 		child->FinalsLink = !child->SuffixLink->Pattern.empty()
 			? child->SuffixLink
@@ -76,58 +76,58 @@ std::string Replacer::ReplaceMatches(const std::string& text)
 	ClearMatcherData();
 	std::string result;
 
-	while (pos < text.size()) {
-		if (!currentNode->Child.contains(text[pos]))
+	while (m_pos < text.size()) {
+		if (!m_currentNode->Child.contains(text[m_pos]))
 		{
 			AppendReplacementString(result, text);
 		}
 
-		if (!FollowSuffixLink(text[pos]))
+		if (!FollowSuffixLink(text[m_pos]))
 		{
 			continue;
 		}
 
-		currentNode = currentNode->Child[text[pos]].get();
+		m_currentNode = m_currentNode->Child[text[m_pos]].get();
 		AddMatches();
-		pos++;
+		m_pos++;
 	}
 
 	AppendReplacementString(result, text);
-	result.append(text, lastPos, text.size() - lastPos);
+	result.append(text, m_lastPos, text.size() - m_lastPos);
 
 	return result;
 };
 
 void Replacer::AppendReplacementString(std::string& result, const std::string& text)
 {
-	if (matches.empty())
+	if (m_matches.empty())
 	{
 		return;
 	}
 
-	std::sort(matches.begin(), matches.end(), [](
+	std::sort(m_matches.begin(), m_matches.end(), [](
 		const std::string& str1, const std::string& str2)
 		{
 			return str1.size() > str2.size();
 		});
 
-	result.append(text, lastPos, pos - matches[0].size() - lastPos);
-	result.append(patterns[matches[0]]);
-	lastPos = pos;
-	matches.clear();
-	currentNode = root.get();
+	result.append(text, m_lastPos, m_pos - m_matches[0].size() - m_lastPos);
+	result.append(m_patterns[m_matches[0]]);
+	m_lastPos = m_pos;
+	m_matches.clear();
+	m_currentNode = m_root.get();
 };
 
 bool Replacer::FollowSuffixLink(char ch) {
-	while (currentNode && !currentNode->Child.contains(ch))
+	while (m_currentNode && !m_currentNode->Child.contains(ch))
 	{
-		currentNode = currentNode->SuffixLink;
+		m_currentNode = m_currentNode->SuffixLink;
 	}
 
-	if (currentNode == nullptr)
+	if (m_currentNode == nullptr)
 	{
-		currentNode = root.get();
-		pos++;
+		m_currentNode = m_root.get();
+		m_pos++;
 		return false;
 	}
 
@@ -136,23 +136,23 @@ bool Replacer::FollowSuffixLink(char ch) {
 
 void Replacer::AddMatches()
 {
-	if (!currentNode->Pattern.empty())
+	if (!m_currentNode->Pattern.empty())
 	{
-		matches.push_back(currentNode->Pattern);
+		m_matches.push_back(m_currentNode->Pattern);
 	}
 
-	TrieNode* finals = currentNode->FinalsLink;
+	TrieNode* finals = m_currentNode->FinalsLink;
 	while (finals)
 	{
-		matches.push_back(finals->Pattern);
+		m_matches.push_back(finals->Pattern);
 		finals = finals->FinalsLink;
 	}
 };
 
 void Replacer::ClearMatcherData()
 {
-	currentNode = root.get();
-	matches.clear();
-	pos = 0;
-	lastPos = 0;
+	m_currentNode = m_root.get();
+	m_matches.clear();
+	m_pos = 0;
+	m_lastPos = 0;
 };

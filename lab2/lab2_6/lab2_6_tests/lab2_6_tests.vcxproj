@@ -143,10 +143,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\ExpandTemplate.cpp" />
     <ClCompile Include="..\Replacer.cpp" />
     <ClCompile Include="lab2_6_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\ExpandTemplate.h" />
     <ClInclude Include="..\Replacer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
