@@ -56,9 +56,8 @@ PositiveNumbersInfo GetAverageOfPositiveNumbers(const std::vector<double>& numbe
 		});
 }
 
-std::vector<double> ProcessNumbers(const std::vector<double>& numbers)
+std::vector<double> ProcessNumbers(std::vector<double>& numbers)
 {
-	
 	PositiveNumbersInfo positiveNumbers = GetAverageOfPositiveNumbers(numbers);
 
 	if (positiveNumbers.count == 0)
@@ -66,11 +65,10 @@ std::vector<double> ProcessNumbers(const std::vector<double>& numbers)
 		return numbers;
 	}
 
-	std::vector<double> result;
-	for (auto num : numbers)
-	{
-		result.push_back(num + positiveNumbers.sum / positiveNumbers.count);
-	}
+	double average = positiveNumbers.sum / positiveNumbers.count;
 
-	return result;
+	std::transform(numbers.begin(), numbers.end(), numbers.begin(),
+		[average](double num) {return num + average; });
+
+	return numbers;
 }
