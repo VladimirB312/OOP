@@ -17,11 +17,11 @@ public:
 
 private:
 	std::unique_ptr<TrieNode> root;
-	TrieNode* currentNode = nullptr;
-	Matches matches;
-	size_t pos = 0;
-	size_t lastPos = 0;
-	Patterns patterns;
+	TrieNode* m_currentNode = nullptr;
+	Matches m_matches;
+	size_t m_pos = 0;
+	size_t m_lastPos = 0;
+	Patterns m_patterns;
 
 	void BuildTrie();
 
