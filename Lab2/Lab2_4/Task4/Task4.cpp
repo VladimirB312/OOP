@@ -13,9 +13,9 @@ int ParseNumberCount(int argc, char* argv[])
     }
 
     int numbersCount = std::stoi(argv[1]);
-    if (numbersCount < MIN_NUMBER_COUNT || numbersCount > MAX_NUMBER_COUNT)
+    if (numbersCount <= MIN_NUMBER_COUNT || numbersCount > MAX_NUMBER_COUNT)
     {
-        throw std::invalid_argument("Input number from 2 to 100000000!");
+        throw std::invalid_argument("Upper bound must be from 3 to 100000000!");
     }
 
     return numbersCount;

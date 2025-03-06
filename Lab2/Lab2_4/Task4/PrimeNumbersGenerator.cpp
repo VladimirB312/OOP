@@ -4,9 +4,9 @@
 
 std::vector<bool> GeneratePrimeNumberBoolVector(int upperBound)
 {
+	
 	std::vector<bool> numbers(upperBound, true);
-
-	for (int p = MIN_NUMBER_COUNT; p * p < upperBound; p += 1 + p % 2)
+	for (int p = MIN_NUMBER_COUNT; p * p < upperBound; p += p == 2 ? 1 : 2)
 	{
 		if (!numbers[p])
 		{
@@ -35,16 +35,31 @@ std::set<int> ConvertBoolVectorToSet(const std::vector<bool>& numbers)
 	return primeNumbers;
 }
 
+void CheckUpperBound(int upperBound)
+{
+	if (upperBound <= MIN_NUMBER_COUNT || upperBound > MAX_NUMBER_COUNT)
+	{
+		throw std::invalid_argument("Upper bound must be from 3 to 100000000!");
+	}
+}
+
 std::set<int> GeneratePrimeNumbersSet(int upperBound)
 {
+	CheckUpperBound(upperBound);
 	std::vector<bool> numbers = GeneratePrimeNumberBoolVector(upperBound);
 	return ConvertBoolVectorToSet(numbers);
 }
 
 void PrintPrimeNumbers(std::ostream& output, const std::set<int>& primeNumbers)
 {
+	bool isFirst = true;
 	for (auto num : primeNumbers)
 	{
-		output << num << " ";
+		if (!isFirst)
+		{
+			output << " ";
+		}
+		output << num;
+		isFirst = false;
 	}
 }
