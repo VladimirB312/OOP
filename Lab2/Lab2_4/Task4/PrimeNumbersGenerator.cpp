@@ -2,9 +2,11 @@
 #include <vector>
 #include <iostream>
 
+const int MIN_NUMBER_COUNT = 2;
+const int MAX_NUMBER_COUNT = 100000000;
+
 std::vector<bool> GeneratePrimeNumberBoolVector(int upperBound)
-{
-	
+{	
 	std::vector<bool> numbers(upperBound, true);
 	for (int p = MIN_NUMBER_COUNT; p * p < upperBound; p += p == 2 ? 1 : 2)
 	{

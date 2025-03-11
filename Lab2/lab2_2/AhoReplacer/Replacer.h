@@ -11,12 +11,12 @@ class Replacer {
 	using Matches = std::vector<std::string>;
 
 public:
-	Replacer(const Patterns& patterns);
+	explicit Replacer(const Patterns& patterns);
 
-	std::string ReplaceMatches(const std::string& str);
+	std::string Replace(const std::string& str);
 
 private:
-	std::unique_ptr<TrieNode> root;
+	std::unique_ptr<TrieNode> m_root;
 	TrieNode* m_currentNode = nullptr;
 	Matches m_matches;
 	size_t m_pos = 0;

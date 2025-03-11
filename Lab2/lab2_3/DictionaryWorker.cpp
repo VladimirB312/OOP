@@ -20,7 +20,7 @@ void DictionaryWorker::Start()
 
 		if (word != "...")
 		{
-			RequestToDictionary(word);
+			TryToGetTranslation(word);
 			continue;
 		}
 
@@ -54,7 +54,7 @@ void DictionaryWorker::ProcessUnknownWord(const std::string& word)
 	m_output << "—лово У" << word << "Ф сохранено в словаре как У" << translation << "Ф\n";
 }
 
-void DictionaryWorker::RequestToDictionary(const std::string& word)
+void DictionaryWorker::TryToGetTranslation(const std::string& word)
 {
 	if (m_dictionary.IsInclude(word))
 	{

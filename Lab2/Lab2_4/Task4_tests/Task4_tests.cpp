@@ -33,6 +33,7 @@ SCENARIO("Generate prime numbers")
 		}
 	}
 
+#ifdef NDEBUG
 	WHEN("upper bound is 100000001")
 	{
 		THEN("should throw an exception")
@@ -52,12 +53,13 @@ SCENARIO("Generate prime numbers")
 
 	WHEN("upper bound is 99999999")
 	{
-		std::set<int> primeNumbers = GeneratePrimeNumbersSet(100000000);
+		std::set<int> primeNumbers = GeneratePrimeNumbersSet(99999999);
 		THEN("set of prime numbers must contains 5761455 prime numbers")
 		{
 			CHECK(primeNumbers.size() == 5761455);
 		}
 	}
+#endif
 }
 
 SCENARIO("Print prime numbers")

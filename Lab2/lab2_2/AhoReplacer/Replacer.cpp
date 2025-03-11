@@ -3,7 +3,7 @@
 #include "algorithm"
 
 Replacer::Replacer(const Patterns& patterns)
-	: root(std::make_unique<TrieNode>()), m_patterns(patterns)
+	: m_root(std::make_unique<TrieNode>()), m_patterns(patterns)
 {
 	BuildTrie();
 	BuildSuffixLinks();
@@ -12,7 +12,7 @@ Replacer::Replacer(const Patterns& patterns)
 void Replacer::BuildTrie() {
 	for (const auto& [pattern, value] : m_patterns)
 	{
-		TrieNode* node = root.get();
+		TrieNode* node = m_root.get();
 		for (auto ch : pattern)
 		{
 			if (!node->Child.contains(ch))
@@ -26,10 +26,10 @@ void Replacer::BuildTrie() {
 };
 
 void Replacer::BuildSuffixRootChilds(std::queue<TrieNode*>& queue) {
-	for (const auto& [key, node] : root->Child)
+	for (const auto& [key, node] : m_root->Child)
 	{
 		queue.push(node.get());
-		node->SuffixLink = root.get();
+		node->SuffixLink = m_root.get();
 	}
 };
 
@@ -51,7 +51,7 @@ void Replacer::BuildSuffixOtherChilds(std::queue<TrieNode*>& queue)
 		}
 		else
 		{
-			child->SuffixLink = root.get();
+			child->SuffixLink = m_root.get();
 		}
 		child->FinalsLink = !child->SuffixLink->Pattern.empty()
 			? child->SuffixLink
@@ -71,7 +71,7 @@ void Replacer::BuildSuffixLinks()
 	}
 };
 
-std::string Replacer::ReplaceMatches(const std::string& text)
+std::string Replacer::Replace(const std::string& text)
 {
 	ClearMatcherData();
 	std::string result;
@@ -115,7 +115,7 @@ void Replacer::AppendReplacementString(std::string& result, const std::string& t
 	result.append(m_patterns[m_matches[0]]);
 	m_lastPos = m_pos;
 	m_matches.clear();
-	m_currentNode = root.get();
+	m_currentNode = m_root.get();
 };
 
 bool Replacer::FollowSuffixLink(char ch) {
@@ -126,7 +126,7 @@ bool Replacer::FollowSuffixLink(char ch) {
 
 	if (m_currentNode == nullptr)
 	{
-		m_currentNode = root.get();
+		m_currentNode = m_root.get();
 		m_pos++;
 		return false;
 	}
@@ -151,7 +151,7 @@ void Replacer::AddMatches()
 
 void Replacer::ClearMatcherData()
 {
-	m_currentNode = root.get();
+	m_currentNode = m_root.get();
 	m_matches.clear();
 	m_pos = 0;
 	m_lastPos = 0;

@@ -8,10 +8,6 @@ Dictionary::Dictionary(const Entries& entries)
 
 }
 
-Dictionary::Dictionary()	
-{
-}
-
 Entries Dictionary::GetAllEntries()
 {
 	return m_entries;

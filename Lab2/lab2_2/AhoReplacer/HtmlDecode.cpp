@@ -16,7 +16,7 @@ void HtmlDecode(std::istream& input, std::ostream& output)
 	std::string line;
 	while (std::getline(input, line))
 	{
-		output << replacer.ReplaceMatches(line);
+		output << replacer.Replace(line);
 		if (!input.eof())
 		{
 			output << "\n";

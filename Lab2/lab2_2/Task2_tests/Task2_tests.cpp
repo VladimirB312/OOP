@@ -13,7 +13,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be an empty")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("");
+			std::string result = replacer.Replace("");
 			REQUIRE(result.empty());
 		}
 	}
@@ -26,7 +26,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be an empty")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("");
+			std::string result = replacer.Replace("");
 			REQUIRE(result.empty());
 		}
 	}
@@ -37,7 +37,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be unchanged")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("cat and dog");
+			std::string result = replacer.Replace("cat and dog");
 			REQUIRE(result == "cat and dog");
 		}
 	}
@@ -50,7 +50,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be replaced with a pattern string")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("cat and dog");
+			std::string result = replacer.Replace("cat and dog");
 			REQUIRE(result == "cat and cat");
 		}
 	}
@@ -63,7 +63,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be replaced with a pattern string")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("dog and cat");
+			std::string result = replacer.Replace("dog and cat");
 			REQUIRE(result == "cat and cat");
 		}
 	}
@@ -77,7 +77,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be replaced with a pattern string")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("12312312345");
+			std::string result = replacer.Replace("12312312345");
 			REQUIRE(result == "123XYZ5");
 		}
 	}
@@ -90,7 +90,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be replaced with a pattern string")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("mama delala pelmeni");
+			std::string result = replacer.Replace("mama delala pelmeni");
 			REQUIRE(result == "mamamama delala pelmeni");
 		}
 	}

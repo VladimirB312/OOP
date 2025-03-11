@@ -14,6 +14,6 @@ private:
 	std::ostream& m_output;
 	Dictionary& m_dictionary;
 	void PrintTranslations(const std::vector<std::string>& translations);
-	void RequestToDictionary(const std::string& word);
+	void TryToGetTranslation(const std::string& word);
 	void ProcessUnknownWord(const std::string& word);
 };
