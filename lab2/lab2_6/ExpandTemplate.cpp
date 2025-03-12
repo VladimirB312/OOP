@@ -136,7 +136,7 @@ void ExpandTemplateFromArgs(int argc, char* argv[])
 	std::string line;
 	while (getline(input, line))
 	{
-		output << replacer.ReplaceMatches(line) << "\n";
+		output << replacer.Replace(line) << "\n";
 	}
 }
 
@@ -145,5 +145,5 @@ void ExpandTemplateFromStream(std::istream& input, std::ostream& output)
 	Patterns patterns = GetPatternsFromStream(input);
 	std::string replacementString = GetReplacementString(input);
 	Replacer replacer(patterns);
-	output << replacer.ReplaceMatches(replacementString);
+	output << replacer.Replace(replacementString);
 }

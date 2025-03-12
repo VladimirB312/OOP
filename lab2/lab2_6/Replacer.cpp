@@ -71,7 +71,7 @@ void Replacer::BuildSuffixLinks()
 	}
 };
 
-std::string Replacer::ReplaceMatches(const std::string& text)
+std::string Replacer::Replace(const std::string& text)
 {
 	ClearMatcherData();
 	std::string result;

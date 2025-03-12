@@ -13,7 +13,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be an empty")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("");
+			std::string result = replacer.Replace("");
 			CHECK(result.empty());
 		}
 	}
@@ -26,7 +26,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be an empty")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("");
+			std::string result = replacer.Replace("");
 			CHECK(result.empty());
 		}
 	}
@@ -37,8 +37,34 @@ SCENARIO("Replace string")
 		THEN("the result string must be unchanged")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("cat and dog");
+			std::string result = replacer.Replace("cat and dog");
 			CHECK(result == "cat and dog");
+		}
+	}
+
+	WHEN("pattern not contain key")
+	{
+		Patterns patterns = {
+			{{}, {"cat"}}
+		};
+		THEN("the result string must be unchanged")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.Replace("cat and dog");
+			REQUIRE(result == "cat and dog");
+		}
+	}
+
+	WHEN("replacement string contain pattern string but pattern key not contain value")
+	{
+		Patterns patterns = {
+			{{"and"}, {}},
+		};
+		THEN("the result string must be replaced with an empty string")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.Replace("cat and dog");
+			REQUIRE(result == "cat  dog");
 		}
 	}
 
@@ -50,7 +76,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be replaced with a pattern string")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("cat and dog");
+			std::string result = replacer.Replace("cat and dog");
 			CHECK(result == "cat and cat");
 		}
 	}
@@ -63,7 +89,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be replaced with a pattern string")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("dog and cat");
+			std::string result = replacer.Replace("dog and cat");
 			CHECK(result == "cat and cat");
 		}
 	}
@@ -77,7 +103,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be replaced with a pattern string")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("12312312345");
+			std::string result = replacer.Replace("12312312345");
 			CHECK(result == "123XYZ5");
 		}
 	}
@@ -90,8 +116,36 @@ SCENARIO("Replace string")
 		THEN("the result string must be replaced with a pattern string")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("mama delala pelmeni");
+			std::string result = replacer.Replace("mama delala pelmeni");
 			CHECK(result == "mamamama delala pelmeni");
+		}
+	}
+
+	WHEN("replacement string contains several patterns")
+	{
+		Patterns patterns = {
+			{{"cat"}, {"fox"}},
+			{{"dog"},{"bear"}}
+		};
+		THEN("the result string must be replaced with a pattern string")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.Replace("cat and dog");
+			REQUIRE(result == "fox and bear");
+		}
+	}
+
+	WHEN("replacement string contains multiple occureances of a pattern and patterns contains subpattern")
+	{
+		Patterns patterns = {
+			{{"ma"}, {"mama"}},
+			{{"masha"},{"dasha"}}
+		};
+		THEN("the result string must be replaced with a longher pattern string")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.Replace("masha delala pelmeni");
+			REQUIRE(result == "dasha delala pelmeni");
 		}
 	}
 
@@ -109,7 +163,7 @@ SCENARIO("Replace string")
 		THEN("the result string must be replaced with the longest option is selected")
 		{
 			Replacer replacer(patterns);
-			std::string result = replacer.ReplaceMatches("-AABBCCCCCABC+");
+			std::string result = replacer.Replace("-AABBCCCCCABC+");
 			CHECK(result == "-[aa][bb][cc][cc][c][a][b][c]+");
 		}
 	}
@@ -214,7 +268,7 @@ SCENARIO("ExpandTemplateFromStream")
 		std::ostringstream output;
 		ExpandTemplateFromStream(input, output);
 
-		THEN("parameters in substitution values ​​are not re-evaluated")
+		THEN("parameters in substitution values are not re-evaluated")
 		{
 			CHECK(output.str() == "Hello, Super %USER_NAME% {WEEK_DAY}.\nToday is Friday. {WEEK_DAY}.");
 		}

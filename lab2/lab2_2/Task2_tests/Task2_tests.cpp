@@ -42,6 +42,32 @@ SCENARIO("Replace string")
 		}
 	}
 
+	WHEN("pattern not contain key")
+	{
+		Patterns patterns = {
+			{{}, {"cat"}}
+		};
+		THEN("the result string must be unchanged")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.Replace("cat and dog");
+			REQUIRE(result == "cat and dog");
+		}
+	}
+
+	WHEN("replacement string contain pattern string but pattern key not contain value")
+	{
+		Patterns patterns = {
+			{{"and"}, {}},
+		};
+		THEN("the result string must be replaced with an empty string")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.Replace("cat and dog");
+			REQUIRE(result == "cat  dog");
+		}
+	}
+
 	WHEN("replacement string contain pattern string at the end of string")
 	{
 		Patterns patterns = {
@@ -92,6 +118,53 @@ SCENARIO("Replace string")
 			Replacer replacer(patterns);
 			std::string result = replacer.Replace("mama delala pelmeni");
 			REQUIRE(result == "mamamama delala pelmeni");
+		}
+	}
+
+	WHEN("replacement string contains several patterns")
+	{
+		Patterns patterns = {
+			{{"cat"}, {"fox"}},
+			{{"dog"},{"bear"}}
+		};
+		THEN("the result string must be replaced with a pattern string")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.Replace("cat and dog");
+			REQUIRE(result == "fox and bear");
+		}
+	}
+
+	WHEN("replacement string contains multiple occureances of a pattern and patterns contains subpattern")
+	{
+		Patterns patterns = {
+			{{"ma"}, {"mama"}},
+			{{"masha"},{"dasha"}}
+		};
+		THEN("the result string must be replaced with a longher pattern string")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.Replace("masha delala pelmeni");
+			REQUIRE(result == "dasha delala pelmeni");
+		}
+	}
+
+	WHEN("replacement string contains several possible substitution options")
+	{
+		Patterns patterns = {
+			{{"A"}, {"[a]"}},
+			{{"AA"}, {"[aa]"}},
+			{{"B"}, {"[b]"}},
+			{{"BB"}, {"[bb]"}},
+			{{"C"}, {"[c]"}},
+			{{"CC"}, {"[cc]"}}
+		};
+
+		THEN("the result string must be replaced with the longest option is selected")
+		{
+			Replacer replacer(patterns);
+			std::string result = replacer.Replace("-AABBCCCCCABC+");
+			CHECK(result == "-[aa][bb][cc][cc][c][a][b][c]+");
 		}
 	}
 }
