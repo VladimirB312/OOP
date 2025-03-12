@@ -5,14 +5,107 @@
 
 #include "../lab2_7/EvaluateExpression.h"
 
-SCENARIO("Evaluate expression")
+SCENARIO("Evaluate invalid expression")
+{
+	WHEN("expression is empty")
+	{
+		std::istringstream input("");
+		THEN("error is expected")
+		{
+			CHECK_THROWS_AS(Calculate(input), std::runtime_error);
+		}
+	}
+
+	WHEN("expression contains only brackets")
+	{
+		std::istringstream input("()");
+		THEN("error is expected")
+		{
+			CHECK_THROWS_AS(Calculate(input), std::runtime_error);
+		}
+	}
+
+	WHEN("expression not contains operations")
+	{
+		std::istringstream input("(7)");
+		THEN("error is expected")
+		{
+			CHECK_THROWS_AS(Calculate(input), std::runtime_error);
+		}
+	}
+
+	WHEN("expression not contains numbers")
+	{
+		std::istringstream input("(+)");
+		THEN("error is expected")
+		{
+			CHECK_THROWS_AS(Calculate(input), std::runtime_error);
+		}
+	}
+
+	WHEN("expression contains extra closing brackets")
+	{
+		std::istringstream input("(+7))");
+		THEN("error is expected")
+		{
+			CHECK_THROWS_AS(Calculate(input), std::runtime_error);
+		}
+	}
+
+	WHEN("expression contains extra opening brackets")
+	{
+		std::istringstream input("((+7)");
+		THEN("error is expected")
+		{
+			CHECK_THROWS_AS(Calculate(input), std::runtime_error);
+		}
+	}
+
+	WHEN("the order in an expression is not correct")
+	{
+		std::istringstream input("(7 + 2)");
+		THEN("error is expected")
+		{
+			CHECK_THROWS_AS(Calculate(input), std::runtime_error);
+		}
+	}
+
+	WHEN("the order in an expression is not correct")
+	{
+		std::istringstream input("(7 2 +)");
+		THEN("error is expected")
+		{
+			CHECK_THROWS_AS(Calculate(input), std::runtime_error);
+		}
+	}
+
+	WHEN("expression contains invalid arguments")
+	{
+		std::istringstream input("(+ a 7)");
+		THEN("error is expected")
+		{
+			CHECK_THROWS_AS(Calculate(input), std::runtime_error);
+		}
+	}
+
+	WHEN("expression not contains brackets")
+	{
+		std::istringstream input("+ 2 7");
+		THEN("error is expected")
+		{
+			CHECK_THROWS_AS(Calculate(input), std::runtime_error);
+		}
+	}
+}
+
+SCENARIO("Evaluate valid expression")
 {
 	WHEN("expression contain only one number and operation plus")
 	{
 		std::istringstream input("(+ 7)");
 		THEN("output must contain only this number")
 		{
-			CHECK(EvaluateExpression(input) == 7);
+			CHECK(Calculate(input) == 7);
 		}
 	}
 
@@ -21,7 +114,7 @@ SCENARIO("Evaluate expression")
 		std::istringstream input("(* 8)");
 		THEN("output must contain only this number")
 		{
-			CHECK(EvaluateExpression(input) == 8);
+			CHECK(Calculate(input) == 8);
 		}
 	}
 
@@ -30,7 +123,7 @@ SCENARIO("Evaluate expression")
 		std::istringstream input("(+ 2 3)");
 		THEN("output must contain sum these numbers")
 		{
-			CHECK(EvaluateExpression(input) == 5);
+			CHECK(Calculate(input) == 5);
 		}
 	}
 
@@ -39,7 +132,7 @@ SCENARIO("Evaluate expression")
 		std::istringstream input("(+ 2 3 4)");
 		THEN("output must contain sum these numbers")
 		{
-			CHECK(EvaluateExpression(input) == 9);
+			CHECK(Calculate(input) == 9);
 		}
 	}
 
@@ -48,7 +141,7 @@ SCENARIO("Evaluate expression")
 		std::istringstream input("(* 2 4)");
 		THEN("output must contain sum these numbers")
 		{
-			CHECK(EvaluateExpression(input) == 8);
+			CHECK(Calculate(input) == 8);
 		}
 	}
 
@@ -57,7 +150,7 @@ SCENARIO("Evaluate expression")
 		std::istringstream input("(+ (* 2 3) (* 3 4))");
 		THEN("output must contain result this expression")
 		{
-			CHECK(EvaluateExpression(input) == 18);
+			CHECK(Calculate(input) == 18);
 		}
 	}
 
@@ -66,7 +159,7 @@ SCENARIO("Evaluate expression")
 		std::istringstream input("(* (+ 1 2) (+ 3 1))");
 		THEN("output must contain result this expression")
 		{
-			CHECK(EvaluateExpression(input) == 12);
+			CHECK(Calculate(input) == 12);
 		}
 	}
 
@@ -75,7 +168,7 @@ SCENARIO("Evaluate expression")
 		std::istringstream input("(+ 5 (* 2 3 2) (+ 5 (+ 2 5) (* 2 2) ))");
 		THEN("output must contain result this expression")
 		{
-			CHECK(EvaluateExpression(input) == 33);
+			CHECK(Calculate(input) == 33);
 		}
 	}
 
@@ -84,7 +177,7 @@ SCENARIO("Evaluate expression")
 		std::istringstream input("(+ -2 3)");
 		THEN("output must contain result this expression")
 		{
-			CHECK(EvaluateExpression(input) == 1);
+			CHECK(Calculate(input) == 1);
 		}
 	}
 }

@@ -11,7 +11,7 @@ int main()
         while (getline(std::cin, line))
         {
             std::istringstream expr(line);
-            std::cout << EvaluateExpression(expr) << "\n";
+            std::cout << Calculate(expr) << "\n";
         }
     }
     catch (const std::exception& ex)

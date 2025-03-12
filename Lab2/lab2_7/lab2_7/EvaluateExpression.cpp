@@ -1,90 +1,179 @@
-#include "EvaluateExpression.h"
+#include <numeric>
+#include <sstream>
+#include <stack>
+#include <vector>
 
-const char PLUS_OP = '+';
-const char MULTI_OP = '*';
-const char UNARY_MINUS = '-';
-const char OPEN_BRACKET = '(';
-const char CLOSE_BRACKET = ')';
-
-void CheckOperator(char ch)
+namespace Symbol
 {
-	if (ch != PLUS_OP && ch != MULTI_OP)
-	{
-		throw std::runtime_error("invalid expression");
-	}
+    const char ADDITION = '+';
+    const char MULTIPLICATION = '*';
+    const char MINUS = '-';
+    const char OPEN_BRACKET = '(';
+    const char CLOSE_BRACKET = ')';
 }
 
-void CheckCloseBracket(char ch)
+enum class Operation
 {
-	if (ch != CLOSE_BRACKET)
-	{
-		throw std::runtime_error("invalid expression");
-	}
+    ADDITION,
+    MULTIPLICATION
+};
+
+struct Expression
+{
+    Operation operation;
+    std::vector<int> arguments;
+};
+
+int GetSumArguments(const std::vector<int>& args)
+{
+    return std::accumulate(args.begin(), args.end(), 0);
 }
 
-int PerformOperation(int x1, int x2, char op)
+int GetProductArguments(const std::vector<int>& args)
 {
-	if (op == PLUS_OP)
-	{
-		return x1 + x2;
-	}
-	if (op == MULTI_OP)
-	{
-		return x1 * x2;
-	}
+    return std::accumulate(args.begin(), args.end(), 1, std::multiplies<>());
 }
 
-int ParseNumber(std::istream& input, char& ch)
+int CalculateExpression(const Expression& expression)
 {
-	bool isPositive = false;
+    if (expression.arguments.empty())
+    {
+        throw std::runtime_error("Invalid expression");
+    }
 
-	if (ch != UNARY_MINUS)
-	{
-		isPositive = true;
-		input.unget();
-	}
+    if (expression.operation == Operation::ADDITION)
+    {
+        return GetSumArguments(expression.arguments);
+    }
 
-	int num;
-	if (!(input >> num))
-	{
-		throw std::runtime_error("invalid expression");
-	}
+    if (expression.operation == Operation::MULTIPLICATION)
+    {
+        return GetProductArguments(expression.arguments);
+    }
 
-	return isPositive ? num : -num;
+    throw std::runtime_error("Unknown operation");
 }
 
-char ReadChar(std::istream& input)
+Operation CharToOperation(char ch)
 {
-	char ch;
-	if (!(input >> ch))
-	{
-		throw std::runtime_error("invalid expression");
-	}
+    if (ch == Symbol::ADDITION)
+    {
+        return Operation::ADDITION;
+    }
 
-	return ch;
+    if (ch == Symbol::MULTIPLICATION)
+    {
+        return Operation::MULTIPLICATION;
+    }
+
+    throw std::runtime_error("Invalid expression");
 }
 
-int EvaluateExpression(std::istream& input)
+char ReadCh(std::istream& input)
 {
-	char ch = ReadChar(input);
-	if (ch == OPEN_BRACKET)
-	{
-		ch = ReadChar(input);
-		CheckOperator(ch);
-		char op = ch;
-		int num = EvaluateExpression(input);
-		ch = ReadChar(input);
-		while (!input.eof() && ch != CLOSE_BRACKET)
-		{
-			input.unget();
-			num = PerformOperation(num, EvaluateExpression(input), op);
-			ch = ReadChar(input);
-		}
+    char ch;
+    if (!(input >> ch))
+    {
+        throw std::runtime_error("Invalid expression");
+    }
 
-		CheckCloseBracket(ch);
+    return ch;
+}
 
-		return num;
-	}
+bool CheckPositiveNumber(std::istream& input)
+{
+    char ch = ReadCh(input);
 
-	return ParseNumber(input, ch);
+    if (ch == Symbol::MINUS)
+    {
+        return false;
+    }
+    input.unget();
+
+    return true;
+}
+
+int ReadNumber(std::istream& input)
+{
+    bool isPositive = CheckPositiveNumber(input);
+    int num;
+    if (!(input >> num))
+    {
+        throw std::runtime_error("Invalid expression");
+    }
+
+    return isPositive ? num : -num;
+}
+
+void AddNewExpression(std::istream& input, std::stack<Expression>& expressionStack)
+{
+    char ch = ReadCh(input);
+    Expression expr{ CharToOperation(ch),{} };
+    expressionStack.push(expr);
+}
+
+int EvaluateExpression(std::stack<Expression>& expressionStack)
+{
+    if (expressionStack.empty())
+    {
+        throw std::runtime_error("Invalid expression");
+    }
+
+    Expression expression = expressionStack.top();
+    expressionStack.pop();
+
+    return CalculateExpression(expression);
+}
+
+void AddArgument(std::stack<Expression>& expressionStack, int argument)
+{
+    if (expressionStack.empty())
+    {
+        throw std::runtime_error("Invalid expression");
+    }
+
+    expressionStack.top().arguments.push_back(argument);
+}
+
+bool IsEol(std::istream& input)
+{
+    char ch;
+    if (!(input >> ch))
+    {
+        return true;
+    }
+    input.unget();
+
+    return false;
+}
+
+int Calculate(std::istream& input)
+{
+    char ch;
+    std::stack<Expression> expressionStack;
+    while (input >> ch)
+    {
+        if (ch == Symbol::OPEN_BRACKET)
+        {
+            AddNewExpression(input, expressionStack);
+            continue;
+        }
+        if (ch == Symbol::CLOSE_BRACKET)
+        {
+            int result = EvaluateExpression(expressionStack);
+
+            if (IsEol(input))
+            {
+                return result;
+            }
+
+            AddArgument(expressionStack, result);
+            continue;
+        }
+
+        input.unget();
+        AddArgument(expressionStack, ReadNumber(input));
+    }
+
+    throw std::runtime_error("Invalid expression");
 }

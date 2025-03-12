@@ -1,4 +1,3 @@
 #pragma once
-#include <sstream>
 
-int EvaluateExpression(std::istream& input);
+int Calculate(std::istream& input);
