@@ -2,13 +2,15 @@
 #include <fstream>
 #include <iostream>
 
+const std::string EXIT_WORD = "...";
+
 DictionaryWorker::DictionaryWorker(std::istream& input, std::ostream& output, Dictionary& dictionary)
 	:m_input(input), m_output(output), m_dictionary(dictionary)
 {
 
 }
 
-void DictionaryWorker::Start() 
+void DictionaryWorker::Start()
 {
 	std::string word;
 	while (getline(m_input, word))
@@ -18,7 +20,7 @@ void DictionaryWorker::Start()
 			continue;
 		}
 
-		if (word != "...")
+		if (word != EXIT_WORD)
 		{
 			TryToGetTranslation(word);
 			continue;
@@ -85,7 +87,7 @@ void DictionaryWorker::SaveDictionaryToFile(std::ostream& dictionaryFile)
 	for (const auto& [word, translations] : entries)
 	{
 		dictionaryFile << word << ":";
-		
+
 		for (const auto& translation : translations)
 		{
 			dictionaryFile << translation << ";";
