@@ -24,12 +24,12 @@ struct Expression
     std::vector<int> arguments;
 };
 
-int GetSumArguments(const std::vector<int>& args)
+int GetArgumentsSum(const std::vector<int>& args)
 {
     return std::accumulate(args.begin(), args.end(), 0);
 }
 
-int GetProductArguments(const std::vector<int>& args)
+int GetArgumentsProduct(const std::vector<int>& args)
 {
     return std::accumulate(args.begin(), args.end(), 1, std::multiplies<>());
 }
@@ -43,12 +43,12 @@ int CalculateExpression(const Expression& expression)
 
     if (expression.operation == Operation::ADDITION)
     {
-        return GetSumArguments(expression.arguments);
+        return GetArgumentsSum(expression.arguments);
     }
 
     if (expression.operation == Operation::MULTIPLICATION)
     {
-        return GetProductArguments(expression.arguments);
+        return GetArgumentsProduct(expression.arguments);
     }
 
     throw std::runtime_error("Unknown operation");
