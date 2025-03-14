@@ -3,13 +3,15 @@
 #include "algorithm"
 
 Replacer::Replacer(const Patterns& patterns)
-	: m_root(std::make_unique<TrieNode>()), m_patterns(patterns)
+	: m_root(std::make_unique<TrieNode>())
+	, m_patterns(patterns)
 {
 	BuildTrie();
 	BuildSuffixLinks();
 };
 
-void Replacer::BuildTrie() {
+void Replacer::BuildTrie()
+{
 	for (const auto& [pattern, value] : m_patterns)
 	{
 		TrieNode* node = m_root.get();
@@ -25,7 +27,8 @@ void Replacer::BuildTrie() {
 	}
 };
 
-void Replacer::BuildSuffixRootChilds(std::queue<TrieNode*>& queue) {
+void Replacer::BuildSuffixRootChilds(std::queue<TrieNode*>& queue)
+{
 	for (const auto& [key, node] : m_root->Child)
 	{
 		queue.push(node.get());
@@ -38,7 +41,8 @@ void Replacer::BuildSuffixOtherChilds(std::queue<TrieNode*>& queue)
 	TrieNode* current = queue.front();
 	queue.pop();
 
-	for (const auto& [key, child] : current->Child) {
+	for (const auto& [key, child] : current->Child)
+	{
 		queue.push(child.get());
 		TrieNode* suffixLink = current->SuffixLink;
 		while (suffixLink && !suffixLink->Child.contains(key))
@@ -76,7 +80,8 @@ std::string Replacer::Replace(const std::string& text)
 	ClearMatcherData();
 	std::string result;
 
-	while (m_pos < text.size()) {
+	while (m_pos < text.size())
+	{
 		if (!m_currentNode->Child.contains(text[m_pos]))
 		{
 			AppendReplacementString(result, text);
@@ -105,11 +110,9 @@ void Replacer::AppendReplacementString(std::string& result, const std::string& t
 		return;
 	}
 
-	std::sort(m_matches.begin(), m_matches.end(), [](
-		const std::string& str1, const std::string& str2)
-		{
-			return str1.size() > str2.size();
-		});
+	std::sort(m_matches.begin(), m_matches.end(), [](const std::string& str1, const std::string& str2) {
+		return str1.size() > str2.size();
+	});
 
 	result.append(text, m_lastPos, m_pos - m_matches[0].size() - m_lastPos);
 	result.append(m_patterns[m_matches[0]]);
@@ -118,7 +121,8 @@ void Replacer::AppendReplacementString(std::string& result, const std::string& t
 	m_currentNode = m_root.get();
 };
 
-bool Replacer::FollowSuffixLink(char ch) {
+bool Replacer::FollowSuffixLink(char ch)
+{
 	while (m_currentNode && !m_currentNode->Child.contains(ch))
 	{
 		m_currentNode = m_currentNode->SuffixLink;

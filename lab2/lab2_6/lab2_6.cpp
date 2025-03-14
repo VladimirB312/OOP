@@ -1,7 +1,6 @@
+#include "ExpandTemplate.h"
 #include <iostream>
 #include <windows.h>
-#include "Replacer.h"
-#include "ExpandTemplate.h"
 
 bool NeedHelp(int argc, char* argv[])
 {
@@ -14,7 +13,8 @@ int main(int argc, char* argv[])
 	SetConsoleOutputCP(1251);
 	SetConsoleCP(1251);
 
-	try {
+	try
+	{
 		if (NeedHelp(argc, argv))
 		{
 			std::cout << "Usage: expand_template.exe <input-file> <output-file> [<param> <value> [<param> <value> ...]]";

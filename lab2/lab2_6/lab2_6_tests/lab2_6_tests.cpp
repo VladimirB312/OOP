@@ -2,8 +2,8 @@
 #define CATCH_CONFIG_MAIN
 #include "../../../catch2/catch.hpp"
 
-#include "../Replacer.h"
 #include "../ExpandTemplate.h"
+#include "../Replacer.h"
 
 SCENARIO("Replace string")
 {
@@ -21,7 +21,7 @@ SCENARIO("Replace string")
 	WHEN("replacement string is empty and the pattern is not empty")
 	{
 		Patterns patterns = {
-			{{"dog"}, {"cat"}}
+			{ { "dog" }, { "cat" } }
 		};
 		THEN("the result string must be an empty")
 		{
@@ -45,7 +45,7 @@ SCENARIO("Replace string")
 	WHEN("pattern not contain key")
 	{
 		Patterns patterns = {
-			{{}, {"cat"}}
+			{ {}, { "cat" } }
 		};
 		THEN("the result string must be unchanged")
 		{
@@ -58,7 +58,7 @@ SCENARIO("Replace string")
 	WHEN("replacement string contain pattern string but pattern key not contain value")
 	{
 		Patterns patterns = {
-			{{"and"}, {}},
+			{ { "and" }, {} },
 		};
 		THEN("the result string must be replaced with an empty string")
 		{
@@ -71,7 +71,7 @@ SCENARIO("Replace string")
 	WHEN("replacement string contain pattern string at the end of string")
 	{
 		Patterns patterns = {
-			{{"dog"}, {"cat"}}
+			{ { "dog" }, { "cat" } }
 		};
 		THEN("the result string must be replaced with a pattern string")
 		{
@@ -84,7 +84,7 @@ SCENARIO("Replace string")
 	WHEN("replacement string contain pattern string at the begining of string")
 	{
 		Patterns patterns = {
-			{{"dog"}, {"cat"}}
+			{ { "dog" }, { "cat" } }
 		};
 		THEN("the result string must be replaced with a pattern string")
 		{
@@ -95,10 +95,10 @@ SCENARIO("Replace string")
 	}
 
 	WHEN("replacement string contains part of a pattern"
-		"and the pattern itself is included in this string")
+		 "and the pattern itself is included in this string")
 	{
 		Patterns patterns = {
-			{{"1231234"}, {"XYZ"}}
+			{ { "1231234" }, { "XYZ" } }
 		};
 		THEN("the result string must be replaced with a pattern string")
 		{
@@ -111,7 +111,7 @@ SCENARIO("Replace string")
 	WHEN("replacement string contains multiple occureances of a pattern")
 	{
 		Patterns patterns = {
-			{{"ma"}, {"mama"}}
+			{ { "ma" }, { "mama" } }
 		};
 		THEN("the result string must be replaced with a pattern string")
 		{
@@ -124,8 +124,8 @@ SCENARIO("Replace string")
 	WHEN("replacement string contains several patterns")
 	{
 		Patterns patterns = {
-			{{"cat"}, {"fox"}},
-			{{"dog"},{"bear"}}
+			{ { "cat" }, { "fox" } },
+			{ { "dog" }, { "bear" } }
 		};
 		THEN("the result string must be replaced with a pattern string")
 		{
@@ -138,8 +138,8 @@ SCENARIO("Replace string")
 	WHEN("replacement string contains multiple occureances of a pattern and patterns contains subpattern")
 	{
 		Patterns patterns = {
-			{{"ma"}, {"mama"}},
-			{{"masha"},{"dasha"}}
+			{ { "ma" }, { "mama" } },
+			{ { "masha" }, { "dasha" } }
 		};
 		THEN("the result string must be replaced with a longher pattern string")
 		{
@@ -152,12 +152,12 @@ SCENARIO("Replace string")
 	WHEN("replacement string contains several possible substitution options")
 	{
 		Patterns patterns = {
-			{{"A"}, {"[a]"}},
-			{{"AA"}, {"[aa]"}},
-			{{"B"}, {"[b]"}},
-			{{"BB"}, {"[bb]"}},
-			{{"C"}, {"[c]"}},
-			{{"CC"}, {"[cc]"}}
+			{ { "A" }, { "[a]" } },
+			{ { "AA" }, { "[aa]" } },
+			{ { "B" }, { "[b]" } },
+			{ { "BB" }, { "[bb]" } },
+			{ { "C" }, { "[c]" } },
+			{ { "CC" }, { "[cc]" } }
 		};
 
 		THEN("the result string must be replaced with the longest option is selected")
@@ -207,7 +207,7 @@ SCENARIO("ExpandTemplateFromStream")
 								 "\n"
 								 "Hello, %USER_NAME%.\n");
 
-		std::ostringstream output;		
+		std::ostringstream output;
 
 		THEN("an exception should be thrown")
 		{
@@ -233,10 +233,10 @@ SCENARIO("ExpandTemplateFromStream")
 	WHEN("input contains empty patterns values")
 	{
 		std::istringstream input("%USER_NAME% :=\n"
-			"{WEEK_DAY} :=\n"
-			"\n"
-			"Hello, %USER_NAME%.\n"
-			"Today is {WEEK_DAY}.\n");
+								 "{WEEK_DAY} :=\n"
+								 "\n"
+								 "Hello, %USER_NAME%.\n"
+								 "Today is {WEEK_DAY}.\n");
 
 		std::ostringstream output;
 		ExpandTemplateFromStream(input, output);
@@ -250,10 +250,10 @@ SCENARIO("ExpandTemplateFromStream")
 	WHEN("input contains patterns with nested parameters")
 	{
 		std::istringstream input("%USER_NAME% := Super %USER_NAME% {WEEK_DAY}\n"
-			"{WEEK_DAY} := Friday. {WEEK_DAY}\n"
-			"\n"
-			"Hello, %USER_NAME%.\n"
-			"Today is {WEEK_DAY}.\n");
+								 "{WEEK_DAY} := Friday. {WEEK_DAY}\n"
+								 "\n"
+								 "Hello, %USER_NAME%.\n"
+								 "Today is {WEEK_DAY}.\n");
 
 		std::ostringstream output;
 		ExpandTemplateFromStream(input, output);
@@ -267,10 +267,10 @@ SCENARIO("ExpandTemplateFromStream")
 	WHEN("input contains patterns with nested parameters")
 	{
 		std::istringstream input("%USER_NAME% := Super %USER_NAME% {WEEK_DAY}\n"
-			"{WEEK_DAY} := Friday. {WEEK_DAY}\n"
-			"\n"
-			"Hello, %USER_NAME%.\n"
-			"Today is {WEEK_DAY}.\n");
+								 "{WEEK_DAY} := Friday. {WEEK_DAY}\n"
+								 "\n"
+								 "Hello, %USER_NAME%.\n"
+								 "Today is {WEEK_DAY}.\n");
 
 		std::ostringstream output;
 		ExpandTemplateFromStream(input, output);
@@ -284,9 +284,9 @@ SCENARIO("ExpandTemplateFromStream")
 	WHEN("input not contains text to replace")
 	{
 		std::istringstream input("%USER_NAME% := Ivan Petrov\n"
-			"{WEEK_DAY} := Friday\n");
+								 "{WEEK_DAY} := Friday\n");
 
-		std::ostringstream output;		
+		std::ostringstream output;
 
 		THEN("an exception should be thrown")
 		{

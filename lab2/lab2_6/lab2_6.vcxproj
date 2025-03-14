@@ -134,10 +134,12 @@
     <ClCompile Include="ExpandTemplate.cpp" />
     <ClCompile Include="lab2_6.cpp" />
     <ClCompile Include="Replacer.cpp" />
+    <ClCompile Include="StringTrimmer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExpandTemplate.h" />
     <ClInclude Include="Replacer.h" />
+    <ClInclude Include="StringTrimmer.h" />
     <ClInclude Include="TrieNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

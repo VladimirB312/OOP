@@ -3,21 +3,22 @@
 #include <regex>
 #include <sstream>
 #include <string>
-namespace ProtocolName
+
+namespace protocol_name
 {
 const std::string HTTP = "http";
 const std::string HTTPS = "https";
 const std::string FTP = "ftp";
-} // namespace ProtocolName
+} // namespace protocol_name
 
-namespace PortNumber
+namespace port_number
 {
 const std::string HTTP = "80";
 const std::string HTTPS = "443";
 const std::string FTP = "21";
-} // namespace PortNumber
+} // namespace port_number
 
-std::string strToLower(std::string str)
+std::string StrToLower(std::string str)
 {
 	std::transform(str.begin(), str.end(), str.begin(),
 		[](unsigned char ch) { return std::tolower(ch); });
@@ -27,21 +28,21 @@ std::string strToLower(std::string str)
 
 std::string GetPort(std::string protocol)
 {
-	protocol = strToLower(protocol);
+	protocol = StrToLower(protocol);
 
-	if (protocol == ProtocolName::HTTP)
+	if (protocol == protocol_name::HTTP)
 	{
-		return PortNumber::HTTP;
+		return port_number::HTTP;
 	}
 
-	if (protocol == ProtocolName::HTTPS)
+	if (protocol == protocol_name::HTTPS)
 	{
-		return PortNumber::HTTPS;
+		return port_number::HTTPS;
 	}
 
-	if (protocol == ProtocolName::FTP)
+	if (protocol == protocol_name::FTP)
 	{
-		return PortNumber::FTP;
+		return port_number::FTP;
 	}
 
 	throw std::runtime_error("Unknown protocol");

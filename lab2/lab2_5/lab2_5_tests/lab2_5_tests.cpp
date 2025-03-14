@@ -139,6 +139,30 @@ SCENARIO("Parse valid url")
 		}
 	}
 
+	WHEN("input string contain only protocol and host")
+	{
+		std::string input = "https://example.com";
+		THEN("result url must contain default port and same host and document")
+		{
+			Url url = ParseUrl(input);
+			CHECK(url.port == "443");
+			CHECK(url.host == "example.com");
+			CHECK(url.document == "");
+		}
+	}
+
+	WHEN("input string contain only protocol and host")
+	{
+		std::string input = "ftp://example.com";
+		THEN("result url must contain default port and same host and document")
+		{
+			Url url = ParseUrl(input);
+			CHECK(url.port == "21");
+			CHECK(url.host == "example.com");
+			CHECK(url.document == "");
+		}
+	}
+
 	WHEN("input string contain only protocol in different case and host")
 	{
 		std::string input = "htTp://example.com";
@@ -151,9 +175,33 @@ SCENARIO("Parse valid url")
 		}
 	}
 
-	WHEN("input string contain protocol equal 1")
+	WHEN("input string contain port equal 1")
 	{
-		std::string input = "http://example.com:8080/index.html";
+		std::string input = "http://example.com:1/index.html";
+		THEN("result url must contain same port, host and document")
+		{
+			Url url = ParseUrl(input);
+			CHECK(url.port == "1");
+			CHECK(url.host == "example.com");
+			CHECK(url.document == "index.html");
+		}
+	}
+
+	WHEN("input string contain port equal 65535")
+	{
+		std::string input = "http://example.com:65535/index.html";
+		THEN("result url must contain same port, host and document")
+		{
+			Url url = ParseUrl(input);
+			CHECK(url.port == "65535");
+			CHECK(url.host == "example.com");
+			CHECK(url.document == "index.html");
+		}
+	}
+
+	WHEN("input string contain port not equal default protocol's port")
+	{
+		std::string input = "https://example.com:8080/index.html";
 		THEN("result url must contain same port, host and document")
 		{
 			Url url = ParseUrl(input);
@@ -163,13 +211,13 @@ SCENARIO("Parse valid url")
 		}
 	}
 
-	WHEN("input string contain protocol equal 65535")
+	WHEN("input string contain port not equal default protocol's port")
 	{
-		std::string input = "http://example.com:65535/index.html";
+		std::string input = "ftp://example.com:8080/index.html";
 		THEN("result url must contain same port, host and document")
 		{
 			Url url = ParseUrl(input);
-			CHECK(url.port == "65535");
+			CHECK(url.port == "8080");
 			CHECK(url.host == "example.com");
 			CHECK(url.document == "index.html");
 		}

@@ -2,12 +2,13 @@
 #include "TrieNode.h"
 #include <list>
 #include <memory>
-#include <string>
 #include <queue>
+#include <string>
 
 using Patterns = std::map<std::string, std::string>;
 
-class Replacer {
+class Replacer
+{
 	using Matches = std::vector<std::string>;
 
 public:

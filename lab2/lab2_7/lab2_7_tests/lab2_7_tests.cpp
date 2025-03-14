@@ -43,6 +43,15 @@ SCENARIO("Evaluate invalid expression")
 		}
 	}
 
+	WHEN("expression contains invalid operator")
+	{
+		std::istringstream input("(/ 7 2)");
+		THEN("error is expected")
+		{
+			CHECK_THROWS_AS(Calculate(input), std::runtime_error);
+		}
+	}
+
 	WHEN("expression contains extra closing brackets")
 	{
 		std::istringstream input("(+7))");
@@ -106,6 +115,15 @@ SCENARIO("Evaluate valid expression")
 		THEN("output must contain only this number")
 		{
 			CHECK(Calculate(input) == 7);
+		}
+	}
+
+	WHEN("expression contain only one negative number and operation plus")
+	{
+		std::istringstream input("(+ -7)");
+		THEN("output must contain only this number")
+		{
+			CHECK(Calculate(input) == -7);
 		}
 	}
 

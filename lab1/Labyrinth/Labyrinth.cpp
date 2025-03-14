@@ -1,28 +1,39 @@
-// Labyrinth.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
-#include <iostream>
-#include <vector>
-#include <string>
 #include <fstream>
-#include <queue>
 #include <iomanip>
+#include <iostream>
+#include <queue>
+#include <string>
+#include <vector>
 
-const int WALL_MARKER = -5;
-const int A_MARKER = -1;
-const int B_MARKER = -2;
-const int DOT_MARKER = -3;
-const int EMPTY_MARKER = 0;
+namespace symbol_marker
+{
+const char WALL = '#';
+const char START = 'A';
+const char END = 'B';
+const char EMPTY = ' ';
+const char DOT = '.';
+} // namespace symbol_marker
+
+namespace digit_marker
+{
+const int WALL = -5;
+const int START = -1;
+const int END = -2;
+const int DOT = -3;
+const int EMPTY = 0;
+} // namespace digit_marker
 
 using Area = std::vector<std::vector<int>>;
 
 const int MAX_AREA_SIZE = 100;
 
-struct Point {
+struct Point
+{
 	int x, y;
 };
 
-struct Labyrinth {
+struct Labyrinth
+{
 	Point start, finish;
 	Area area;
 };
@@ -31,14 +42,14 @@ int MapPointToDigit(char ch)
 {
 	switch (ch)
 	{
-	case '#':
-		return WALL_MARKER;
-	case 'A':
-		return A_MARKER;
-	case 'B':
-		return B_MARKER;
-	case ' ':
-		return EMPTY_MARKER;
+	case symbol_marker::WALL:
+		return digit_marker::WALL;
+	case symbol_marker::START:
+		return digit_marker::START;
+	case symbol_marker::END:
+		return digit_marker::END;
+	case symbol_marker::EMPTY:
+		return digit_marker::EMPTY;
 	default:
 		throw std::runtime_error("ERROR");
 	}
@@ -126,16 +137,16 @@ char DigitToMapPoint(int digit)
 {
 	switch (digit)
 	{
-	case WALL_MARKER:
-		return '#';
-	case A_MARKER:
-		return 'A';
-	case B_MARKER:
-		return 'B';
-	case DOT_MARKER:
-		return '.';
+	case digit_marker::WALL:
+		return symbol_marker::WALL;
+	case digit_marker::START:
+		return symbol_marker::START;
+	case digit_marker::END:
+		return symbol_marker::END;
+	case digit_marker::DOT:
+		return symbol_marker::DOT;
 	default:
-		return ' ';
+		return symbol_marker::EMPTY;
 	}
 }
 
@@ -194,11 +205,10 @@ bool ChoiceDirection(Labyrinth& labyrinth, std::queue<Point>& queue, Point& curr
 		return true;
 	}
 
-	if (labyrinth.area[shiftX][shiftY] == 0 &&
-		!(IsEqual(labyrinth.start, shiftX, shiftY)))
+	if (labyrinth.area[shiftX][shiftY] == 0 && !(IsEqual(labyrinth.start, shiftX, shiftY)))
 	{
 		labyrinth.area[shiftX][shiftY] = labyrinth.area[current.x][current.y] + 1;
-		queue.push({ shiftX , shiftY });
+		queue.push({ shiftX, shiftY });
 	}
 
 	return false;
@@ -296,7 +306,7 @@ Labyrinth FillPathInLabyrinth(const Labyrinth& labyrinth)
 			return resultLabyrinth;
 		}
 
-		resultLabyrinth.area[current.x][current.y] = DOT_MARKER;
+		resultLabyrinth.area[current.x][current.y] = digit_marker::DOT;
 	}
 
 	throw std::runtime_error("Can't find a way out");
@@ -304,7 +314,7 @@ Labyrinth FillPathInLabyrinth(const Labyrinth& labyrinth)
 
 void ProcessLabyrinthFromStdin()
 {
-	Labyrinth  labyrinth;
+	Labyrinth labyrinth;
 	labyrinth = ReadLabyrinthFromStream(std::cin);
 
 	if (!FindPath(labyrinth))
@@ -313,14 +323,14 @@ void ProcessLabyrinthFromStdin()
 
 		return;
 	}
-	
-	labyrinth = FillPathInLabyrinth(labyrinth); 
+
+	labyrinth = FillPathInLabyrinth(labyrinth);
 	PrintLabyrinthToStream(std::cout, labyrinth);
 }
 
 void ProcessLabyrinthFromFile(const std::string& inputFileName, const std::string& outputFileName)
 {
-	Labyrinth  labyrinth;
+	Labyrinth labyrinth;
 	labyrinth = ReadLabyrinthFromFile(inputFileName);
 
 	if (!FindPath(labyrinth))
@@ -336,7 +346,8 @@ void ProcessLabyrinthFromFile(const std::string& inputFileName, const std::strin
 
 int main(int argc, const char* argv[])
 {
-	try {
+	try
+	{
 		if (argc == 1)
 		{
 			ProcessLabyrinthFromStdin();
@@ -351,7 +362,8 @@ int main(int argc, const char* argv[])
 
 		throw std::invalid_argument("Invalid argument count.\n");
 	}
-	catch (const std::exception& ex) {
+	catch (const std::exception& ex)
+	{
 		std::cout << ex.what() << "\n";
 		return 1;
 	}

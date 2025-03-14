@@ -1,28 +1,14 @@
-#include <iostream>
-#include <fstream>
 #include "ExpandTemplate.h"
 #include "Replacer.h"
+#include "StringTrimmer.h"
+#include <fstream>
+#include <iostream>
 
 struct Pattern
 {
 	std::string key;
 	std::string value;
 };
-
-std::string Trim(const std::string& str, char ch)
-{
-	std::string result;
-	size_t start = str.find_first_not_of(ch);
-	if (start == std::string::npos)
-	{
-		return result;
-	}
-
-	size_t finish = str.find_last_not_of(ch);
-	result.append(str, start, finish - start + 1);
-
-	return result;
-}
 
 Pattern ParsePattern(const std::string& line)
 {
@@ -66,7 +52,6 @@ Patterns GetPatternsFromStream(std::istream& input)
 
 	return patterns;
 }
-
 
 std::string GetReplacementString(std::istream& input)
 {

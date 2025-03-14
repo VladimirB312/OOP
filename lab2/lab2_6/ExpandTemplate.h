@@ -1,4 +1,5 @@
 #pragma once
+#include <sstream>
 
 void ExpandTemplateFromArgs(int argc, char* argv[]);
 

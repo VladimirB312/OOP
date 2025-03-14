@@ -1,18 +1,17 @@
-#include <iostream>
-#include <regex>
-#include <string>
 #include "ParseUrl.h"
+#include <iostream>
+#include <string>
 
 int main()
 {
-
 	try
 	{
 		std::string line;
 		while (getline(std::cin, line))
 		{
 			Url url = ParseUrl(line);
-			std::cout << "\n" << line << "\n";
+			std::cout << "\n"
+					  << line << "\n";
 			PrintUrl(std::cout, url);
 		}
 	}
