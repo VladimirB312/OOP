@@ -1,6 +1,13 @@
-#include "ExpandTemplate.h"
 #include <iostream>
 #include <fstream>
+#include "ExpandTemplate.h"
+#include "Replacer.h"
+
+struct Pattern
+{
+	std::string key;
+	std::string value;
+};
 
 std::string Trim(const std::string& str, char ch)
 {

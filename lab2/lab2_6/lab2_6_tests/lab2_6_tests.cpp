@@ -169,60 +169,67 @@ SCENARIO("Replace string")
 	}
 }
 
-SCENARIO("Get pattern from input")
-{
-	WHEN("input caontains pattern with empty key")
-	{
-		std::istringstream input(":=value");
-		Patterns patterns = GetPatternsFromStream(input);
-		THEN("patterns must not contain this pattern")
-		{
-			CHECK(patterns.empty());
-		}
-	}
-
-	WHEN("input contains pattern with empty value")
-	{
-		std::istringstream input("key:=");
-		Patterns patterns = GetPatternsFromStream(input);
-		THEN("patterns must contain this pattern with empty value")
-		{
-			CHECK(patterns["key"] == "");
-		}
-	}
-
-	WHEN("input contains a pattern consisting of phrases")
-	{
-		std::istringstream input("key one:=value one");
-		Patterns patterns = GetPatternsFromStream(input);
-		THEN("patterns must contain this pattern")
-		{
-			CHECK(patterns["key one"] == "value one");
-		}
-	}
-
-	WHEN("input contains a whitespaces between pattern key and value")
-	{
-		std::istringstream input(" key := value ");
-		Patterns patterns = GetPatternsFromStream(input);
-		THEN("patterns must contain this pattern")
-		{
-			CHECK(patterns["key"] == "value");
-		}
-	}
-
-	WHEN("input contains a non-unique key")
-	{
-		std::istringstream input("key:= value1\n key:=value2");
-		THEN("an exception should be thrown")
-		{
-			CHECK_THROWS_AS(GetPatternsFromStream(input), std::runtime_error);
-		}
-	}
-}
-
 SCENARIO("ExpandTemplateFromStream")
 {
+	WHEN("input contains empty patterns")
+	{
+		std::istringstream input("\n"
+								 "Hello, %USER_NAME%.\n");
+
+		std::ostringstream output;
+		ExpandTemplateFromStream(input, output);
+
+		THEN("the output should be unchanged")
+		{
+			CHECK(output.str() == "Hello, %USER_NAME%.");
+		}
+	}
+
+	WHEN("input contains empty patterns key")
+	{
+		std::istringstream input(" := Bye\n"
+								 "\n"
+								 "Hello, %USER_NAME%.\n");
+
+		std::ostringstream output;
+		ExpandTemplateFromStream(input, output);
+
+		THEN("the key should be ignored")
+		{
+			CHECK(output.str() == "Hello, %USER_NAME%.");
+		}
+	}
+
+	WHEN("input contains pattern with a non-unique key")
+	{
+		std::istringstream input("Hello := Bye\n"
+								 "Hello := Goodbye\n"
+								 "\n"
+								 "Hello, %USER_NAME%.\n");
+
+		std::ostringstream output;		
+
+		THEN("an exception should be thrown")
+		{
+			CHECK_THROWS_AS(ExpandTemplateFromStream(input, output), std::runtime_error);
+		}
+	}
+
+	WHEN("input not contains a whitespaces between pattern key and value")
+	{
+		std::istringstream input("Hello:=Bye\n"
+								 "\n"
+								 "Hello, %USER_NAME%.\n");
+
+		std::ostringstream output;
+		ExpandTemplateFromStream(input, output);
+
+		THEN("whitespaces should be ignored")
+		{
+			CHECK(output.str() == "Bye, %USER_NAME%.");
+		}
+	}
+
 	WHEN("input contains empty patterns values")
 	{
 		std::istringstream input("%USER_NAME% :=\n"
