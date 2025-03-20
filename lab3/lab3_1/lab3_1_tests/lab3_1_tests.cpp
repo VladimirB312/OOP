@@ -197,18 +197,20 @@ SCENARIO("Set speed and gear")
 		WHEN("try to set a speed in permissible range")
 		{
 			car.SetSpeed(0);
-			THEN("car speed should be changed to this speed")
+			THEN("car speed should be 0 and direction should be stand still")
 			{
 				CHECK(car.GetSpeed() == 0);
+				CHECK(car.GetDirection() == Car::Direction::STANDING_STILL);
 			}
 		}
 
 		WHEN("try to set a speed in permissible range")
 		{
 			car.SetSpeed(1);
-			THEN("car speed should be changed to this speed")
+			THEN("car speed should be changed to this speed and direction should be forward")
 			{
 				CHECK(car.GetSpeed() == 1);
+				CHECK(car.GetDirection() == Car::Direction::FORWARD);
 			}
 		}
 
@@ -255,6 +257,16 @@ SCENARIO("Set speed and gear")
 				CHECK(car.GetGear() == gear::SECOND);
 			}
 		}
+
+		WHEN("set speed 30 and set second gear ")
+		{
+			car.SetSpeed(30);
+			car.SetGear(gear::SECOND);
+			THEN("gear should be second")
+			{
+				CHECK(car.GetGear() == gear::SECOND);
+			}
+		}
 	}
 
 	GIVEN("turned on car with with reverse gear")
@@ -265,27 +277,52 @@ SCENARIO("Set speed and gear")
 		WHEN("try to set a speed in permissible range")
 		{
 			car.SetSpeed(0);
-			THEN("car speed should be changed to this speed")
+			THEN("car speed should be 0 and direction should be standing still")
 			{
 				CHECK(car.GetSpeed() == 0);
+				CHECK(car.GetDirection() == Car::Direction::STANDING_STILL);
 			}
 		}
 
 		WHEN("try to set a speed in permissible range")
 		{
 			car.SetSpeed(1);
-			THEN("car speed should be changed to this speed")
+			THEN("car speed should be changed to this speed and direction should be backward")
 			{
 				CHECK(car.GetSpeed() == 1);
+				CHECK(car.GetDirection() == Car::Direction::BACKWARD);
 			}
 		}
 
 		WHEN("try to set a speed in permissible range")
 		{
 			car.SetSpeed(20);
-			THEN("car speed should be changed to this speed")
+			THEN("car speed should be changed to this speed and direction should be backward")
 			{
 				CHECK(car.GetSpeed() == 20);
+				CHECK(car.GetDirection() == Car::Direction::BACKWARD);
+			}
+
+			AND_WHEN("reduce speed to 0 and switch first gear")
+			{
+				car.SetSpeed(0);
+				car.SetGear(gear::FIRST);
+				THEN("car gear should be first, speed should 0 and direction should be standing still")
+				{
+					CHECK(car.GetGear() == gear::FIRST);
+					CHECK(car.GetSpeed() == 0);
+					CHECK(car.GetDirection() == Car::Direction::STANDING_STILL);
+				}
+
+				AND_WHEN("increase speed to 20")
+				{
+					car.SetSpeed(20);
+					THEN("speed should 20 and direction should be forward")
+					{
+						CHECK(car.GetSpeed() == 20);
+						CHECK(car.GetDirection() == Car::Direction::FORWARD);
+					}
+				}
 			}
 		}
 
@@ -315,10 +352,12 @@ SCENARIO("Set speed and gear")
 		WHEN("set neutral gear")
 		{
 			car.SetGear(gear::NEUTRAL);
-			THEN("car gear should be neutral")
+			THEN("car gear should be neutral and direction should be backward")
 			{
 				CHECK(car.GetGear() == gear::NEUTRAL);
+				CHECK(car.GetDirection() == Car::Direction::BACKWARD);
 			}
+
 			AND_WHEN("reduce speed")
 			{
 				car.SetSpeed(10);
@@ -327,6 +366,7 @@ SCENARIO("Set speed and gear")
 					CHECK(car.GetSpeed() == 10);
 				}
 			}
+
 			AND_WHEN("try to increase speed")
 			{
 				THEN("error cannot accelerate on neutral should be thrown")
@@ -350,6 +390,7 @@ SCENARIO("Set speed and gear")
 		car.TurnOnEngine();
 		car.SetGear(gear::FIRST);
 		car.SetSpeed(15);
+
 		WHEN("try to set backward gear")
 		{
 			THEN("error cannot reverse while moving should be thrown")
@@ -370,9 +411,160 @@ SCENARIO("Set speed and gear")
 		WHEN("increase speed to 20")
 		{
 			car.SetSpeed(20);
-			THEN("car speed should be reduced to 20")
+			THEN("car speed should be reduced to 20 and direction should be forward")
 			{
 				CHECK(car.GetSpeed() == 20);
+				CHECK(car.GetDirection() == Car::Direction::FORWARD);
+			}
+
+			AND_WHEN("reduce speed to 0 and switch to reverse speed")
+			{
+				car.SetSpeed(0);
+				car.SetGear(gear::REVERSE);
+				THEN("gear should be reverse, speed should be 0 and direction should be standing still")
+				{
+					CHECK(car.GetGear() == gear::REVERSE);
+					CHECK(car.GetSpeed() == 0);
+					CHECK(car.GetDirection() == Car::Direction::STANDING_STILL);
+				}
+
+				AND_WHEN("increase speed to 20")
+				{
+					car.SetSpeed(20);
+					THEN("speed should be 20 and direction should be backward")
+					{
+						CHECK(car.GetSpeed() == 20);
+						CHECK(car.GetDirection() == Car::Direction::BACKWARD);
+					}
+				}
+			}
+		}
+	}
+}
+
+SCENARIO("acceleration to 150 at higher speeds")
+{
+	Car car;
+	car.TurnOnEngine();
+
+	GIVEN("turned on car")
+	{
+		WHEN("switch to first gear and increase speed to 30")
+		{
+			car.SetGear(gear::FIRST);
+			car.SetSpeed(30);
+			THEN("car gear should be first and spead should be 30")
+			{
+				CHECK(car.GetGear() == gear::FIRST);
+				CHECK(car.GetSpeed() == 30);
+			}
+
+			AND_WHEN("switch to second speed and increase speed to 50")
+			{
+				car.SetGear(gear::SECOND);
+				car.SetSpeed(50);
+				THEN("car gear should be second and spead should be 50")
+				{
+					CHECK(car.GetGear() == gear::SECOND);
+					CHECK(car.GetSpeed() == 50);
+				}
+
+				AND_WHEN("switch to third speed and increase speed to 60")
+				{
+					car.SetGear(gear::THIRD);
+					car.SetSpeed(60);
+					THEN("car gear should be third and spead should be 60")
+					{
+						CHECK(car.GetGear() == gear::THIRD);
+						CHECK(car.GetSpeed() == 60);
+					}
+
+					AND_WHEN("switch to fourth speed and increase speed to 90")
+					{
+						car.SetGear(gear::FOURTH);
+						car.SetSpeed(90);
+						THEN("car gear should be fourth and spead should be 90")
+						{
+							CHECK(car.GetGear() == gear::FOURTH);
+							CHECK(car.GetSpeed() == 90);
+						}
+
+						AND_WHEN("switch to fifth speed and increase speed to 150")
+						{
+							car.SetGear(gear::FIFTH);
+							car.SetSpeed(150);
+							THEN("car gear should be fourth and spead should be 90")
+							{
+								CHECK(car.GetGear() == gear::FIFTH);
+								CHECK(car.GetSpeed() == 150);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+SCENARIO("acceleration to 150 at low speeds")
+{
+	Car car;
+	car.TurnOnEngine();
+
+	GIVEN("turned on car")
+	{
+		WHEN("switch to first gear and increase speed to 20")
+		{
+			car.SetGear(gear::FIRST);
+			car.SetSpeed(20);
+			THEN("car gear should be first and spead should be 20")
+			{
+				CHECK(car.GetGear() == gear::FIRST);
+				CHECK(car.GetSpeed() == 20);
+			}
+
+			AND_WHEN("switch to second speed and increase speed to 30")
+			{
+				car.SetGear(gear::SECOND);
+				car.SetSpeed(30);
+				THEN("car gear should be second and spead should be 30")
+				{
+					CHECK(car.GetGear() == gear::SECOND);
+					CHECK(car.GetSpeed() == 30);
+				}
+
+				AND_WHEN("switch to third speed and increase speed to 40")
+				{
+					car.SetGear(gear::THIRD);
+					car.SetSpeed(40);
+					THEN("car gear should be third and spead should be 40")
+					{
+						CHECK(car.GetGear() == gear::THIRD);
+						CHECK(car.GetSpeed() == 40);
+					}
+
+					AND_WHEN("switch to fourth speed and increase speed to 50")
+					{
+						car.SetGear(gear::FOURTH);
+						car.SetSpeed(50);
+						THEN("car gear should be fourth and spead should be 50")
+						{
+							CHECK(car.GetGear() == gear::FOURTH);
+							CHECK(car.GetSpeed() == 50);
+						}
+
+						AND_WHEN("switch to fifth speed and increase speed to 150")
+						{
+							car.SetGear(gear::FIFTH);
+							car.SetSpeed(150);
+							THEN("car gear should be fourth and spead should be 90")
+							{
+								CHECK(car.GetGear() == gear::FIFTH);
+								CHECK(car.GetSpeed() == 150);
+							}
+						}
+					}
+				}
 			}
 		}
 	}

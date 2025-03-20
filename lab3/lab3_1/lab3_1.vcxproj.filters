@@ -21,12 +21,24 @@
     <ClCompile Include="Car.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CarController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Car.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CarException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CarController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CarControllerException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionToString.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

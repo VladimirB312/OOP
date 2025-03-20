@@ -15,7 +15,7 @@ void Car::TurnOffEngine()
 {
 	if (m_speed != 0 || m_gear != gear::NEUTRAL)
 	{
-		throw CarError("Ñar must be stopped and in neutral gear");
+		throw CarError("Car must be stopped and in neutral gear");
 	}
 
 	m_isTurnedOn = false;
