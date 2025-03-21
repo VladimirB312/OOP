@@ -144,10 +144,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Car.cpp" />
+    <ClCompile Include="..\CarController.cpp" />
     <ClCompile Include="lab3_1_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Car.h" />
+    <ClInclude Include="..\CarController.h" />
+    <ClInclude Include="..\CarControllerException.h" />
     <ClInclude Include="..\CarException.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

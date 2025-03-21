@@ -2,7 +2,10 @@
 #include "../../../catch2/catch.hpp"
 
 #include "../Car.h"
+#include "../CarController.h"
+#include "../CarControllerException.h"
 #include "../CarException.h"
+#include <sstream>
 
 SCENARIO("Turn on and turn off car")
 {
@@ -566,6 +569,80 @@ SCENARIO("acceleration to 150 at low speeds")
 					}
 				}
 			}
+		}
+	}
+}
+
+SCENARIO("Start driving")
+{
+	Car car;
+	std::ostringstream output;
+
+	WHEN("input commands is empty")
+	{
+		std::istringstream input("");
+		CarController carController(input, output, car);
+		carController.StartDriving();
+		THEN("output should be empty too")
+		{
+			CHECK(output.str().empty());
+		}
+	}
+
+	WHEN("input commands contain unknown command")
+	{
+		std::istringstream input("unknw cmd");
+		CarController carController(input, output, car);
+		carController.StartDriving();
+		THEN("output should be contains error Unknown command")
+		{
+			CHECK(output.str() == "Unknown command\n");
+		}
+	}
+
+	WHEN("input commands contains command EngineOn and invalid SetGear argument")
+	{
+		std::istringstream input("EngineOn\nSetGear A");
+		CarController carController(input, output, car);
+		carController.StartDriving();
+		THEN("output should be contains error Invalid command argument")
+		{
+			CHECK(output.str() == "Invalid command argument\n");
+		}
+	}
+
+	WHEN("input commands contains commands that attempt to stop the engine at a speed other than neutral")
+	{
+		std::istringstream input("EngineOn\nSetGear 1\nSetSpeed 10\nEngineOff");
+		CarController carController(input, output, car);
+		carController.StartDriving();
+		THEN("output should be contains info about turned off car")
+		{
+			CHECK(output.str() == "Car must be stopped and in neutral gear\n");
+		}
+	}
+
+	WHEN("input commands contains only Info")
+	{
+		std::istringstream input("Info");
+		CarController carController(input, output, car);
+		carController.StartDriving();
+		THEN("output should be contains info about turned off car")
+		{
+			std::string result = "\nEngine: off\nDirection: standing still\nSpeed: 0\nGear: 0\n\n";
+			CHECK(output.str() == result);
+		}
+	}
+
+	WHEN("input commands contains commands to decrease speed in neutral gear")
+	{
+		std::istringstream input("EngineOn\nSetGear 1\nSetSpeed 30\nSetGear 0\nSetSpeed 10\nInfo");
+		CarController carController(input, output, car);
+		carController.StartDriving();
+		THEN("output should be contains info about car")
+		{
+			std::string result = "\nEngine: on\nDirection: forward\nSpeed: 10\nGear: 0\n\n";
+			CHECK(output.str() == result);
 		}
 	}
 }
