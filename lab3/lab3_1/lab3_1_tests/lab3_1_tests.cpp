@@ -7,6 +7,17 @@
 #include "../CarException.h"
 #include <sstream>
 
+namespace gear
+{
+const int REVERSE = -1;
+const int NEUTRAL = 0;
+const int FIRST = 1;
+const int SECOND = 2;
+const int THIRD = 3;
+const int FOURTH = 4;
+const int FIFTH = 5;
+} // namespace gear
+
 SCENARIO("Turn on and turn off car")
 {
 	Car car;
@@ -272,6 +283,362 @@ SCENARIO("Set speed and gear")
 		}
 	}
 
+	GIVEN("turned on car with with second gear")
+	{
+		car.TurnOnEngine();
+		car.SetGear(gear::FIRST);
+		car.SetSpeed(30);
+		car.SetGear(gear::SECOND);
+
+		WHEN("try to set a speed in permissible range")
+		{
+			car.SetSpeed(20);
+			THEN("car speed should be changed to this speed and direction should be stand still")
+			{
+				CHECK(car.GetSpeed() == 20);
+				CHECK(car.GetDirection() == Car::Direction::FORWARD);
+			}
+		}
+
+		WHEN("try to set a speed in permissible range")
+		{
+			car.SetSpeed(50);
+			THEN("car speed should be changed to this speed and direction should be forward")
+			{
+				CHECK(car.GetSpeed() == 50);
+				CHECK(car.GetDirection() == Car::Direction::FORWARD);
+			}
+		}
+
+		WHEN("try to set a negative speed")
+		{
+			THEN("error speed cannot be negative should be thrown")
+			{
+				CHECK_THROWS_AS(car.SetSpeed(-1), SpeedError);
+			}
+		}
+
+		WHEN("try to set a speed that is outside the permissible range")
+		{
+			THEN("error speed is out of gear range should be thrown")
+			{
+				CHECK_THROWS_AS(car.SetSpeed(19), SpeedError);
+			}
+		}
+
+		WHEN("set speed 40 and set first gear ")
+		{
+			car.SetSpeed(40);
+			THEN("error should speed is out of gear range be thrown")
+			{
+				CHECK_THROWS_AS(car.SetGear(gear::FIRST), GearError);
+			}
+		}
+
+		WHEN("set speed 29 and set third gear ")
+		{
+			car.SetSpeed(29);
+			THEN("error should speed is out of gear range be thrown")
+			{
+				CHECK_THROWS_AS(car.SetGear(gear::THIRD), GearError);
+			}
+		}
+
+		WHEN("set speed 31 and set third gear ")
+		{
+			car.SetSpeed(31);
+			THEN("error should speed is out of gear range be thrown")
+			{
+				CHECK_THROWS_AS(car.SetGear(gear::FIRST), GearError);
+			}
+		}
+
+		WHEN("set speed 40 and set third gear ")
+		{
+			car.SetSpeed(40);
+			car.SetGear(gear::THIRD);
+			THEN("gear should be THIRD")
+			{
+				CHECK(car.GetGear() == gear::THIRD);
+			}
+		}
+
+		WHEN("set speed 30 and set first gear ")
+		{
+			car.SetSpeed(30);
+			car.SetGear(gear::FIRST);
+			THEN("gear should be first")
+			{
+				CHECK(car.GetGear() == gear::FIRST);
+			}
+		}
+	}
+
+	GIVEN("turned on car with with third gear")
+	{
+		car.TurnOnEngine();
+		car.SetGear(gear::FIRST);
+		car.SetSpeed(30);
+		car.SetGear(gear::THIRD);
+
+		WHEN("try to set a speed in permissible range")
+		{
+			car.SetSpeed(40);
+			THEN("car speed should be changed to this speed and direction should be stand still")
+			{
+				CHECK(car.GetSpeed() == 40);
+				CHECK(car.GetDirection() == Car::Direction::FORWARD);
+			}
+		}
+
+		WHEN("try to set a speed in permissible range")
+		{
+			car.SetSpeed(30);
+			THEN("car speed should be changed to this speed and direction should be forward")
+			{
+				CHECK(car.GetSpeed() == 30);
+				CHECK(car.GetDirection() == Car::Direction::FORWARD);
+			}
+		}
+
+		WHEN("try to set a speed in permissible range")
+		{
+			car.SetSpeed(60);
+			THEN("car speed should be changed to this speed and direction should be forward")
+			{
+				CHECK(car.GetSpeed() == 60);
+				CHECK(car.GetDirection() == Car::Direction::FORWARD);
+			}
+		}
+
+		WHEN("try to set a negative speed")
+		{
+			THEN("error speed cannot be negative should be thrown")
+			{
+				CHECK_THROWS_AS(car.SetSpeed(-1), SpeedError);
+			}
+		}
+
+		WHEN("try to set a speed that is outside the permissible range")
+		{
+			THEN("error speed is out of gear range should be thrown")
+			{
+				CHECK_THROWS_AS(car.SetSpeed(29), SpeedError);
+			}
+		}
+
+		WHEN("try to set a speed that is outside the permissible range")
+		{
+			THEN("error speed is out of gear range should be thrown")
+			{
+				CHECK_THROWS_AS(car.SetSpeed(61), SpeedError);
+			}
+		}
+
+		WHEN("set speed 51 and set second gear ")
+		{
+			car.SetSpeed(51);
+			THEN("error should speed is out of gear range be thrown")
+			{
+				CHECK_THROWS_AS(car.SetGear(gear::SECOND), GearError);
+			}
+		}
+
+		WHEN("set speed 39 and set fourth gear ")
+		{
+			car.SetSpeed(39);
+			THEN("error should speed is out of gear range be thrown")
+			{
+				CHECK_THROWS_AS(car.SetGear(gear::FOURTH), GearError);
+			}
+		}
+
+		WHEN("set speed 40 and set third gear ")
+		{
+			car.SetSpeed(40);
+			car.SetGear(gear::FOURTH);
+			THEN("gear should be THIRD")
+			{
+				CHECK(car.GetGear() == gear::FOURTH);
+			}
+		}
+
+		WHEN("set speed 30 and set first gear ")
+		{
+			car.SetSpeed(30);
+			car.SetGear(gear::FIRST);
+			THEN("gear should be first")
+			{
+				CHECK(car.GetGear() == gear::FIRST);
+			}
+		}
+	}
+
+	GIVEN("turned on car with with fourth gear")
+	{
+		car.TurnOnEngine();
+		car.SetGear(gear::FIRST);
+		car.SetSpeed(30);
+		car.SetGear(gear::THIRD);
+		car.SetSpeed(60);
+		car.SetGear(gear::FOURTH);
+
+		WHEN("try to set a speed in permissible range")
+		{
+			car.SetSpeed(40);
+			THEN("car speed should be changed to this speed and direction should be stand still")
+			{
+				CHECK(car.GetSpeed() == 40);
+				CHECK(car.GetDirection() == Car::Direction::FORWARD);
+			}
+		}
+
+		WHEN("try to set a speed in permissible range")
+		{
+			car.SetSpeed(90);
+			THEN("car speed should be changed to this speed and direction should be forward")
+			{
+				CHECK(car.GetSpeed() == 90);
+				CHECK(car.GetDirection() == Car::Direction::FORWARD);
+			}
+		}
+
+		WHEN("try to set a negative speed")
+		{
+			THEN("error speed cannot be negative should be thrown")
+			{
+				CHECK_THROWS_AS(car.SetSpeed(-1), SpeedError);
+			}
+		}
+
+		WHEN("try to set a speed that is outside the permissible range")
+		{
+			THEN("error speed is out of gear range should be thrown")
+			{
+				CHECK_THROWS_AS(car.SetSpeed(39), SpeedError);
+			}
+		}
+
+		WHEN("try to set a speed that is outside the permissible range")
+		{
+			THEN("error speed is out of gear range should be thrown")
+			{
+				CHECK_THROWS_AS(car.SetSpeed(91), SpeedError);
+			}
+		}
+
+		WHEN("set speed 611 and set third gear ")
+		{
+			car.SetSpeed(61);
+			THEN("error should speed is out of gear range be thrown")
+			{
+				CHECK_THROWS_AS(car.SetGear(gear::THIRD), GearError);
+			}
+		}
+
+		WHEN("set speed 49 and set fifth gear ")
+		{
+			car.SetSpeed(49);
+			THEN("error should speed is out of gear range be thrown")
+			{
+				CHECK_THROWS_AS(car.SetGear(gear::FIFTH), GearError);
+			}
+		}
+
+		WHEN("set speed 40 and set third gear ")
+		{
+			car.SetSpeed(40);
+			car.SetGear(gear::THIRD);
+			THEN("gear should be third")
+			{
+				CHECK(car.GetGear() == gear::THIRD);
+			}
+		}
+
+		WHEN("set speed 50 and set first gear ")
+		{
+			car.SetSpeed(50);
+			car.SetGear(gear::FIFTH);
+			THEN("gear should be first")
+			{
+				CHECK(car.GetGear() == gear::FIFTH);
+			}
+		}
+	}
+
+	GIVEN("turned on car with with fifth gear")
+	{
+		car.TurnOnEngine();
+		car.SetGear(gear::FIRST);
+		car.SetSpeed(30);
+		car.SetGear(gear::THIRD);
+		car.SetSpeed(60);
+		car.SetGear(gear::FIFTH);
+
+		WHEN("try to set a speed in permissible range")
+		{
+			car.SetSpeed(50);
+			THEN("car speed should be changed to this speed and direction should be stand still")
+			{
+				CHECK(car.GetSpeed() == 50);
+				CHECK(car.GetDirection() == Car::Direction::FORWARD);
+			}
+		}
+
+		WHEN("try to set a speed in permissible range")
+		{
+			car.SetSpeed(150);
+			THEN("car speed should be changed to this speed and direction should be forward")
+			{
+				CHECK(car.GetSpeed() == 150);
+				CHECK(car.GetDirection() == Car::Direction::FORWARD);
+			}
+		}
+
+		WHEN("try to set a negative speed")
+		{
+			THEN("error speed cannot be negative should be thrown")
+			{
+				CHECK_THROWS_AS(car.SetSpeed(-1), SpeedError);
+			}
+		}
+
+		WHEN("try to set a speed that is outside the permissible range")
+		{
+			THEN("error speed is out of gear range should be thrown")
+			{
+				CHECK_THROWS_AS(car.SetSpeed(49), SpeedError);
+			}
+		}
+
+		WHEN("try to set a speed that is outside the permissible range")
+		{
+			THEN("error speed is out of gear range should be thrown")
+			{
+				CHECK_THROWS_AS(car.SetSpeed(151), SpeedError);
+			}
+		}
+
+		WHEN("set speed 91 and set fourth gear ")
+		{
+			car.SetSpeed(91);
+			THEN("error should speed is out of gear range be thrown")
+			{
+				CHECK_THROWS_AS(car.SetGear(gear::FOURTH), GearError);
+			}
+		}
+
+		WHEN("set speed 90 and set fourth gear ")
+		{
+			car.SetSpeed(90);
+			car.SetGear(gear::FOURTH);
+			THEN("gear should be fourth")
+			{
+				CHECK(car.GetGear() == gear::FOURTH);
+			}
+		}
+	}
+
 	GIVEN("turned on car with with reverse gear")
 	{
 		car.TurnOnEngine();
@@ -334,6 +701,15 @@ SCENARIO("Set speed and gear")
 			THEN("error speed cannot be negative should be thrown")
 			{
 				CHECK_THROWS_AS(car.SetSpeed(-1), SpeedError);
+			}
+		}
+
+		WHEN("try to set a speed 1 and switch first gear")
+		{
+			car.SetSpeed(1);
+			THEN("error speed cannot be negative should be thrown")
+			{
+				CHECK_THROWS_AS(car.SetGear(gear::FIRST), GearError);
 			}
 		}
 

@@ -1,6 +1,19 @@
 #include "Car.h"
 #include "CarException.h"
 
+namespace
+{
+std::unordered_map<Car::Gear, std::pair<int, int>> m_ranges = {
+	{ Car::Gear::REVERSE, { 0, 20 } },
+	{ Car::Gear::NEUTRAL, { 0, 150 } },
+	{ Car::Gear::FIRST, { 0, 30 } },
+	{ Car::Gear::SECOND, { 20, 50 } },
+	{ Car::Gear::THIRD, { 30, 60 } },
+	{ Car::Gear::FOURTH, { 40, 90 } },
+	{ Car::Gear::FIFTH, { 50, 150 } }
+};
+}
+
 bool Car::IsTurnedOn()
 {
 	return m_isTurnedOn;
@@ -13,7 +26,7 @@ void Car::TurnOnEngine()
 
 void Car::TurnOffEngine()
 {
-	if (m_speed != 0 || m_gear != gear::NEUTRAL)
+	if (m_speed != 0 || m_gear != Gear::NEUTRAL)
 	{
 		throw CarError("Car must be stopped and in neutral gear");
 	}
@@ -28,7 +41,7 @@ Car::Direction Car::GetDirection()
 
 int Car::GetGear()
 {
-	return m_gear;
+	return static_cast<int>(m_gear);
 }
 
 int Car::GetSpeed()
@@ -38,12 +51,16 @@ int Car::GetSpeed()
 
 bool Car::IsCorrectGearRange(int gear)
 {
-	return m_speed >= m_ranges[gear].first && m_speed <= m_ranges[gear].second;
+	auto ranges = m_ranges[static_cast<Gear>(gear)]; 
+
+	return m_speed >= ranges.first && m_speed <= ranges.second;
 }
 
 bool Car::IsCorrectSpeedRange(int speed)
 {
-	return speed >= m_ranges[m_gear].first && speed <= m_ranges[m_gear].second;
+	auto ranges = m_ranges[m_gear];
+
+	return speed >= ranges.first && speed <= ranges.second;
 }
 
 void Car::SetDirection()
@@ -54,26 +71,26 @@ void Car::SetDirection()
 		return;
 	}
 
-	if (m_gear == gear::REVERSE)
+	if (m_gear == Gear::REVERSE)
 	{
 		m_direction = Car::Direction::BACKWARD;
 		return;
 	}
 
-	if (m_gear != gear::NEUTRAL)
+	if (m_gear != Gear::NEUTRAL)
 	{
 		m_direction = Car::Direction::FORWARD;
-	}	
+	}
 }
 
 void Car::SetGear(int gear)
 {
-	if (gear == m_gear)
+	if (gear == static_cast<int>(m_gear))
 	{
 		return;
 	}
 
-	if (gear < gear::REVERSE || gear > gear::FIFTH)
+	if (gear < static_cast<int>(Gear::REVERSE) || gear > static_cast<int>(Gear::FIFTH))
 	{
 		throw GearError("Invalid gear");
 	}
@@ -88,17 +105,17 @@ void Car::SetGear(int gear)
 		throw GearError("Unsuitable current speed");
 	}
 
-	if (gear == gear::REVERSE && m_speed != 0)
+	if (gear == static_cast<int>(Gear::REVERSE) && m_speed != 0)
 	{
 		throw GearError("Cannot reverse while moving");
 	}
 
-	if (m_direction == Car::Direction::BACKWARD && gear != gear::NEUTRAL)
+	if (m_direction == Car::Direction::BACKWARD && gear != static_cast<int>(Gear::NEUTRAL))
 	{
 		throw GearError("Cannot set forward gear while moving backward");
 	}
 
-	m_gear = gear;
+	m_gear = static_cast<Gear>(gear);
 
 	SetDirection();
 }
@@ -120,7 +137,7 @@ void Car::SetSpeed(int speed)
 		throw SpeedError("Cannot set speed while engine is off");
 	}
 
-	if (m_gear == gear::NEUTRAL && speed > m_speed)
+	if (m_gear == Gear::NEUTRAL && speed > m_speed)
 	{
 		throw SpeedError("Cannot accelerate on neutral");
 	}
@@ -128,7 +145,7 @@ void Car::SetSpeed(int speed)
 	if (!IsCorrectSpeedRange(speed))
 	{
 		throw SpeedError("Speed is out of gear range");
-	}		
+	}
 
 	m_speed = speed;
 
