@@ -131,14 +131,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Calculator.cpp" />
+    <ClCompile Include="CalculatorUI.cpp" />
     <ClCompile Include="Function.cpp" />
+    <ClCompile Include="IdentifiersParser.cpp" />
     <ClCompile Include="lab3_2.cpp" />
     <ClCompile Include="Operand.cpp" />
     <ClCompile Include="Variable.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Calculator.h" />
+    <ClInclude Include="CalculatorException.h" />
+    <ClInclude Include="CalculatorUI.h" />
+    <ClInclude Include="CalculatorUIException.h" />
     <ClInclude Include="Function.h" />
+    <ClInclude Include="IdentifiersParser.h" />
     <ClInclude Include="Operand.h" />
+    <ClInclude Include="ParserException.h" />
     <ClInclude Include="Variable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

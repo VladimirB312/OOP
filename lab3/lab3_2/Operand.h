@@ -5,5 +5,5 @@ class Operand
 {
 public:
 	virtual double GetValue() = 0;
-	 ~Operand(){};
+	virtual ~Operand() = default;
 };

@@ -2,14 +2,14 @@
 #include <cmath>
 #include <stdexcept>
 
-Function::Function(Operand& operand)
-	: m_operandOne(&operand)
+Function::Function(std::shared_ptr<Operand> operand)
+	: m_operandOne(operand)
 {
 }
 
-Function::Function(Operand& operandOne, Operand& operandTwo, const Operation& operation)
-	: m_operandOne(&operandOne)
-	, m_operandTwo(&operandTwo)
+Function::Function(std::shared_ptr<Operand> operandOne, std::shared_ptr<Operand> operandTwo, const Operation& operation)
+	: m_operandOne(operandOne)
+	, m_operandTwo(operandTwo)
 	, m_operation(operation)
 {
 }
@@ -50,7 +50,7 @@ double Function::Calculate()
 			return std::nan("");
 		}
 
-		return m_operandOne->GetValue() - m_operandTwo->GetValue();
+		return m_operandOne->GetValue() / m_operandTwo->GetValue();
 	}
 	default:
 		throw std::runtime_error("Uknown operator");

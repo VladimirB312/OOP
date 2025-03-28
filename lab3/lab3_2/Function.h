@@ -1,25 +1,26 @@
 #pragma once
 #include "Operand.h"
+#include <cmath>
+#include <memory>
 
 enum class Operation
 {
-	EMPTY,
 	ADDITION,
 	MULTIPLICATION,
 	SUBTRACTION,
 	DIVISION
 };
 
-class Function: public Operand
+class Function : public Operand
 {
 public:
-	Function(Operand& operand);
-	Function(Operand& operandOne, Operand& operandTwo, const Operation& operation);
+	Function(std::shared_ptr<Operand> operand);
+	Function(std::shared_ptr<Operand> operandOne, std::shared_ptr<Operand> operandTwo, const Operation& operation);
 	double GetValue() override;
 
 private:
-	Operand* m_operandOne = nullptr;
-	Operand* m_operandTwo = nullptr;
-	Operation m_operation = Operation::EMPTY;
+	std::shared_ptr<Operand> m_operandOne = nullptr;
+	std::shared_ptr<Operand> m_operandTwo = nullptr;
+	Operation m_operation;
 	double Calculate();
 };

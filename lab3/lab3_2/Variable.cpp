@@ -5,7 +5,7 @@ Variable::Variable(double value)
 {
 }
 
-double const Variable::GetValue()
+double Variable::GetValue()
 {
 	return m_value;
 }

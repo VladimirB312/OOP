@@ -143,14 +143,21 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Calculator.cpp" />
     <ClCompile Include="..\Function.cpp" />
     <ClCompile Include="..\Operand.cpp" />
     <ClCompile Include="..\Variable.cpp" />
     <ClCompile Include="lab3_2_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Calculator.h" />
+    <ClInclude Include="..\CalculatorException.h" />
+    <ClInclude Include="..\Function.h" />
     <ClInclude Include="..\Operand.h" />
     <ClInclude Include="..\Variable.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
