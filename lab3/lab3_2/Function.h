@@ -1,7 +1,6 @@
 #pragma once
 #include "Operand.h"
 #include <cmath>
-#include <memory>
 
 enum class Operation
 {
@@ -30,6 +29,6 @@ private:
 	Operation m_operation;
 	double Calculate();
 	std::vector<std::shared_ptr<Operand>> m_subsicribers;
-	void UpdateSubscribers() override;
+	void UpdateSubscribers();
 	bool m_isSubscribed = false;
 };

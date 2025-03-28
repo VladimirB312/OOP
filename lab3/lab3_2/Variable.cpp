@@ -23,7 +23,7 @@ void Variable::AddSubscriber(std::shared_ptr<Operand> operand)
 
 void Variable::UpdateSubscribers()
 {
-	for (const auto sub : m_subsicribers)
+	for (const auto& sub : m_subsicribers)
 	{
 		sub->Update();
 	}

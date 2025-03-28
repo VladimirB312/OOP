@@ -59,7 +59,7 @@ std::shared_ptr<Operand> Calculator::GetOperand(const std::string& operandName)
 	throw CalculatorException("Name does not exist");
 }
 
-void Calculator::AddFunction(const FunctionArgs& args)
+void Calculator::AddFunction(const FunctionDTO& args)
 {
 	if (IsExistOperand(args.functionName))
 	{

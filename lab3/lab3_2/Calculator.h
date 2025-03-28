@@ -6,7 +6,7 @@
 #include <optional>
 #include <vector>
 
-struct FunctionArgs
+struct FunctionDTO
 {
 	std::string functionName;
 	std::string firstOperandName;
@@ -20,7 +20,7 @@ public:
 	void AddVariable(const std::string& variableName);
 	void LetVariable(const std::string& variableName, double value);
 	void LetVariable(const std::string& variableName, const std::string& operand);
-	void AddFunction(const FunctionArgs& args);	
+	void AddFunction(const FunctionDTO& args);	
 	bool IsExistOperand(const std::string& operandName);
 	double GetValue(const std::string& operand);
 	std::vector<std::pair<std::string, double>> GetVariables();

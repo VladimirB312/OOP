@@ -2,6 +2,7 @@
 #include "../../../catch2/catch.hpp"
 #include "../Calculator.h"
 #include "../CalculatorException.h"
+#include "../CalculatorUI.h"
 #include "../Function.h"
 #include "../Operand.h"
 #include "../Variable.h"
@@ -326,6 +327,15 @@ SCENARIO("Calculator testing")
 					{
 						CHECK(calculator.GetValue("x") == 15);
 					}
+					AND_WHEN("change the value of first variable")
+					{
+						calculator.LetVariable("y", 20);
+						THEN("second variable should remain unchanged and first variable should be changed")
+						{
+							CHECK(calculator.GetValue("x") == 15);
+							CHECK(calculator.GetValue("y") == 20);
+						}
+					}
 				}
 			}
 		}
@@ -423,6 +433,199 @@ SCENARIO("Calculator testing")
 					}
 				}
 			}
+		}
+	}
+}
+
+SCENARIO("test operations")
+{
+	Calculator calculator;
+
+	WHEN("first and second opreator is empty and operation addition")
+	{
+		calculator.AddVariable("x");
+		calculator.AddVariable("y");
+		calculator.AddFunction({ "fn1", "x", "y", Operation::ADDITION });
+		THEN("fucntion value shoud be a nan")
+		{
+			CHECK(std::isnan(calculator.GetValue("fn1")));
+		}
+	}
+
+	WHEN("first and second opreator is empty and operation multiplication")
+	{
+		calculator.AddVariable("x");
+		calculator.AddVariable("y");
+		calculator.AddFunction({ "fn1", "x", "y", Operation::MULTIPLICATION });
+		THEN("fucntion value shoud be a nan")
+		{
+			CHECK(std::isnan(calculator.GetValue("fn1")));
+		}
+	}
+
+	WHEN("first and second opreator is empty and operation subtraction")
+	{
+		calculator.AddVariable("x");
+		calculator.AddVariable("y");
+		calculator.AddFunction({ "fn1", "x", "y", Operation::SUBTRACTION });
+		THEN("fucntion value shoud be a nan")
+		{
+			CHECK(std::isnan(calculator.GetValue("fn1")));
+		}
+	}
+
+	WHEN("first and second opreator is empty and operation division")
+	{
+		calculator.AddVariable("x");
+		calculator.AddVariable("y");
+		calculator.AddFunction({ "fn1", "x", "y", Operation::DIVISION });
+		THEN("fucntion value shoud be a nan")
+		{
+			CHECK(std::isnan(calculator.GetValue("fn1")));
+		}
+	}
+
+	WHEN("first opearator has value and second opreator is empty and operation addition")
+	{
+		calculator.LetVariable("x", 5);
+		calculator.AddVariable("y");
+		calculator.AddFunction({ "fn1", "x", "y", Operation::ADDITION });
+		THEN("fucntion value shoud be a nan")
+		{
+			CHECK(std::isnan(calculator.GetValue("fn1")));
+		}
+	}
+
+	WHEN("first opearator has value and second opreator is empty and operation multilication")
+	{
+		calculator.LetVariable("x", 5);
+		calculator.AddVariable("y");
+		calculator.AddFunction({ "fn1", "x", "y", Operation::MULTIPLICATION });
+		THEN("fucntion value shoud be a nan")
+		{
+			CHECK(std::isnan(calculator.GetValue("fn1")));
+		}
+	}
+
+	WHEN("first opearator has value and second opreator is empty and operation subtraction")
+	{
+		calculator.LetVariable("x", 5);
+		calculator.AddVariable("y");
+		calculator.AddFunction({ "fn1", "x", "y", Operation::SUBTRACTION });
+		THEN("fucntion value shoud be a nan")
+		{
+			CHECK(std::isnan(calculator.GetValue("fn1")));
+		}
+	}
+
+	WHEN("first opearator has value and second opreator is empty and operation division")
+	{
+		calculator.LetVariable("x", 5);
+		calculator.AddVariable("y");
+		calculator.AddFunction({ "fn1", "x", "y", Operation::DIVISION });
+		THEN("fucntion value shoud be a nan")
+		{
+			CHECK(std::isnan(calculator.GetValue("fn1")));
+		}
+	}
+
+	WHEN("first and second opreator is not empty and operation addition")
+	{
+		calculator.LetVariable("x", 5);
+		calculator.LetVariable("y", 5);
+		calculator.AddFunction({ "fn1", "x", "y", Operation::ADDITION });
+		THEN("fucntion value shoud be sum of this variables")
+		{
+			CHECK(calculator.GetValue("fn1") == 10);
+		}
+	}
+
+	WHEN("first and second opreator is not empty and operation multilication")
+	{
+		calculator.LetVariable("x", 5);
+		calculator.LetVariable("y", 5);
+		calculator.AddFunction({ "fn1", "x", "y", Operation::MULTIPLICATION });
+		THEN("fucntion value shoud be multiplication of this variables")
+		{
+			CHECK(calculator.GetValue("fn1") == 25);
+		}
+	}
+
+	WHEN("first and second opreator is not empty and operation subtraction")
+	{
+		calculator.LetVariable("x", 5);
+		calculator.LetVariable("y", 5);
+		calculator.AddFunction({ "fn1", "x", "y", Operation::SUBTRACTION });
+		THEN("fucntion value shoud be a nan")
+		{
+			CHECK(calculator.GetValue("fn1") == 0);
+		}
+	}
+
+	WHEN("first and second opreator is not empty and operation division")
+	{
+		calculator.LetVariable("x", 5);
+		calculator.LetVariable("y", 5);
+		calculator.AddFunction({ "fn1", "x", "y", Operation::DIVISION });
+		THEN("fucntion value shoud be a nan")
+		{
+			CHECK(calculator.GetValue("fn1") == 1);
+		}
+	}
+
+	WHEN("first and second opreator is not empty and second operator is 0 and operation division")
+	{
+		calculator.LetVariable("x", 5);
+		calculator.LetVariable("y", 0);
+		calculator.AddFunction({ "fn1", "x", "y", Operation::DIVISION });
+		THEN("fucntion value shoud be a nan")
+		{
+			CHECK(std::isnan(calculator.GetValue("fn1")));
+		}
+	}
+
+	WHEN("create three function and check division by zero fn1/fn2")
+	{
+		calculator.LetVariable("x", 50);
+		calculator.LetVariable("y", 10);
+		calculator.AddFunction({ "fn1", "x", "y", Operation::ADDITION });
+
+		calculator.LetVariable("z", 25);
+		calculator.LetVariable("k", 20);
+		calculator.AddFunction({ "fn2", "z", "k", Operation::SUBTRACTION });
+
+		calculator.AddFunction({ "fn3", "fn1", "fn2", Operation::DIVISION });
+
+		calculator.LetVariable("k", 25);
+
+		THEN("fn3 value should be nan")
+		{
+			CHECK(std::isnan(calculator.GetValue("fn3")));
+		}
+	}
+}
+
+SCENARIO("test fibonacci numbers")
+{
+	Calculator calculator;
+	WHEN("add functions that count the fibonacci number up to 50")
+	{
+		calculator.LetVariable("v0", 0);
+		calculator.LetVariable("v1", 1);
+		calculator.AddFunction({ "fib0", "v0" });
+		calculator.AddFunction({ "fib1", "v1" });
+
+		for (int i = 2; i <= 50; i++)
+		{
+			std::string fnName = "fib" + std::to_string(i);
+			std::string opOne = "fib" + std::to_string(i - 1);
+			std::string opTwo = "fib" + std::to_string(i - 2);
+			calculator.AddFunction({ fnName, opOne, opTwo, Operation::ADDITION });
+		}
+
+		THEN("result should be equal 12586269025")
+		{
+			CHECK(calculator.GetValue("fib50") == 12586269025);
 		}
 	}
 }
