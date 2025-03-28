@@ -74,6 +74,7 @@ void Calculator::AddFunction(const FunctionArgs& args)
 	if (!args.secondOperandName.has_value())
 	{
 		m_functions[args.functionName] = std::make_shared<Function>(GetOperand(args.firstOperandName));
+		m_functions[args.functionName]->Subscribe();
 		return;
 	}
 
@@ -86,6 +87,7 @@ void Calculator::AddFunction(const FunctionArgs& args)
 		GetOperand(args.firstOperandName),
 		GetOperand(args.secondOperandName.value()),
 		args.operation.value());
+	m_functions[args.functionName]->Subscribe();
 }
 
 double Calculator::GetValue(const std::string& operand)

@@ -13,4 +13,22 @@ double Variable::GetValue()
 void Variable::SetValue(double value)
 {
 	m_value = value;
+	UpdateSubscribers();
+}
+
+void Variable::AddSubscriber(std::shared_ptr<Operand> operand)
+{
+	m_subsicribers.push_back(operand);
+}
+
+void Variable::UpdateSubscribers()
+{
+	for (const auto sub : m_subsicribers)
+	{
+		sub->Update();
+	}
+}
+
+void Variable::Update()
+{
 }

@@ -4,34 +4,58 @@
 
 Function::Function(std::shared_ptr<Operand> operand)
 	: m_operandOne(operand)
-{
+{	
+	SetValue();
 }
 
 Function::Function(std::shared_ptr<Operand> operandOne, std::shared_ptr<Operand> operandTwo, const Operation& operation)
 	: m_operandOne(operandOne)
 	, m_operandTwo(operandTwo)
 	, m_operation(operation)
+{	
+	SetValue();
+}
+
+void Function::Subscribe()
 {
+	if (m_operandOne)
+	{
+		m_operandOne->AddSubscriber(shared_from_this());
+	}
+
+	if (m_operandTwo)
+	{
+		m_operandTwo->AddSubscriber(shared_from_this());
+	}
+
+	m_isSubscribed = true;
 }
 
 double Function::GetValue()
 {
-	if (std::isnan(m_operandOne->GetValue()))
+	if (!m_isSubscribed)
 	{
-		return std::nan("");
+		SetValue();
 	}
 
+	return m_value;
+}
+
+void Function::SetValue()
+{
 	if (!m_operandTwo)
 	{
-		return m_operandOne->GetValue();
+		m_value = m_operandOne->GetValue();
+		return;
 	}
 
-	if (std::isnan(m_operandTwo->GetValue()))
+	if (std::isnan(m_operandTwo->GetValue()) || std::isnan(m_operandOne->GetValue()))
 	{
-		return std::nan("");
+		m_value = std::nan("");
+		return;
 	}
 
-	return Calculate();
+	m_value = Calculate();
 }
 
 double Function::Calculate()
@@ -55,4 +79,23 @@ double Function::Calculate()
 	default:
 		throw std::runtime_error("Uknown operator");
 	}
+}
+
+void Function::AddSubscriber(std::shared_ptr<Operand> operand)
+{
+	m_subsicribers.push_back(operand);
+}
+
+void Function::UpdateSubscribers()
+{
+	for (const auto sub : m_subsicribers)
+	{
+		sub->Update();
+	}
+}
+
+void Function::Update()
+{
+	SetValue();
+	UpdateSubscribers();
 }
