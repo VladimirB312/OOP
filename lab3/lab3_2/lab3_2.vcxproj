@@ -137,6 +137,7 @@
     <ClCompile Include="IdentifiersParser.cpp" />
     <ClCompile Include="lab3_2.cpp" />
     <ClCompile Include="Operand.cpp" />
+    <ClCompile Include="Subscriber.cpp" />
     <ClCompile Include="Variable.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +149,7 @@
     <ClInclude Include="IdentifiersParser.h" />
     <ClInclude Include="Operand.h" />
     <ClInclude Include="ParserException.h" />
+    <ClInclude Include="Subscriber.h" />
     <ClInclude Include="Variable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

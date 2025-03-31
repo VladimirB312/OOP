@@ -4,7 +4,7 @@
 
 Function::Function(std::shared_ptr<Operand> operand)
 	: m_operandOne(operand)
-{	
+{
 	SetValue();
 }
 
@@ -12,7 +12,7 @@ Function::Function(std::shared_ptr<Operand> operandOne, std::shared_ptr<Operand>
 	: m_operandOne(operandOne)
 	, m_operandTwo(operandTwo)
 	, m_operation(operation)
-{	
+{
 	SetValue();
 }
 
@@ -78,19 +78,6 @@ double Function::Calculate()
 	}
 	default:
 		throw std::runtime_error("Uknown operator");
-	}
-}
-
-void Function::AddSubscriber(std::shared_ptr<Operand> operand)
-{
-	m_subsicribers.push_back(operand);
-}
-
-void Function::UpdateSubscribers()
-{
-	for (const auto& sub : m_subsicribers)
-	{
-		sub->Update();
 	}
 }
 

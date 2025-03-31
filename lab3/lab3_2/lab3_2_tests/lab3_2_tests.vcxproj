@@ -146,6 +146,7 @@
     <ClCompile Include="..\Calculator.cpp" />
     <ClCompile Include="..\Function.cpp" />
     <ClCompile Include="..\Operand.cpp" />
+    <ClCompile Include="..\Subscriber.cpp" />
     <ClCompile Include="..\Variable.cpp" />
     <ClCompile Include="lab3_2_tests.cpp" />
   </ItemGroup>
@@ -154,6 +155,7 @@
     <ClInclude Include="..\CalculatorException.h" />
     <ClInclude Include="..\Function.h" />
     <ClInclude Include="..\Operand.h" />
+    <ClInclude Include="..\Subscriber.h" />
     <ClInclude Include="..\Variable.h" />
   </ItemGroup>
   <ItemGroup>

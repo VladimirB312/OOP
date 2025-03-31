@@ -19,16 +19,13 @@ public:
 	double GetValue() override;
 	void SetValue();
 	void Subscribe();
-	void AddSubscriber(std::shared_ptr<Operand> operand) override;
 	void Update() override;
 
 private:
 	double m_value;
+	bool m_isSubscribed = false;
 	std::shared_ptr<Operand> m_operandOne = nullptr;
 	std::shared_ptr<Operand> m_operandTwo = nullptr;
 	Operation m_operation;
 	double Calculate();
-	std::vector<std::shared_ptr<Operand>> m_subsicribers;
-	void UpdateSubscribers();
-	bool m_isSubscribed = false;
 };
