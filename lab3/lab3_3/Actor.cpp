@@ -1,19 +1,19 @@
 #include "Actor.h"
+#include <iostream>
 
 Actor::Actor(Money cash)
 	: m_cash(cash)
 {
 }
 
-
-bool Actor::GiveMoney(std::unique_ptr<Actor>& actor, Money amount)
+bool Actor::GiveMoney(Actor& actor, Money amount)
 {
 	if (m_cash < amount || amount < 0)
 	{
-		return false; 
+		return false;
 	}
 
-	actor->RecieveMoney(amount);
+	actor.RecieveMoney(amount);
 	m_cash -= amount;
 
 	return true;

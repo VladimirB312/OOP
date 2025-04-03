@@ -144,12 +144,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Actor.cpp" />
+    <ClCompile Include="..\Actors.cpp" />
     <ClCompile Include="..\ActorWithCard.cpp" />
     <ClCompile Include="..\Bank.cpp" />
     <ClCompile Include="lab3_3_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Actor.h" />
+    <ClInclude Include="..\Actors.h" />
     <ClInclude Include="..\ActorWithCard.h" />
     <ClInclude Include="..\Bank.h" />
   </ItemGroup>

@@ -2,6 +2,7 @@
 #include "../../../catch2/catch.hpp"
 #include "../Actor.h"
 #include "../ActorWithCard.h"
+#include "../Actors.h"
 #include "../Bank.h"
 
 SCENARIO("create bank")
@@ -480,15 +481,15 @@ SCENARIO("give and recieve money")
 {
 	GIVEN("two actors with 50 units of cash money")
 	{
-		auto actorOne = std::make_unique<Actor>(50);
-		auto actorTwo = std::make_unique<Actor>(50);
+		Actor actorOne(50);
+		Actor actorTwo(50);
 		WHEN("give all money from actor one to actor two")
 		{
 			THEN("GiveMoney should be true and the amount of cash of the first actor should be 0 and the second actor 100")
 			{
-				CHECK(actorOne->GiveMoney(actorTwo, 50));
-				CHECK(actorOne->GetCash() == 0);
-				CHECK(actorTwo->GetCash() == 100);
+				CHECK(actorOne.GiveMoney(actorTwo, 50));
+				CHECK(actorOne.GetCash() == 0);
+				CHECK(actorTwo.GetCash() == 100);
 			}
 		}
 
@@ -496,9 +497,9 @@ SCENARIO("give and recieve money")
 		{
 			THEN("GiveMoney should be true and the amount of cash of the first actor should be 25 and the second actor 75")
 			{
-				CHECK(actorOne->GiveMoney(actorTwo, 25));
-				CHECK(actorOne->GetCash() == 25);
-				CHECK(actorTwo->GetCash() == 75);
+				CHECK(actorOne.GiveMoney(actorTwo, 25));
+				CHECK(actorOne.GetCash() == 25);
+				CHECK(actorTwo.GetCash() == 75);
 			}
 		}
 
@@ -506,9 +507,9 @@ SCENARIO("give and recieve money")
 		{
 			THEN("GiveMoney should be true and the amount of cash of the first actor should be 1 and the second actor 99")
 			{
-				CHECK(actorOne->GiveMoney(actorTwo, 49));
-				CHECK(actorOne->GetCash() == 1);
-				CHECK(actorTwo->GetCash() == 99);
+				CHECK(actorOne.GiveMoney(actorTwo, 49));
+				CHECK(actorOne.GetCash() == 1);
+				CHECK(actorTwo.GetCash() == 99);
 			}
 		}
 
@@ -516,9 +517,9 @@ SCENARIO("give and recieve money")
 		{
 			THEN("GiveMoney should be true and the amount of cash of the first actor should be 49 and the second actor 51")
 			{
-				CHECK(actorOne->GiveMoney(actorTwo, 1));
-				CHECK(actorOne->GetCash() == 49);
-				CHECK(actorTwo->GetCash() == 51);
+				CHECK(actorOne.GiveMoney(actorTwo, 1));
+				CHECK(actorOne.GetCash() == 49);
+				CHECK(actorTwo.GetCash() == 51);
 			}
 		}
 
@@ -526,9 +527,9 @@ SCENARIO("give and recieve money")
 		{
 			THEN("GiveMoney should be true and the amount of cash of the first and second actors will be unchanged")
 			{
-				CHECK(actorOne->GiveMoney(actorTwo, 0));
-				CHECK(actorOne->GetCash() == 50);
-				CHECK(actorTwo->GetCash() == 50);
+				CHECK(actorOne.GiveMoney(actorTwo, 0));
+				CHECK(actorOne.GetCash() == 50);
+				CHECK(actorTwo.GetCash() == 50);
 			}
 		}
 
@@ -536,9 +537,9 @@ SCENARIO("give and recieve money")
 		{
 			THEN("GiveMoney should be false and the amount of cash of the first and second actors will be unchanged")
 			{
-				CHECK(!actorOne->GiveMoney(actorTwo, -1));
-				CHECK(actorOne->GetCash() == 50);
-				CHECK(actorTwo->GetCash() == 50);
+				CHECK(!actorOne.GiveMoney(actorTwo, -1));
+				CHECK(actorOne.GetCash() == 50);
+				CHECK(actorTwo.GetCash() == 50);
 			}
 		}
 
@@ -546,9 +547,9 @@ SCENARIO("give and recieve money")
 		{
 			THEN("GiveMoney should be false and the amount of cash of the first and second actors will be unchanged")
 			{
-				CHECK(!actorOne->GiveMoney(actorTwo, 51));
-				CHECK(actorOne->GetCash() == 50);
-				CHECK(actorTwo->GetCash() == 50);
+				CHECK(!actorOne.GiveMoney(actorTwo, 51));
+				CHECK(actorOne.GetCash() == 50);
+				CHECK(actorTwo.GetCash() == 50);
 			}
 		}
 	}
@@ -559,25 +560,25 @@ SCENARIO("deposit and withdraw money")
 	GIVEN("bank and actor with 50 units of cash money")
 	{
 		Bank bank(50);
-		auto actor = std::make_unique<ActorWithCard>(bank, 50);
+		ActorWithCard actor(bank, 50);
 		WHEN("actor deposit 50 unit of money to account")
 		{
-			actor->DepositMoney(25);
+			actor.DepositMoney(25);
 			THEN("the cash in the bank must be 25, the actor must have 25, and his account must have 25.")
 			{
 				CHECK(bank.GetCash() == 25);
-				CHECK(actor->GetCash() == 25);
-				CHECK(bank.GetAccountBalance(actor->GetAccountId()) == 25);
+				CHECK(actor.GetCash() == 25);
+				CHECK(bank.GetAccountBalance(actor.GetAccountId()) == 25);
 			}
 
 			AND_WHEN("actor withdraw 25 units of money")
 			{
 				THEN("WithdrawMoney should be true and cash in the bank must be 50, the actor must have 50, and his account must have 0")
 				{
-					CHECK(actor->WithdrawMoney(25));
+					CHECK(actor.TryWithdrawMoney(25));
 					CHECK(bank.GetCash() == 50);
-					CHECK(actor->GetCash() == 50);
-					CHECK(bank.GetAccountBalance(actor->GetAccountId()) == 0);
+					CHECK(actor.GetCash() == 50);
+					CHECK(bank.GetAccountBalance(actor.GetAccountId()) == 0);
 				}
 			}
 		}
@@ -585,20 +586,20 @@ SCENARIO("deposit and withdraw money")
 		{
 			THEN("WithdrawMoney should be false and cash will be unchanged")
 			{
-				CHECK(!actor->WithdrawMoney(25));
+				CHECK(!actor.TryWithdrawMoney(25));
 				CHECK(bank.GetCash() == 50);
-				CHECK(actor->GetCash() == 50);
-				CHECK(bank.GetAccountBalance(actor->GetAccountId()) == 0);
+				CHECK(actor.GetCash() == 50);
+				CHECK(bank.GetAccountBalance(actor.GetAccountId()) == 0);
 			}
 		}
 		WHEN("to deposit more than the actor has")
 		{
-			actor->DepositMoney(100);
+			actor.DepositMoney(100);
 			THEN("cash will be unchanged")
 			{
 				CHECK(bank.GetCash() == 50);
-				CHECK(actor->GetCash() == 50);
-				CHECK(bank.GetAccountBalance(actor->GetAccountId()) == 0);
+				CHECK(actor.GetCash() == 50);
+				CHECK(bank.GetAccountBalance(actor.GetAccountId()) == 0);
 			}
 		}
 	}
@@ -609,28 +610,107 @@ SCENARIO("send money from actor to actor")
 	GIVEN("bank with 100 units of cash and two actor with 50 units of deposit money")
 	{
 		Bank bank(100);
-		auto actorOne = std::make_unique<ActorWithCard>(bank, 50);
-		auto actorTwo = std::make_unique<ActorWithCard>(bank, 50);
-		actorOne->DepositMoney(50);
-		actorTwo->DepositMoney(50);
+		ActorWithCard actorOne(bank, 50);
+		ActorWithCard actorTwo(bank, 50);
+		actorOne.DepositMoney(50);
+		actorTwo.DepositMoney(50);
 		WHEN("actorOne send 50 units to actorTwo")
 		{
-			actorOne->SendMoney(actorTwo, 50);
+			actorOne.TrySendMoney(actorTwo, 50);
 			THEN("the first actor's account should be 0 and the second actor's should be 100")
 			{
-				CHECK(bank.GetAccountBalance(actorOne->GetAccountId()) == 0);
-				CHECK(bank.GetAccountBalance(actorTwo->GetAccountId()) == 100);
+				CHECK(bank.GetAccountBalance(actorOne.GetAccountId()) == 0);
+				CHECK(bank.GetAccountBalance(actorTwo.GetAccountId()) == 100);
 			}
 
 			AND_WHEN("first actor trying to send more money")
-			{				
-				THEN("an exception must be thrown and the balance of the accounts will not change")
+			{
+				actorOne.TrySendMoney(actorTwo, 50);
+				THEN("the balance of the accounts will not change")
 				{
-					CHECK_THROWS_AS(actorOne->SendMoney(actorTwo, 50), BankOperationError);
-					CHECK(bank.GetAccountBalance(actorOne->GetAccountId()) == 0);
-					CHECK(bank.GetAccountBalance(actorTwo->GetAccountId()) == 100);
+					CHECK(bank.GetAccountBalance(actorOne.GetAccountId()) == 0);
+					CHECK(bank.GetAccountBalance(actorTwo.GetAccountId()) == 100);
 				}
 			}
 		}
+	}
+}
+
+SCENARIO("create actors and test")
+{
+	Bank bank(3000);
+	Homer homer(bank, 300);
+	homer.DepositMoney(300);
+	Marge marge(bank, 300);
+	marge.DepositMoney(300);
+	Apu apu(bank, 300);
+	apu.DepositMoney(300);
+	Burns burns(bank, 1300);
+	burns.DepositMoney(1300);
+	Chester chester(bank, 300);
+	chester.DepositMoney(300);
+	Smithers smithers(bank, 300);
+	smithers.DepositMoney(300);
+	Bart bart(300);
+	Lisa lisa(300);
+	Nelson nelson(300);
+
+	WHEN("Homer acts")
+	{
+		homer.Action(marge, burns, bart, lisa);
+		CHECK(homer.GetAccountBalance() == 40);
+		CHECK(marge.GetAccountBalance() == 400);
+		CHECK(burns.GetAccountBalance() == 1400);
+		CHECK(bart.GetCash() == 330);
+		CHECK(lisa.GetCash() == 330);
+	}
+
+	WHEN("Marge acts")
+	{
+		marge.Action(apu);
+		CHECK(marge.GetAccountBalance() == 200);
+		CHECK(apu.GetAccountBalance() == 400);
+	}
+
+	WHEN("Apu acts")
+	{
+		apu.Action(burns);
+		CHECK(apu.GetAccountBalance() == 200);
+		CHECK(burns.GetAccountBalance() == 1400);
+	}
+
+	WHEN("Apu have 50 units of cash and acts")
+	{
+		CHECK(apu.TryWithdrawMoney(50));
+		CHECK(apu.GetCash() == 50);
+		apu.Action(burns);
+		THEN("Apu deposit his cash to account and paid for electricity")
+		{
+			CHECK(apu.GetCash() == 0);
+			CHECK(apu.GetAccountBalance() == 200);
+			CHECK(burns.GetAccountBalance() == 1400);
+		}
+	}
+
+	WHEN("Bart acts")
+	{
+		bart.Action(apu);
+		CHECK(apu.GetCash() == 10);
+		CHECK(bart.GetCash() == 290);
+	}
+
+	WHEN("Lisa acts")
+	{
+		lisa.Action(apu);
+		CHECK(apu.GetCash() == 10);
+		CHECK(lisa.GetCash() == 290);
+	}
+
+	WHEN("Burns acts")
+	{
+		burns.Action(homer, smithers);		
+		CHECK(burns.GetAccountBalance() == 500);
+		CHECK(smithers.GetAccountBalance() == 700);
+		CHECK(homer.GetAccountBalance() == 700);
 	}
 }

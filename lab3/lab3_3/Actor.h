@@ -7,10 +7,14 @@ class Actor
 public:
 	explicit Actor(Money cash);
 
-	bool GiveMoney(std::unique_ptr<Actor>& actor, Money amount);
+	bool GiveMoney(Actor& actor, Money amount);
 	Money GetCash();
+	virtual ~Actor() = default;
 
 protected:
-	void RecieveMoney(Money amount);
 	Money m_cash;
+	std::string m_name;
+
+private:
+	void RecieveMoney(Money amount);
 };

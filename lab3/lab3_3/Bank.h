@@ -20,14 +20,14 @@ public:
 	Bank& operator=(const Bank&) = delete;
 
 	 void SendMoney(AccountId srcAccountId, AccountId dstAccountId, Money amount);
-	//[[nodiscard]] bool TrySendMoney(AccountId srcAccountId, AccountId dstAccountId, Money amount);
 	[[nodiscard]] Money GetCash() const;
 	 Money GetAccountBalance(AccountId accountId) const;
-	 //void WithdrawMoney(AccountId account, Money amount);
 	[[nodiscard]] bool TryWithdrawMoney(AccountId account, Money amount);
 	 void DepositMoney(AccountId account, Money amount);
 	[[nodiscard]] AccountId OpenAccount();
 	[[nodiscard]] Money CloseAccount(AccountId accountId);
+	bool IsAccountExisting(AccountId accountId) const; 
+	Money GetDeposits();
 
 private:
 	Money m_totalCash;

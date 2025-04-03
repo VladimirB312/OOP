@@ -1,4 +1,5 @@
 #include "Bank.h"
+#include <algorithm>
 
 namespace
 {
@@ -47,24 +48,6 @@ Money Bank::GetAccountBalance(AccountId accountId) const
 	return m_accounts.at(accountId);
 }
 
-// void Bank::WithdrawMoney(AccountId account, Money amount)
-//{
-//	CheckExistenceAccount(account);
-//
-//	if (m_accounts[account] < amount)
-//	{
-//		throw BankOperationError("Not enough money in the account");
-//	}
-//
-//	if (amount < 0)
-//	{
-//		throw std::out_of_range("The money to withdraw cannot be negative");
-//	}
-//
-//	m_totalCash += amount;
-//	m_accounts[account] -= amount;
-// }
-
 bool Bank::TryWithdrawMoney(AccountId account, Money amount)
 {
 	CheckAccountValid(account);
@@ -76,6 +59,7 @@ bool Bank::TryWithdrawMoney(AccountId account, Money amount)
 	}
 
 	m_totalCash += amount;
+	m_totalDeposits -= amount;
 	m_accounts[account] -= amount;
 
 	return true;
@@ -93,7 +77,8 @@ void Bank::DepositMoney(AccountId account, Money amount)
 	CheckAmountValid(amount);
 
 	m_totalCash -= amount;
-	m_accounts[account] += amount;
+	m_totalDeposits += amount;
+	m_accounts[account] += amount;	
 }
 
 AccountId Bank::OpenAccount()
@@ -115,9 +100,24 @@ Money Bank::CloseAccount(AccountId accountId)
 	return refund;
 }
 
-void Bank::CheckAccountValid(AccountId accountId) const
+bool Bank::IsAccountExisting(AccountId accountId) const
 {
 	if (auto it = m_accounts.find(accountId); it == m_accounts.end())
+	{
+		return false;
+	}
+
+	return true;
+}
+
+Money Bank::GetDeposits()
+{
+	return m_totalDeposits;
+}
+
+void Bank::CheckAccountValid(AccountId accountId) const
+{
+	if (!IsAccountExisting(accountId))
 	{
 		throw BankOperationError("The account doesn't exist");
 	}
