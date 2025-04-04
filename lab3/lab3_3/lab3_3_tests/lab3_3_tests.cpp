@@ -638,79 +638,142 @@ SCENARIO("send money from actor to actor")
 
 SCENARIO("create actors and test")
 {
-	Bank bank(3000);
-	Homer homer(bank, 300);
-	homer.DepositMoney(300);
-	Marge marge(bank, 300);
-	marge.DepositMoney(300);
-	Apu apu(bank, 300);
-	apu.DepositMoney(300);
-	Burns burns(bank, 1300);
-	burns.DepositMoney(1300);
-	Chester chester(bank, 300);
-	chester.DepositMoney(300);
-	Smithers smithers(bank, 300);
-	smithers.DepositMoney(300);
-	Bart bart(300);
-	Lisa lisa(300);
-	Nelson nelson(300);
-
-	WHEN("Homer acts")
+	std::cout.rdbuf(nullptr);
+	GIVEN("bank and all actors")
 	{
-		homer.Action(marge, burns, bart, lisa);
-		CHECK(homer.GetAccountBalance() == 40);
-		CHECK(marge.GetAccountBalance() == 400);
-		CHECK(burns.GetAccountBalance() == 1400);
-		CHECK(bart.GetCash() == 330);
-		CHECK(lisa.GetCash() == 330);
-	}
+		Bank bank(3700);
+		Homer homer(bank, 300);
+		homer.DepositMoney(300);
+		Marge marge(bank, 300);
+		marge.DepositMoney(300);
+		Apu apu(bank, 300);
+		apu.DepositMoney(300);
+		Burns burns(bank, 1300);
+		burns.DepositMoney(1300);
+		Chester chester(bank, 300);
+		chester.DepositMoney(300);
+		Smithers smithers(bank, 300);
+		smithers.DepositMoney(300);
+		Bart bart(300);
+		Lisa lisa(300);
+		Nelson nelson(300);
 
-	WHEN("Marge acts")
-	{
-		marge.Action(apu);
-		CHECK(marge.GetAccountBalance() == 200);
-		CHECK(apu.GetAccountBalance() == 400);
-	}
-
-	WHEN("Apu acts")
-	{
-		apu.Action(burns);
-		CHECK(apu.GetAccountBalance() == 200);
-		CHECK(burns.GetAccountBalance() == 1400);
-	}
-
-	WHEN("Apu have 50 units of cash and acts")
-	{
-		CHECK(apu.TryWithdrawMoney(50));
-		CHECK(apu.GetCash() == 50);
-		apu.Action(burns);
-		THEN("Apu deposit his cash to account and paid for electricity")
+		WHEN("Homer acts")
 		{
-			CHECK(apu.GetCash() == 0);
+			homer.Action(marge, burns, bart, lisa);
+			CHECK(homer.GetAccountBalance() == 40);
+			CHECK(marge.GetAccountBalance() == 400);
+			CHECK(burns.GetAccountBalance() == 1400);
+			CHECK(bart.GetCash() == 330);
+			CHECK(lisa.GetCash() == 330);
+		}
+
+		WHEN("Marge acts")
+		{
+			marge.Action(apu);
+			CHECK(marge.GetAccountBalance() == 200);
+			CHECK(apu.GetAccountBalance() == 400);
+		}
+
+		WHEN("Apu acts")
+		{
+			apu.Action(burns);
 			CHECK(apu.GetAccountBalance() == 200);
 			CHECK(burns.GetAccountBalance() == 1400);
 		}
-	}
 
-	WHEN("Bart acts")
-	{
-		bart.Action(apu);
-		CHECK(apu.GetCash() == 10);
-		CHECK(bart.GetCash() == 290);
-	}
+		WHEN("Apu have 50 units of cash and acts")
+		{
+			CHECK(apu.TryWithdrawMoney(50));
+			CHECK(apu.GetCash() == 50);
+			apu.Action(burns);
+			THEN("Apu deposit his cash to account and paid for electricity")
+			{
+				CHECK(apu.GetCash() == 0);
+				CHECK(apu.GetAccountBalance() == 200);
+				CHECK(burns.GetAccountBalance() == 1400);
+			}
+		}
 
-	WHEN("Lisa acts")
-	{
-		lisa.Action(apu);
-		CHECK(apu.GetCash() == 10);
-		CHECK(lisa.GetCash() == 290);
-	}
+		WHEN("Bart acts")
+		{
+			bart.Action(apu);
+			CHECK(apu.GetCash() == 10);
+			CHECK(bart.GetCash() == 290);
+		}
 
-	WHEN("Burns acts")
+		WHEN("Lisa acts")
+		{
+			lisa.Action(apu);
+			CHECK(apu.GetCash() == 10);
+			CHECK(lisa.GetCash() == 290);
+		}
+
+		WHEN("Burns acts")
+		{
+			burns.Action(homer, smithers);
+			CHECK(burns.GetAccountBalance() == 500);
+			CHECK(smithers.GetAccountBalance() == 700);
+			CHECK(homer.GetAccountBalance() == 700);
+		}
+	}
+}
+
+SCENARIO("money check after 100 iterations")
+{
+	std::cout.rdbuf(nullptr);
+	GIVEN("bank and all actors")
 	{
-		burns.Action(homer, smithers);		
-		CHECK(burns.GetAccountBalance() == 500);
-		CHECK(smithers.GetAccountBalance() == 700);
-		CHECK(homer.GetAccountBalance() == 700);
+		Bank bank(3700);
+		Homer homer(bank, 300);
+		homer.DepositMoney(300);
+		Marge marge(bank, 300);
+		marge.DepositMoney(300);
+		Apu apu(bank, 300);
+		apu.DepositMoney(300);
+		Burns burns(bank, 1300);
+		burns.DepositMoney(1300);
+		Chester chester(bank, 300);
+		chester.DepositMoney(300);
+		Smithers smithers(bank, 300);
+		smithers.DepositMoney(300);
+		Bart bart(300);
+		Lisa lisa(300);
+		Nelson nelson(300);
+
+		WHEN("100 iterations have passed")
+		{
+			for (int i = 0; i < 100; i++)
+			{
+				homer.Action(marge, burns, bart, lisa);
+				marge.Action(apu);
+				bart.Action(apu);
+				lisa.Action(apu);
+				apu.Action(burns);
+				burns.Action(homer, smithers);
+				nelson.Action(nelson, bart, apu);
+				chester.Action(chester, homer, apu);
+				smithers.Action(apu);
+			}
+
+			THEN("amount of cash should be correct")
+			{
+				Money allCash = bart.GetCash() + lisa.GetCash() + apu.GetCash() + nelson.GetCash() + smithers.GetCash();
+
+				Money allDeposits = 0;
+				allDeposits += bank.GetAccountBalance(homer.GetAccountId());
+				allDeposits += bank.GetAccountBalance(marge.GetAccountId());
+				allDeposits += bank.GetAccountBalance(apu.GetAccountId());
+				allDeposits += bank.GetAccountBalance(burns.GetAccountId());
+				allDeposits += bank.GetAccountBalance(chester.GetAccountId());
+				if (bank.IsAccountExisting(smithers.GetAccountId()))
+				{
+					allDeposits += bank.GetAccountBalance(smithers.GetAccountId());
+				}
+
+				CHECK(allCash == bank.GetCash());
+				CHECK(allDeposits + allCash == 3700);
+			}
+		}
 	}
 }
