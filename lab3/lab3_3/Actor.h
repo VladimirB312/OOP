@@ -13,7 +13,6 @@ public:
 
 protected:
 	Money m_cash;
-	std::string m_name;
 
 private:
 	void RecieveMoney(Money amount);
