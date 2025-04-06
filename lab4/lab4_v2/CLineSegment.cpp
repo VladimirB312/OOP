@@ -31,15 +31,6 @@ std::string CLineSegment::ToString()
 	return strm.str();
 }
 
-uint32_t CLineSegment::GetOutlineColor()
-{
-	return m_outlineColor;
-}
-
-void CLineSegment::SetOutlineColor(uint32_t color)
-{
-	m_outlineColor = color;
-}
 
 CPoint CLineSegment::GetStartPoint()
 {

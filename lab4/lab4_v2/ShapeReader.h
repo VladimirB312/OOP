@@ -1,5 +1,5 @@
 #pragma once
-#include "IShape.h"
+#include "Shape.h"
 #include <functional>
 #include <map>
 #include <sstream>
@@ -17,18 +17,18 @@ class ShapeReader
 {
 public:
 	ShapeReader(std::istream& input, std::ostream& output);
-	std::shared_ptr<IShape> GetShape(std::istream& input);
+	std::unique_ptr<Shape> GetShape(std::istream& input);
 
 private:
-	using Handler = std::function<std::shared_ptr<IShape>(std::istream& args)>;
+	using Handler = std::function<std::unique_ptr<Shape>(std::istream& args)>;
 	using ActionMap = std::map<std::string, Handler>;
 
 	std::istream& m_input;
 	std::ostream& m_output;
 	ActionMap m_actionMap;
 	
-	std::shared_ptr<IShape> GetLineSegment(std::istream& input);
-	std::shared_ptr<IShape> GetTriangle(std::istream& input);
-	std::shared_ptr<IShape> GetRectangle(std::istream& input);
-	std::shared_ptr<IShape> GetCircle(std::istream& input);
+	std::unique_ptr<Shape> GetLineSegment(std::istream& input);
+	std::unique_ptr<Shape> GetTriangle(std::istream& input);
+	std::unique_ptr<Shape> GetRectangle(std::istream& input);
+	std::unique_ptr<Shape> GetCircle(std::istream& input);
 };

@@ -136,8 +136,10 @@
     <ClCompile Include="CRectangle.cpp" />
     <ClCompile Include="CTriangle.cpp" />
     <ClCompile Include="lab4_v2.cpp" />
+    <ClCompile Include="Shape.cpp" />
     <ClCompile Include="ShapeReader.cpp" />
     <ClCompile Include="ShapeStorage.cpp" />
+    <ClCompile Include="SolidShape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCircle.h" />
@@ -145,8 +147,8 @@
     <ClInclude Include="CPoint.h" />
     <ClInclude Include="CRectangle.h" />
     <ClInclude Include="CTriangle.h" />
-    <ClInclude Include="IShape.h" />
-    <ClInclude Include="ISolidShape.h" />
+    <ClInclude Include="Shape.h" />
+    <ClInclude Include="SolidShape.h" />
     <ClInclude Include="ShapeReader.h" />
     <ClInclude Include="ShapeStorage.h" />
   </ItemGroup>

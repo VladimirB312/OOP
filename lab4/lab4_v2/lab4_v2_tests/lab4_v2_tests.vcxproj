@@ -147,7 +147,9 @@
     <ClCompile Include="..\CLineSegment.cpp" />
     <ClCompile Include="..\CRectangle.cpp" />
     <ClCompile Include="..\CTriangle.cpp" />
+    <ClCompile Include="..\Shape.cpp" />
     <ClCompile Include="..\ShapeStorage.cpp" />
+    <ClCompile Include="..\SolidShape.cpp" />
     <ClCompile Include="lab4_v2_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +158,8 @@
     <ClInclude Include="..\CPoint.h" />
     <ClInclude Include="..\CRectangle.h" />
     <ClInclude Include="..\CTriangle.h" />
+    <ClInclude Include="..\Shape.h" />
+    <ClInclude Include="..\SolidShape.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

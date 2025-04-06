@@ -32,26 +32,6 @@ std::string CRectangle::ToString()
 	return strm.str();
 }
 
-uint32_t CRectangle::GetOutlineColor()
-{
-	return m_outlineColor;
-}
-
-uint32_t CRectangle::GetFillColor()
-{
-	return m_fillColor;
-}
-
-void CRectangle::SetOutlineColor(uint32_t color)
-{
-	m_outlineColor = color;
-}
-
-void CRectangle::SetFillColor(uint32_t color)
-{
-	m_fillColor = color;
-}
-
 CPoint CRectangle::GetLeftTop()
 {
 	return m_leftTop;

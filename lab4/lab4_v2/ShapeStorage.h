@@ -1,5 +1,5 @@
 #pragma once
-#include "IShape.h"
+#include "Shape.h"
 #include <vector>
 #include <memory>
 #include <optional>
@@ -7,10 +7,10 @@
 class ShapeStorage
 {
 public:
-	void AddShape(std::shared_ptr<IShape> shape);
-	std::optional<std::shared_ptr<IShape>> GetMaxAreaShape();
-	std::optional<std::shared_ptr<IShape>> GetMinPerimeterShape();
+	void AddShape(std::unique_ptr<Shape> shape);
+	std::unique_ptr<Shape> GetMaxAreaShape();
+	std::optional<std::unique_ptr<Shape>> GetMinPerimeterShape();
 
 private:
-	std::vector<std::shared_ptr<IShape>> m_shapes{};
+	std::vector<std::unique_ptr<Shape>> m_shapes{};
 };

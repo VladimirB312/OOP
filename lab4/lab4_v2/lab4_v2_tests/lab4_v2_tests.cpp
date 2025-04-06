@@ -90,6 +90,14 @@ SCENARIO("create triangle")
 			CHECK_THAT(triangle.GetPerimeter(), Catch::Matchers::WithinAbs(44.608, 0.001));
 		}
 	}
+
+	WHEN("create invalid triangle with points { 1, 3 }, { 5, 3 }, { 7, 3 } ")
+	{
+		THEN("an exception should be thrown")
+		{
+			CHECK_THROWS_AS(CTriangle({ 1, 3 }, { 5, 3 }, { 7, 3 }), ShapeException);
+		}
+	}
 }
 
 SCENARIO("create rectangle")
@@ -133,12 +141,24 @@ SCENARIO("create rectangle")
 	WHEN("create rectangle with left top point { 4, 8 } and right bottom point { 15, 27 } ")
 	{
 		CRectangle rect({ 4, 8 }, { 15, 27 });
-		THEN("area should be 209, perimeter 60, width, height")
+		THEN("area should be 209, perimeter 60, width 11, height 19")
 		{
 			CHECK_THAT(rect.GetArea(), Catch::Matchers::WithinAbs(209, 0.001));
 			CHECK_THAT(rect.GetPerimeter(), Catch::Matchers::WithinAbs(60, 0.001));
 			CHECK_THAT(rect.GetWidth(), Catch::Matchers::WithinAbs(11, 0.001));
 			CHECK_THAT(rect.GetHeight(), Catch::Matchers::WithinAbs(19, 0.001));
+		}
+	}
+
+	WHEN("create rectangle with left top point { 1, 1 } and right bottom point { 1, 1 } ")
+	{
+		CRectangle rect({ 1, 1 }, { 1, 1 });
+		THEN("all params should be 0")
+		{
+			CHECK_THAT(rect.GetArea(), Catch::Matchers::WithinAbs(0, 0.001));
+			CHECK_THAT(rect.GetPerimeter(), Catch::Matchers::WithinAbs(0, 0.001));
+			CHECK_THAT(rect.GetWidth(), Catch::Matchers::WithinAbs(0, 0.001));
+			CHECK_THAT(rect.GetHeight(), Catch::Matchers::WithinAbs(0, 0.001));
 		}
 	}
 }
@@ -187,6 +207,22 @@ SCENARIO("create circle")
 			CHECK_THAT(circle.GetPerimeter(), Catch::Matchers::WithinAbs(81.681, 0.001));
 		}
 	}
+
+	WHEN("create invalid circle with center point { 4, 8 } and radius 0 ")
+	{
+		THEN("an exception should be thrown")
+		{
+			CHECK_THROWS_AS(CCircle({ 4, 8 }, 0), ShapeException);
+		}
+	}
+
+	WHEN("create invalid circle with center point { 4, 8 } and radius -1 ")
+	{
+		THEN("an exception should be thrown")
+		{
+			CHECK_THROWS_AS(CCircle({ 4, 8 }, -1), ShapeException);
+		}
+	}
 }
 
 SCENARIO("get max area and min perimeter")
@@ -194,14 +230,14 @@ SCENARIO("get max area and min perimeter")
 	GIVEN("shape storage with several shapes, where the circle with maximum area and the line with minimum perimeter")
 	{
 		ShapeStorage storage;
-		auto line = std::make_shared<CLineSegment>(CPoint{ 1, 3 }, CPoint{ 3, 5 });
-		auto triangle = std::make_shared<CTriangle>(CPoint{ 1, 2 }, CPoint{ 7, 2 }, CPoint{ 3, 8 });
-		auto rect = std::make_shared<CRectangle>(CPoint{ 0, 0 }, CPoint{ 15, 15 });
-		auto circle = std::make_shared<CCircle>(CPoint{ 10, 10 }, 15);
-		storage.AddShape(line);
-		storage.AddShape(triangle);
-		storage.AddShape(rect);
-		storage.AddShape(circle);
+		auto line = std::make_unique<CLineSegment>(CPoint{ 1, 3 }, CPoint{ 3, 5 });
+		auto triangle = std::make_unique<CTriangle>(CPoint{ 1, 2 }, CPoint{ 7, 2 }, CPoint{ 3, 8 });
+		auto rect = std::make_unique<CRectangle>(CPoint{ 0, 0 }, CPoint{ 15, 15 });
+		auto circle = std::make_unique<CCircle>(CPoint{ 10, 10 }, 15);
+		storage.AddShape(std::move(line));
+		storage.AddShape(std::move(triangle));
+		storage.AddShape(std::move(rect));
+		storage.AddShape(std::move(circle));
 
 		WHEN("get shape with a maximum area")
 		{

@@ -7,6 +7,10 @@ CCircle::CCircle(CPoint center, double radius)
 	: m_center(center)
 	, m_radius(radius)
 {
+	if (m_radius <= 0)
+	{
+		throw ShapeException("radius cannot be negative");
+	}
 }
 
 double CCircle::GetArea()
@@ -29,26 +33,6 @@ std::string CCircle::ToString()
 	strm << ", fill color: " << std::hex << GetFillColor();
 
 	return strm.str();
-}
-
-uint32_t CCircle::GetOutlineColor()
-{
-	return m_outlineColor;
-}
-
-uint32_t CCircle::GetFillColor()
-{
-	return m_fillColor;
-}
-
-void CCircle::SetOutlineColor(uint32_t color)
-{
-	m_outlineColor = color;
-}
-
-void CCircle::SetFillColor(uint32_t color)
-{
-	m_fillColor = color;
 }
 
 CPoint CCircle::GetCenter()
