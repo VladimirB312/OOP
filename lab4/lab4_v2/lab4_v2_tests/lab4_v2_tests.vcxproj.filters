@@ -13,27 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\ShapeClasses">
+      <UniqueIdentifier>{aaf68c30-65a1-4a80-88e7-f6cdee036545}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ShapeClasses">
+      <UniqueIdentifier>{1d0f9bfd-5264-4fb7-a81a-9d52c6133af3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Canvas">
+      <UniqueIdentifier>{6ba8e2fc-8125-4b06-b23e-8a66c39bcebd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lab4_v2_tests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\CLineSegment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\CTriangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\CRectangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\CCircle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Shape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\SolidShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\ShapeUtils.cpp">
@@ -42,34 +33,52 @@
     <ClCompile Include="..\ShapeReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\CCircle.cpp">
+      <Filter>Source Files\ShapeClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CLineSegment.cpp">
+      <Filter>Source Files\ShapeClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CRectangle.cpp">
+      <Filter>Source Files\ShapeClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CTriangle.cpp">
+      <Filter>Source Files\ShapeClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shape.cpp">
+      <Filter>Source Files\ShapeClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SolidShape.cpp">
+      <Filter>Source Files\ShapeClasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\CLineSegment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\CPoint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\CTriangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\CRectangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\CCircle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Shape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SolidShape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\ShapeUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\ShapeReader.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CCircle.h">
+      <Filter>Header Files\ShapeClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CLineSegment.h">
+      <Filter>Header Files\ShapeClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CPoint.h">
+      <Filter>Header Files\ShapeClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CRectangle.h">
+      <Filter>Header Files\ShapeClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CTriangle.h">
+      <Filter>Header Files\ShapeClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shape.h">
+      <Filter>Header Files\ShapeClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SolidShape.h">
+      <Filter>Header Files\ShapeClasses</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

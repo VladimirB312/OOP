@@ -10,8 +10,9 @@ public:
 	double GetArea() const override;
 	double GetPerimeter() const override;
 	std::string ToString() const override;
-	CPoint GetCenter() const; 
+	CPoint GetCenter() const;
 	double GetRadius() const;
+	void Draw(ICanvas& canvas) const override;
 
 private:
 	CPoint m_center;

@@ -1,6 +1,7 @@
 #pragma once
 #include <stdexcept>
 #include <string>
+#include "ICanvasDrawable.h"
 
 class ShapeException : public std::runtime_error
 {
@@ -9,7 +10,7 @@ public:
 		: std::runtime_error(message) {};
 };
 
-class Shape
+class Shape: public ICanvasDrawable
 {
 public:
 	uint32_t GetOutlineColor() const;

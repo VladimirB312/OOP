@@ -1,6 +1,7 @@
 #include "ShapeReader.h"
 #include "ShapeUtils.h"
 #include <iostream>
+#include "DrawShapes.h"
 
 int main()
 {
@@ -15,6 +16,8 @@ int main()
 
 		std::cout << "Shape with min perimeter:\n";
 		PrintShapeInfo(std::cout, GetShapeWithMinPerimeter(shapes));
+
+		DrawShapes(shapes);
 	}
 	catch (const std::exception& ex)
 	{

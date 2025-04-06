@@ -36,7 +36,6 @@ std::string CTriangle::ToString() const
 	return "Triangle " + SolidShape::ToString() + "\n";
 }
 
-
 CPoint CTriangle::GetVertex1() const
 {
 	return m_vertex1;
@@ -50,6 +49,11 @@ CPoint CTriangle::GetVertex2() const
 CPoint CTriangle::GetVertex3() const
 {
 	return m_vertex3;
+}
+
+void CTriangle::Draw(ICanvas& canvas) const
+{
+	canvas.DrawPolygon({ m_vertex1, m_vertex2, m_vertex3 }, GetOutlineColor(), GetFillColor());
 }
 
 void CTriangle::CalculateProperties()
