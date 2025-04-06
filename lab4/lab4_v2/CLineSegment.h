@@ -6,11 +6,11 @@ class CLineSegment : public Shape
 {
 public:
 	CLineSegment(CPoint start, CPoint end);
-	double GetArea() override;
-	double GetPerimeter() override;
-	std::string ToString() override;
-	CPoint GetStartPoint();
-	CPoint GetEndPoint();
+	double GetArea() const override;
+	double GetPerimeter() const override;
+	std::string ToString() const override;
+	CPoint GetStartPoint() const;
+	CPoint GetEndPoint() const;
 
 private:
 	CPoint m_start;

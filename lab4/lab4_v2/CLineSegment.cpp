@@ -10,34 +10,28 @@ CLineSegment::CLineSegment(CPoint start, CPoint end)
 {
 }
 
-double CLineSegment::GetArea()
+double CLineSegment::GetArea() const
 {
 	return m_start.GetDistanceTo(m_end);
 }
 
-double CLineSegment::GetPerimeter()
+double CLineSegment::GetPerimeter() const
 {
 	return GetArea() * 2 + LINE_THICKNESS * 2;
 }
 
-std::string CLineSegment::ToString()
+std::string CLineSegment::ToString() const
 {
-	std::ostringstream strm;
-	strm << "Line ";
-	strm << "area: " << GetArea();
-	strm << ", perimeter: " << GetPerimeter();
-	strm << ", outline color: " << std::hex << GetOutlineColor();
-
-	return strm.str();
+	return "Line segment " + Shape::ToString() + "\n";
 }
 
 
-CPoint CLineSegment::GetStartPoint()
+CPoint CLineSegment::GetStartPoint() const
 {
 	return m_start;
 }
 
-CPoint CLineSegment::GetEndPoint()
+CPoint CLineSegment::GetEndPoint() const
 {
 	return m_end;
 }

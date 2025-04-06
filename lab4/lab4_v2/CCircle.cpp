@@ -13,34 +13,27 @@ CCircle::CCircle(CPoint center, double radius)
 	}
 }
 
-double CCircle::GetArea()
+double CCircle::GetArea() const
 {
 	return PI * m_radius * m_radius;
 }
 
-double CCircle::GetPerimeter()
+double CCircle::GetPerimeter() const
 {
 	return 2 * PI * m_radius;
 }
 
-std::string CCircle::ToString()
+std::string CCircle::ToString() const
 {
-	std::ostringstream strm;
-	strm << "Circle ";
-	strm << "area: " << GetArea();
-	strm << ", perimeter: " << GetPerimeter();
-	strm << ", outline color: " << std::hex << GetOutlineColor();
-	strm << ", fill color: " << std::hex << GetFillColor();
-
-	return strm.str();
+	return "Circle " + SolidShape::ToString() + "\n";
 }
 
-CPoint CCircle::GetCenter()
+CPoint CCircle::GetCenter() const
 {
 	return m_center;
 }
 
-double CCircle::GetRadius()
+double CCircle::GetRadius() const
 {
 	return m_radius;
 }

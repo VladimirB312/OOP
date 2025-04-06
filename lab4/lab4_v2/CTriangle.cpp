@@ -21,50 +21,33 @@ CTriangle::CTriangle(CPoint vertex1, CPoint vertex2, CPoint vertex3)
 	CalculateProperties();
 }
 
-double CTriangle::GetArea()
+double CTriangle::GetArea() const
 {
-	if (!m_area.has_value())
-	{
-		CalculateProperties();
-	}
-
-	return m_area.value();
+	return m_area;
 }
 
-double CTriangle::GetPerimeter()
+double CTriangle::GetPerimeter() const
 {
-	if (!m_perimeter.has_value())
-	{
-		CalculateProperties();
-	}
-
-	return m_perimeter.value();
+	return m_perimeter;
 }
 
-std::string CTriangle::ToString()
+std::string CTriangle::ToString() const
 {
-	std::ostringstream strm;
-	strm << "Triangle ";
-	strm << "area: " << GetArea();
-	strm << ", perimeter: " << GetPerimeter();
-	strm << ", outline color: " << std::hex << GetOutlineColor();
-	strm << ", fill color: " << std::hex << GetFillColor();
-
-	return strm.str();
+	return "Triangle " + SolidShape::ToString() + "\n";
 }
 
 
-CPoint CTriangle::GetVertex1()
+CPoint CTriangle::GetVertex1() const
 {
 	return m_vertex1;
 }
 
-CPoint CTriangle::GetVertex2()
+CPoint CTriangle::GetVertex2() const
 {
 	return m_vertex2;
 }
 
-CPoint CTriangle::GetVertex3()
+CPoint CTriangle::GetVertex3() const
 {
 	return m_vertex3;
 }
@@ -79,7 +62,7 @@ void CTriangle::CalculateProperties()
 
 	m_perimeter = p1 + p2 + p3;
 
-	double semiP = m_perimeter.value() / 2;
+	double semiP = m_perimeter / 2;
 
 	m_area = std::sqrt(semiP * (semiP - p1) * (semiP - p2) * (semiP - p3));
 }

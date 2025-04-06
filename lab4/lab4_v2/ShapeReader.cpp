@@ -22,7 +22,7 @@ CPoint ReadPoint(std::istream& input)
 uint32_t ReadColor(std::istream& input)
 {
 	uint32_t color;
-	if (!(input >> std::hex >> color))
+	if (!(input >> std::hex >> color) || color > 0xFFFFFF)
 	{
 		throw ShapeReaderException("invalid color");
 	}

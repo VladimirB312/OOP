@@ -5,7 +5,7 @@
 #include "../CPoint.h"
 #include "../CRectangle.h"
 #include "../CTriangle.h"
-#include "../ShapeStorage.h"
+#include "../ShapeUtils.h"
 
 SCENARIO("create line segment")
 {
@@ -229,19 +229,19 @@ SCENARIO("get max area and min perimeter")
 {
 	GIVEN("shape storage with several shapes, where the circle with maximum area and the line with minimum perimeter")
 	{
-		ShapeStorage storage;
+		std::vector<std::unique_ptr<Shape>> shapes;
 		auto line = std::make_unique<CLineSegment>(CPoint{ 1, 3 }, CPoint{ 3, 5 });
 		auto triangle = std::make_unique<CTriangle>(CPoint{ 1, 2 }, CPoint{ 7, 2 }, CPoint{ 3, 8 });
 		auto rect = std::make_unique<CRectangle>(CPoint{ 0, 0 }, CPoint{ 15, 15 });
 		auto circle = std::make_unique<CCircle>(CPoint{ 10, 10 }, 15);
-		storage.AddShape(std::move(line));
-		storage.AddShape(std::move(triangle));
-		storage.AddShape(std::move(rect));
-		storage.AddShape(std::move(circle));
+		shapes.push_back(std::move(line));
+		shapes.push_back(std::move(triangle));
+		shapes.push_back(std::move(rect));
+		shapes.push_back(std::move(circle));
 
 		WHEN("get shape with a maximum area")
 		{
-			auto shape = storage.GetMaxAreaShape().value();
+			auto shape = GetShapeWithMaxArea(shapes);
 			THEN("shape must be a circle with area 706.858")
 			{
 				std::istringstream strm(shape->ToString());
@@ -254,7 +254,7 @@ SCENARIO("get max area and min perimeter")
 
 		WHEN("get shape with a minimum perimeter")
 		{
-			auto shape = storage.GetMinPerimeterShape().value();
+			auto shape = GetShapeWithMinPerimeter(shapes);
 			THEN("shape must be a line with perimeter 7.656")
 			{
 				std::istringstream strm(shape->ToString());
@@ -268,19 +268,19 @@ SCENARIO("get max area and min perimeter")
 
 	GIVEN("shape storage with several shapes, where the rectangle with maximum area and the triangle with minimum perimeter")
 	{
-		ShapeStorage storage;
-		auto line = std::make_shared<CLineSegment>(CPoint{ 2, 2 }, CPoint{ 100, 9 });
-		auto triangle = std::make_shared<CTriangle>(CPoint{ 4, 3 }, CPoint{ 10, 4 }, CPoint{ 5, 10 });
-		auto rect = std::make_shared<CRectangle>(CPoint{ 10, 10 }, CPoint{ 30, 30 });
-		auto circle = std::make_shared<CCircle>(CPoint{ 2, 2 }, 4);
-		storage.AddShape(line);
-		storage.AddShape(triangle);
-		storage.AddShape(rect);
-		storage.AddShape(circle);
+		std::vector<std::unique_ptr<Shape>> shapes;
+		auto line = std::make_unique<CLineSegment>(CPoint{ 2, 2 }, CPoint{ 100, 9 });
+		auto triangle = std::make_unique<CTriangle>(CPoint{ 4, 3 }, CPoint{ 10, 4 }, CPoint{ 5, 10 });
+		auto rect = std::make_unique<CRectangle>(CPoint{ 10, 10 }, CPoint{ 30, 30 });
+		auto circle = std::make_unique<CCircle>(CPoint{ 2, 2 }, 4);
+		shapes.push_back(std::move(line));
+		shapes.push_back(std::move(triangle));
+		shapes.push_back(std::move(rect));
+		shapes.push_back(std::move(circle));
 
 		WHEN("get shape with a maximum area")
 		{
-			auto shape = storage.GetMaxAreaShape().value();
+			auto shape = GetShapeWithMaxArea(shapes);
 			THEN("shape must be a circle with area 400")
 			{
 				std::istringstream strm(shape->ToString());
@@ -293,7 +293,7 @@ SCENARIO("get max area and min perimeter")
 
 		WHEN("get shape with a minimum perimeter")
 		{
-			auto shape = storage.GetMinPerimeterShape().value();
+			auto shape = GetShapeWithMinPerimeter(shapes);
 			THEN("shape must be a triangle with perimeter 20.964")
 			{
 				std::istringstream strm(shape->ToString());

@@ -1,6 +1,8 @@
 #include "Shape.h"
+#include <sstream>
+#include <format>
 
-uint32_t Shape::GetOutlineColor()
+uint32_t Shape::GetOutlineColor() const
 {
 	return m_outlineColor;
 }
@@ -10,8 +12,13 @@ void Shape::SetOutlineColor(uint32_t color)
 	m_outlineColor = color;
 }
 
-std::string Shape::GetInfo()
+std::string Shape::ToString() const
 {
-
-	return "area: " + std::to_string(GetArea()) + ", perimeter " + std::to_string(GetPerimeter()) + ", outline color" + std::to_string(GetOutlineColor());
+	std::ostringstream strm;
+	strm << "area : " << GetArea();
+	strm << ", perimeter " << GetPerimeter();
+	strm << ", perimeter " << GetPerimeter();
+	strm << std::format(", outline color 0x{:06X}", m_outlineColor);
+		
+	return strm.str();
 }

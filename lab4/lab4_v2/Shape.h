@@ -12,15 +12,12 @@ public:
 class Shape
 {
 public:
-	virtual double GetArea() = 0;
-	virtual double GetPerimeter() = 0;
-	virtual std::string ToString() = 0;
-	uint32_t GetOutlineColor();
+	uint32_t GetOutlineColor() const;
 	void SetOutlineColor(uint32_t color);
+	virtual double GetArea() const = 0;
+	virtual double GetPerimeter() const = 0;
+	virtual std::string ToString() const;
 	virtual ~Shape() = default;
-
-protected:
-	virtual std::string GetInfo();
 
 private:
 	uint32_t m_outlineColor = 0x000000FF;
