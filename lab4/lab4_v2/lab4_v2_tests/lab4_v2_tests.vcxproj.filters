@@ -80,5 +80,8 @@
     <ClInclude Include="..\SolidShape.h">
       <Filter>Header Files\ShapeClasses</Filter>
     </ClInclude>
+    <ClInclude Include="fakeit.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

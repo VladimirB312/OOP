@@ -1,11 +1,13 @@
 #define CATCH_CONFIG_MAIN
-#include "../../../catch2/catch.hpp"
+// #include "../../../catch2/catch.hpp"
 #include "../CCircle.h"
 #include "../CLineSegment.h"
 #include "../CPoint.h"
 #include "../CRectangle.h"
 #include "../CTriangle.h"
 #include "../ShapeUtils.h"
+#include "catch.hpp"
+#include "fakeit.hpp"
 
 SCENARIO("create line segment")
 {
@@ -302,6 +304,163 @@ SCENARIO("get max area and min perimeter")
 				CHECK(shapeName == "Triangle");
 				CHECK_THAT(shape->GetPerimeter(), Catch::Matchers::WithinAbs(20.964, 0.001));
 			}
+		}
+	}
+}
+
+SCENARIO("draw shapes")
+{
+	fakeit::Mock<ICanvas> mockCanvas;
+	WHEN("draw rectangle")
+	{
+		CRectangle rect({ 10, 30 }, { 40, 10 });
+		CPoint leftBottom = { 10, 10 };
+		CPoint rightBottom = { 40, 10 };
+		CPoint rightTop = { 40, 30 };
+		CPoint leftTop = { 10, 30 };
+		uint32_t outlineColor = 0xFF0000;
+		uint32_t fillColor = 0x00FF00;
+		rect.SetFillColor(fillColor);
+		rect.SetOutlineColor(outlineColor);
+
+		THEN("rectangle should call the DrawPolygon method with the correct parameters")
+		{
+			fakeit::When(Method(mockCanvas, DrawPolygon)).Return();
+			rect.Draw(mockCanvas.get());
+
+			fakeit::Verify(Method(mockCanvas, DrawPolygon).Matching([&](std::vector<CPoint> points, uint32_t lColor, uint32_t fColor) {
+				if (points.size() != 4)
+				{
+					return false;
+				}
+				if (points[0].x != leftBottom.x || points[0].y != leftBottom.y)
+				{
+					return false;
+				}
+				if (points[1].x != rightBottom.x || points[1].y != rightBottom.y)
+				{
+					return false;
+				}
+				if (points[2].x != rightTop.x || points[2].y != rightTop.y)
+				{
+					return false;
+				}
+				if (points[3].x != leftTop.x || points[3].y != leftTop.y)
+				{
+					return false;
+				}
+				if (lColor != outlineColor || fColor != fillColor)
+				{
+					return false;
+				}
+				return true;
+			})).Exactly(fakeit::Once);
+		}
+	}
+
+	WHEN("draw triangle")
+	{
+		CPoint vertex1 = { 10, 10 };
+		CPoint vertex2 = { 40, 10 };
+		CPoint vertex3 = { 20, 30 };
+		CTriangle triangle(vertex1, vertex2, vertex3);
+		uint32_t outlineColor = 0xFF0000;
+		uint32_t fillColor = 0x00FF00;
+		triangle.SetFillColor(fillColor);
+		triangle.SetOutlineColor(outlineColor);
+
+		THEN("triangle should call the DrawPolygon method with the correct parameters")
+		{
+			fakeit::When(Method(mockCanvas, DrawPolygon)).Return();
+			triangle.Draw(mockCanvas.get());
+
+			fakeit::Verify(Method(mockCanvas, DrawPolygon).Matching([&](std::vector<CPoint> points, uint32_t lColor, uint32_t fColor) {
+				if (points.size() != 3)
+				{
+					return false;
+				}
+				if (points[0].x != vertex1.x || points[0].y != vertex1.y)
+				{
+					return false;
+				}
+				if (points[1].x != vertex2.x || points[1].y != vertex2.y)
+				{
+					return false;
+				}
+				if (points[2].x != vertex3.x || points[2].y != vertex3.y)
+				{
+					return false;
+				}
+				if (lColor != outlineColor || fColor != fillColor)
+				{
+					return false;
+				}
+				return true;
+			})).Exactly(fakeit::Once);
+		}
+	}
+
+	WHEN("draw line")
+	{
+		CPoint p1 = { 10, 10 };
+		CPoint p2 = { 40, 20 };
+		CLineSegment line(p1, p2);
+		uint32_t outlineColor = 0xFF0000;
+		line.SetOutlineColor(outlineColor);
+
+		THEN("line should call the DrawLine method with the correct parameters")
+		{
+			fakeit::When(Method(mockCanvas, DrawLine)).Return();
+			line.Draw(mockCanvas.get());
+
+			fakeit::Verify(Method(mockCanvas, DrawLine).Matching([&](CPoint from, CPoint to, uint32_t lColor) {
+				if (from.x != p1.x || from.y != p1.y)
+				{
+					return false;
+				}
+				if (to.x != p2.x || to.y != p2.y)
+				{
+					return false;
+				}
+				if (lColor != outlineColor)
+				{
+					return false;
+				}
+				return true;
+			})).Exactly(fakeit::Once);
+		}
+	}
+
+	WHEN("draw circle")
+	{
+		CPoint center = { 25, 25 };
+		double radius = 10;
+		CCircle circle(center, radius);
+		uint32_t outlineColor = 0xFF0000;
+		uint32_t fillColor = 0x00FF00;
+		circle.SetFillColor(fillColor);
+		circle.SetOutlineColor(outlineColor);
+
+		THEN("circle should call the DrawPolygon method with the correct parameters")
+		{
+			fakeit::When(Method(mockCanvas, DrawCircle)).Return();
+			circle.Draw(mockCanvas.get());
+
+			fakeit::Verify(Method(mockCanvas, DrawCircle).Matching([&](CPoint center_, double radius_, uint32_t lColor, uint32_t fColor) {
+				if (center_.x != center.x || center_.y != center.y)
+				{
+					return false;
+				}
+				if (radius_ != radius)
+				{
+					return false;
+				}
+				if (lColor != outlineColor || fColor != fillColor)
+				{
+					return false;
+				}
+				return true;
+			})).Exactly(fakeit::Once);
 		}
 	}
 }
