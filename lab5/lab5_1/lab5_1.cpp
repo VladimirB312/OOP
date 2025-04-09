@@ -26,9 +26,8 @@ std::string WeekToStr(WeekDay day)
 
 int main()
 {
-	CDate date0(31, Month::DECEMBER, 9999);
-	CDate date = date0 - 2932896;
-	
+	CDate date;
+	date += 20;
 	//CDate date(0);
 	std::cout << "d: " << date.GetDay() << ", m: " << static_cast<unsigned>(date.GetMonth()) << ", y: " << date.GetYear() << "\n";
 	std::cout << "week: " << WeekToStr(date.GetWeekDay()) << "\n";

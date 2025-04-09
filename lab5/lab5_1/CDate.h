@@ -1,5 +1,7 @@
 #pragma once
 #include "stdexcept"
+#include <format>
+#include <ostream>
 #include <string>
 
 enum class Month
@@ -41,27 +43,33 @@ public:
 class CDate
 {
 public:
-	CDate(unsigned day, Month month, unsigned year);
-	explicit CDate(unsigned timestamp);
+	CDate(int day, Month month, int year);
+	explicit CDate(int timestamp);
 	CDate() = default;
-	unsigned GetDay() const;
+	int GetDay() const;
 	Month GetMonth() const;
-	unsigned GetYear() const;
+	int GetYear() const;
 	WeekDay GetWeekDay() const;
 
 	CDate& operator++();
 	CDate& operator--();
 	CDate operator++(int);
 	CDate operator--(int);
-	CDate operator+(int days);
-	CDate operator-(int days);
+	CDate operator+(int days) const;
+	CDate operator-(int days) const;
+	int operator-(const CDate& date) const;
+	CDate& operator+=(int days);
+	CDate& operator-=(int days);
 
 private:
-	unsigned m_timestamp = 0;
+	int m_timestamp = 0;
 	WeekDay m_weekDay = WeekDay::THURSDAY;
 	Month m_month = Month::JANUARY;
-	unsigned m_day = 1;
-	unsigned m_year = 1970;
+	int m_day = 1;
+	int m_year = 1970;
 	void CalculateDate();
 	void CalculateTimestamp();
 };
+
+std::ostream& operator<<(std::ostream& stream, const CDate& date);
+std::istream& operator>>(std::istream& stream, CDate& date);
