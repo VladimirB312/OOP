@@ -23,7 +23,6 @@ void CCanvas::DrawLine(CPoint from, CPoint to, uint32_t lineColor)
 
 void CCanvas::DrawPolygon(std::vector<CPoint> points, uint32_t lineColor, uint32_t fillColor)
 {
-
 	sf::ConvexShape polygon;
 	polygon.setPointCount(points.size());
 	
