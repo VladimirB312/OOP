@@ -1130,3 +1130,165 @@ SCENARIO("date input test")
 		}
 	}
 }
+
+SCENARIO("testing comparison operators")
+{
+	GIVEN("two identical dates")
+	{
+		CDate date1;
+		CDate date2;
+		WHEN("check equality")
+		{
+			THEN("comparison should return true")
+			{
+				CHECK(date1 == date2);
+			}
+		}
+
+		WHEN("check non-equality")
+		{
+			THEN("comparison should return false")
+			{
+				CHECK(!(date1 != date2));
+			}
+		}
+
+		WHEN("check that the first date is greater than the second")
+		{
+			THEN("comparison should return false")
+			{
+				CHECK(!(date1 > date2));
+			}
+		}
+
+		WHEN("check that the first date is less than the second")
+		{
+			THEN("comparison should return false")
+			{
+				CHECK(!(date1 < date2));
+			}
+		}
+
+		WHEN("check that the first date is greater or equal than the second")
+		{
+			THEN("comparison should return true")
+			{
+				CHECK(date1 >= date2);
+			}
+		}
+
+		WHEN("check that the first date is less or equal than the second")
+		{
+			THEN("comparison should return true")
+			{
+				CHECK(date1 <= date2);
+			}
+		}
+	}
+
+	GIVEN("two dates, the first is greater than the second")
+	{
+		CDate date1(100);
+		CDate date2(50);
+		WHEN("check equality")
+		{
+			THEN("comparison should return false")
+			{
+				CHECK(!(date1 == date2));
+			}
+		}
+
+		WHEN("check non-equality")
+		{
+			THEN("comparison should return true")
+			{
+				CHECK(date1 != date2);
+			}
+		}
+
+		WHEN("check that the first date is greater than the second")
+		{
+			THEN("comparison should return true")
+			{
+				CHECK(date1 > date2);
+			}
+		}
+
+		WHEN("check that the first date is less than the second")
+		{
+			THEN("comparison should return false")
+			{
+				CHECK(!(date1 < date2));
+			}
+		}
+
+		WHEN("check that the first date is greater or equal than the second")
+		{
+			THEN("comparison should return true")
+			{
+				CHECK(date1 >= date2);
+			}
+		}
+
+		WHEN("check that the first date is less or equal than the second")
+		{
+			THEN("comparison should return false")
+			{
+				CHECK(!(date1 <= date2));
+			}
+		}
+	}
+
+	GIVEN("two dates, the first is less than the second")
+	{
+		CDate date1(50);
+		CDate date2(100);
+		WHEN("check equality")
+		{
+			THEN("comparison should return false")
+			{
+				CHECK(!(date1 == date2));
+			}
+		}
+
+		WHEN("check non-equality")
+		{
+			THEN("comparison should return true")
+			{
+				CHECK(date1 != date2);
+			}
+		}
+
+		WHEN("check that the first date is greater than the second")
+		{
+			THEN("comparison should return false")
+			{
+				CHECK(!(date1 > date2));
+			}
+		}
+
+		WHEN("check that the first date is less than the second")
+		{
+			THEN("comparison should return true")
+			{
+				CHECK(date1 < date2);
+			}
+		}
+
+		WHEN("check that the first date is greater or equal than the second")
+		{
+			THEN("comparison should return false")
+			{
+				CHECK(!(date1 >= date2));
+			}
+		}
+
+		WHEN("check that the first date is less or equal than the second")
+		{
+			THEN("comparison should return true")
+			{
+				CHECK(date1 <= date2);
+			}
+		}
+	}
+}

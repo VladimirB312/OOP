@@ -60,6 +60,12 @@ public:
 	int operator-(const CDate& date) const;
 	CDate& operator+=(int days);
 	CDate& operator-=(int days);
+	bool operator==(const CDate& date) const;
+	bool operator!=(const CDate& date) const;
+	bool operator<(const CDate& date) const;
+	bool operator>(const CDate& date) const;
+	bool operator>=(const CDate& date) const;
+	bool operator<=(const CDate& date) const;
 
 private:
 	int m_timestamp = 0;
