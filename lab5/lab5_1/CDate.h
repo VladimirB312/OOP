@@ -68,13 +68,15 @@ public:
 	bool operator<=(const CDate& date) const;
 
 private:
+	struct DateDTO
+	{
+		int day;
+		Month month;
+		int year;
+	};
 	int m_timestamp = 0;
-	WeekDay m_weekDay = WeekDay::THURSDAY;
-	Month m_month = Month::JANUARY;
-	int m_day = 1;
-	int m_year = 1970;
-	void CalculateDate();
-	void CalculateTimestamp();
+	DateDTO CalculateDate() const;
+	int CalculateTimestamp(int m_day, int m_month, int m_year);
 };
 
 std::ostream& operator<<(std::ostream& stream, const CDate& date);

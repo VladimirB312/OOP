@@ -29,27 +29,26 @@ bool IsLeapYear(int year)
 	return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
 }
 
-int LastDayOfMonth(int year, Month month)
+int LastDayOfMonth(int year, int month)
 {
 	std::vector<int> days = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-	if (month == Month::FEBRUARY && IsLeapYear(year))
+	if (month == static_cast<int>(Month::FEBRUARY) && IsLeapYear(year))
 	{
 		return constants::LAST_DAY_OF_FEBRUARY_IN_LEAP;
 	}
 
-	return days[static_cast<int>(month) - 1];
+	return days[month - 1];
 }
 
-void CheckDate(int day, Month month, int year)
+void CheckDate(int day, int month, int year)
 {
 	if (year < constants::MIN_YEAR || year > constants::MAX_YEAR)
 	{
 		throw CDateException("Invalid year!");
 	}
 
-	int monthNum = static_cast<int>(month);
-	if (monthNum < 1 || monthNum > 12)
+	if (month < 1 || month > 12)
 	{
 		throw CDateException("Invalid month!");
 	}
@@ -62,13 +61,8 @@ void CheckDate(int day, Month month, int year)
 } // namespace
 
 CDate::CDate(int day, Month month, int year)
+	: CDate(CalculateTimestamp(day, static_cast<int>(month), year))
 {
-	CheckDate(day, month, year);
-	m_day = day;
-	m_month = month;
-	m_year = year;
-	CalculateTimestamp();
-	m_weekDay = static_cast<WeekDay>((m_timestamp + constants::START_WEEK_DAY) % constants::DAYS_IN_WEEK);
 }
 
 CDate::CDate(int timestamp)
@@ -79,56 +73,55 @@ CDate::CDate(int timestamp)
 	}
 
 	m_timestamp = timestamp;
-	CalculateDate();
 }
 
-void CDate::CalculateDate()
+CDate::DateDTO CDate::CalculateDate() const
 {
 	int days = m_timestamp + constants::DAYS_BEFORE_EPOCH;
 	int era = days / constants::DAYS_IN_ERA; // количество прошедних эр
 	int doe = days - era * constants::DAYS_IN_ERA; // количество дней в текущей эре
 	int yoe = (doe - doe / constants::DAYS_IN_4_YEARS + doe / constants::DAYS_IN_CENTURY - doe / (constants::DAYS_IN_ERA - 1)) / 365; // количество лет в текущей эре
-	m_year = yoe + era * constants::YEARS_IN_ERA; // всего лет (в текущей эре + всего эр * 400)
+	int year = yoe + era * constants::YEARS_IN_ERA; // всего лет (в текущей эре + всего эр * 400)
 	int doy = doe - (constants::DAYS_IN_YEAR * yoe + yoe / constants::FOUR_YEARS - yoe / constants::YEARS_IN_CENTURY); // текущий номер дня
 	int mp = (5 * doy + 2) / 153;
-	m_day = doy - (153 * mp + 2) / 5 + 1;
+	int day = doy - (153 * mp + 2) / 5 + 1;
 	int month = mp < 10 ? mp + 3 : mp - 9;
-	m_year += month <= 2 ? 1 : 0;
-	m_month = static_cast<Month>(month);
-	m_weekDay = static_cast<WeekDay>((m_timestamp + constants::START_WEEK_DAY) % constants::DAYS_IN_WEEK);
+	year += month <= 2 ? 1 : 0;
+
+	return { day, static_cast<Month>(month), year };
 }
 
-void CDate::CalculateTimestamp()
+int CDate::CalculateTimestamp(int day, int month, int year)
 {
-	int month = static_cast<int>(m_month);
-	int year = m_year;
+	CheckDate(day, month, year);
 	year -= month <= 2 ? 1 : 0;
 	month = month > 2 ? month - 3 : month + 9;
 	int era = year / 400;
 	int yoe = year - era * 400;
-	int doy = (153 * month + 2) / 5 + m_day - 1;
+	int doy = (153 * month + 2) / 5 + day - 1;
 	int doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
-	m_timestamp = era * constants::DAYS_IN_ERA + doe - constants::DAYS_BEFORE_EPOCH;
+
+	return era * constants::DAYS_IN_ERA + doe - constants::DAYS_BEFORE_EPOCH;
 }
 
 int CDate::GetDay() const
 {
-	return m_day;
+	return CalculateDate().day;
 }
 
 Month CDate::GetMonth() const
 {
-	return m_month;
+	return CalculateDate().month;
 }
 
 int CDate::GetYear() const
 {
-	return m_year;
+	return CalculateDate().year;
 }
 
 WeekDay CDate::GetWeekDay() const
 {
-	return m_weekDay;
+	return static_cast<WeekDay>((m_timestamp + constants::START_WEEK_DAY) % constants::DAYS_IN_WEEK);
 }
 
 CDate& CDate::operator++()
@@ -138,7 +131,6 @@ CDate& CDate::operator++()
 		throw CDateException("Overflow error");
 	}
 	m_timestamp++;
-	CalculateDate();
 
 	return *this;
 }
@@ -150,7 +142,6 @@ CDate& CDate::operator--()
 		throw CDateException("Overflow error");
 	}
 	m_timestamp--;
-	CalculateDate();
 
 	return *this;
 }
@@ -227,7 +218,7 @@ bool CDate::operator>(const CDate& date) const
 
 bool CDate::operator>=(const CDate& date) const
 {
-	return !(*this < date) ;
+	return !(*this < date);
 }
 
 bool CDate::operator<=(const CDate& date) const
