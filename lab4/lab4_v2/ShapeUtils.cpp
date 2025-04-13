@@ -1,10 +1,10 @@
 #include "ShapeUtils.h"
 
-const Shape* GetShapeWithMaxArea(const std::vector<std::unique_ptr<Shape>>& shapes)
+const Shape& GetShapeWithMaxArea(const std::vector<std::unique_ptr<Shape>>& shapes)
 {
 	if (shapes.empty())
 	{
-		return nullptr;
+		throw std::runtime_error("shapes is empty");
 	}
 
 	auto maxAreaShape = std::max_element(
@@ -13,14 +13,14 @@ const Shape* GetShapeWithMaxArea(const std::vector<std::unique_ptr<Shape>>& shap
 			return a->GetArea() < b->GetArea();
 		});
 
-	return maxAreaShape != shapes.end() ? maxAreaShape->get() : nullptr;
+	return **maxAreaShape;
 }
 
-const Shape* GetShapeWithMinPerimeter(const std::vector<std::unique_ptr<Shape>>& shapes)
+const Shape& GetShapeWithMinPerimeter(const std::vector<std::unique_ptr<Shape>>& shapes)
 {
 	if (shapes.empty())
 	{
-		return nullptr;
+		throw std::runtime_error("shapes is empty");
 	}
 
 	auto minPerimeterShape = std::min_element(
@@ -29,7 +29,7 @@ const Shape* GetShapeWithMinPerimeter(const std::vector<std::unique_ptr<Shape>>&
 			return a->GetPerimeter() < b->GetPerimeter();
 		});
 
-	return minPerimeterShape != shapes.end() ? minPerimeterShape->get() : nullptr;
+	return **minPerimeterShape;
 }
 
 void AddShapes(std::istream& input, std::ostream& output, std::vector<std::unique_ptr<Shape>>& shapes, ShapeReader& reader)
@@ -53,13 +53,7 @@ void AddShapes(std::istream& input, std::ostream& output, std::vector<std::uniqu
 	}
 }
 
-void PrintShapeInfo(std::ostream& output, const Shape* shape)
+void PrintShapeInfo(std::ostream& output, const Shape& shape)
 {
-	if (!shape)
-	{
-		output << "shape doesn't exist\n";
-		return;
-	}
-
-	output << shape->ToString();
+	output << shape.ToString();
 }
