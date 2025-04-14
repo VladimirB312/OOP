@@ -1,4 +1,6 @@
 #include "CMyString.h"
+#include <algorithm>
+#include <cassert>
 
 namespace
 {
@@ -121,4 +123,118 @@ void CMyString::Clear()
 size_t CMyString::GetCapacity()
 {
 	return m_capacity;
+}
+
+CMyString CMyString::operator+(const CMyString& other) const
+{
+	CMyString newStr(m_chars, (m_size + other.m_size) * 2);
+	auto end = std::uninitialized_copy_n(other.m_chars, other.m_size, newStr.m_chars + m_size);
+	*end = '\0';
+	newStr.m_size = m_size + other.m_size;
+	newStr.m_capacity = newStr.m_size * 2;
+
+	return newStr;
+}
+
+CMyString& CMyString::operator+=(const CMyString& other)
+{
+	(*this) = (*this) + other;
+
+	return *this;
+}
+
+CMyString CMyString::operator+(const std::string& stlString) const
+{
+
+	return (*this) + CMyString(stlString);
+}
+
+CMyString CMyString::operator+(const char* pString) const
+{
+	return (*this) + CMyString(pString);
+}
+
+bool CMyString::operator==(const CMyString& other) const
+{
+	if (m_size != other.m_size)
+	{
+		return false;
+	}
+
+	return std::equal(m_chars, m_chars + m_size, other.m_chars);
+}
+
+bool CMyString::operator!=(const CMyString& other) const
+{
+	return !((*this) == other);
+}
+
+bool CMyString::operator<(const CMyString& other) const
+{
+	for (size_t i = 0; i < std::min(m_size, other.m_size); i++)
+	{
+		if (m_chars[i] > other.m_chars[i])
+		{
+			return false;
+		}
+
+		if (m_chars[i] < other.m_chars[i])
+		{
+			return true;
+		}
+	}
+
+	return m_size < other.m_size;
+}
+
+bool CMyString::operator>(const CMyString& other) const
+{
+	return (*this) != other && !(*this < other);
+}
+
+bool CMyString::operator>=(const CMyString& other) const
+{
+	return !(*this < other);
+}
+
+bool CMyString::operator<=(const CMyString& other) const
+{
+	return !(*this > other);
+}
+
+char& CMyString::operator[](size_t index)
+{
+	assert(index < m_size);
+	return m_chars[index];
+}
+
+const char& CMyString::operator[](size_t index) const
+{
+	assert(index < m_size);
+	return m_chars[index];
+}
+
+CMyString operator+(const std::string& stlString, const CMyString& str)
+{
+
+	return CMyString(stlString) + str;
+}
+
+CMyString operator+(const char* pString, const CMyString& str)
+{
+	return CMyString(pString) + str;
+}
+
+std::ostream& operator<<(std::ostream& stream, const CMyString& str)
+{
+	return stream << str.GetStringData();
+}
+
+std::istream& operator>>(std::istream& stream, CMyString& str)
+{
+	std::string result;
+	stream >> result;
+	str = std::move(CMyString(result));
+
+	return stream;
 }
