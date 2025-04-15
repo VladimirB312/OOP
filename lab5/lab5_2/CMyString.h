@@ -40,8 +40,8 @@ public:
 
 	StringIterator<CMyString, char> begin();
 	StringIterator<CMyString, char> end();
-	//const StringIterator<CMyString, char> begin() const;
-	//const StringIterator<CMyString, char> end() const;
+	StringIterator<const CMyString, const char> begin() const;
+	StringIterator<const CMyString, const char> end() const;
 
 private:
 	inline static char s_emptyString[] = { '\0' };

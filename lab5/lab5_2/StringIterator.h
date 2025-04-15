@@ -1,4 +1,6 @@
 #pragma once
+#include <concepts>
+#include <iterator>
 #include <stdexcept>
 
 template <typename T, typename V>
@@ -18,16 +20,24 @@ public:
 	{
 	}
 
-	//StringIterator(const T* string, size_t index)
-	//	: m_string(string)
-	//	, m_index(index)
-	//{
-	//}
+	template <std::convertible_to<T*> CT>
+	StringIterator(const StringIterator<CT, V>& other)
+		: m_string(other.m_string)
+		, m_index(other.m_index)
+	{
+	}
 
 	StringIterator& operator++()
 	{
 		m_index++;
 		return *this;
+	}
+
+	StringIterator operator++(int)
+	{
+		StringIterator tmp = *this;
+		++(*this);
+		return tmp;
 	}
 
 	StringIterator& operator--()
@@ -36,10 +46,10 @@ public:
 		return *this;
 	}
 
-	StringIterator operator++(int)
+	StringIterator& operator--(int)
 	{
 		StringIterator tmp = *this;
-		++(*this);
+		--(*this);
 		return tmp;
 	}
 
@@ -67,7 +77,7 @@ public:
 		return (*m_string)[m_index];
 	}
 
-	bool CheckOutOfRange()
+	void CheckOutOfRange() const
 	{
 		if (m_index >= m_string->GetLength())
 		{
@@ -78,4 +88,7 @@ public:
 private:
 	T* m_string;
 	size_t m_index;
+
+	//template <typename, typename>
+	//friend class StringIterator;
 };

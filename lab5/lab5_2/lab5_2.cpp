@@ -3,7 +3,7 @@
 
 int main()
 {
-	CMyString str("hello");
+	const CMyString str("hello");
 	for (auto it = str.begin(); it != str.end(); ++it)
 	{
 		std::cout << *it << " ";
@@ -15,4 +15,6 @@ int main()
 	{
 		std::cout << s;
 	}
+
+	
 }

@@ -235,15 +235,15 @@ StringIterator<CMyString, char> CMyString::end()
 	return StringIterator<CMyString, char>(this, m_size);
 }
 
-//const StringIterator<CMyString, char> CMyString::begin() const
-//{
-//	return StringIterator<CMyString, char>(this, 0);
-//}
-//
-//const StringIterator<CMyString, char> CMyString::end() const
-//{
-//	return StringIterator<CMyString, char>(this, m_size);
-//}
+StringIterator<const CMyString, const char> CMyString::begin() const
+{
+	return StringIterator<const CMyString, const char>(this, 0);
+}
+
+StringIterator<const CMyString, const char> CMyString::end() const
+{
+	return StringIterator<const CMyString, const char>(this, m_size);
+}
 
 std::ostream& operator<<(std::ostream& stream, const CMyString& str)
 {
