@@ -1,8 +1,9 @@
 #pragma once
 #include <memory>
+#include <sstream>
 #include <stdexcept>
 #include <string>
-#include <sstream>
+#include "StringIterator.h"
 
 class CMyString
 {
@@ -16,7 +17,7 @@ public:
 
 	CMyString& operator=(CMyString&& other) noexcept;
 	CMyString& operator=(const CMyString& other);
-	CMyString operator+(const CMyString& other) const;	
+	CMyString operator+(const CMyString& other) const;
 	CMyString& operator+=(const CMyString& other);
 	CMyString operator+(const std::string& stlString) const;
 	CMyString operator+(const char* pString) const;
@@ -36,6 +37,11 @@ public:
 	void Clear();
 
 	~CMyString();
+
+	StringIterator<CMyString, char> begin();
+	StringIterator<CMyString, char> end();
+	//const StringIterator<CMyString, char> begin() const;
+	//const StringIterator<CMyString, char> end() const;
 
 private:
 	inline static char s_emptyString[] = { '\0' };

@@ -3,10 +3,16 @@
 
 int main()
 {
-	CMyString str("hello", 6);
-	CMyString str2("world");
-	str += str2;
-	std::cout << str.GetLength() << "\n";
-	std::cout << str.GetStringData() << "\n";
-	std::cout << str.SubString(6, 10).GetStringData();
+	CMyString str("hello");
+	for (auto it = str.begin(); it != str.end(); ++it)
+	{
+		std::cout << *it << " ";
+	}
+
+	std::cout << std::endl;
+
+	for (const auto s : str)
+	{
+		std::cout << s;
+	}
 }

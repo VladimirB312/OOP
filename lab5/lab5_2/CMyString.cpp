@@ -225,6 +225,26 @@ CMyString operator+(const char* pString, const CMyString& str)
 	return CMyString(pString) + str;
 }
 
+StringIterator<CMyString, char> CMyString::begin()
+{
+	return StringIterator<CMyString, char>(this, 0);
+}
+
+StringIterator<CMyString, char> CMyString::end()
+{
+	return StringIterator<CMyString, char>(this, m_size);
+}
+
+//const StringIterator<CMyString, char> CMyString::begin() const
+//{
+//	return StringIterator<CMyString, char>(this, 0);
+//}
+//
+//const StringIterator<CMyString, char> CMyString::end() const
+//{
+//	return StringIterator<CMyString, char>(this, m_size);
+//}
+
 std::ostream& operator<<(std::ostream& stream, const CMyString& str)
 {
 	return stream << str.GetStringData();
