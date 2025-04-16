@@ -245,6 +245,16 @@ StringIterator<const CMyString, const char> CMyString::end() const
 	return StringIterator<const CMyString, const char>(this, m_size);
 }
 
+StringIterator<const CMyString, const char> CMyString::cbegin() const
+{
+	return StringIterator<const CMyString, const char>(this, 0);
+}
+
+StringIterator<const CMyString, const char> CMyString::cend() const
+{
+	return StringIterator<const CMyString, const char>(this, m_size);
+}
+
 std::ostream& operator<<(std::ostream& stream, const CMyString& str)
 {
 	return stream << str.GetStringData();

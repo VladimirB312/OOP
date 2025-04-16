@@ -953,3 +953,134 @@ SCENARIO("string input test")
 		}
 	}
 }
+
+SCENARIO("iterators test")
+{
+	std::ostringstream output;
+
+	GIVEN("string contains 'h' char")
+	{
+		CMyString str("h");
+		WHEN("get iterator begin")
+		{
+			auto it = str.begin();
+			THEN("begin iterator must have a valid value")
+			{
+				CHECK(*it == 'h');
+			}
+		}
+	}
+
+	GIVEN("string contains 'hello'")
+	{
+		CMyString str("hello");
+		WHEN("prefix increment and dereference iterators one by one")
+		{
+			auto it = str.begin();
+			THEN("iterators must have a valid value")
+			{
+				CHECK(*it++ == 'h');
+				CHECK(*it++ == 'e');
+				CHECK(*it++ == 'l');
+				CHECK(*it++ == 'l');
+				CHECK(*it == 'o');
+			}
+		}
+
+		WHEN("postfix increment and dereference iterators one by one")
+		{
+			auto it = str.begin();
+			THEN("iterators must have a valid value")
+			{
+				CHECK(*++it == 'e');
+				CHECK(*++it == 'l');
+				CHECK(*++it == 'l');
+				CHECK(*++it == 'o');
+			}
+		}
+
+		WHEN("output in for range cycle")
+		{
+			for (auto it = str.begin(); it != str.end(); ++it)
+			{
+				output << *it;
+			}
+			THEN("output stream must be equal to the string")
+			{
+				CHECK(str == output.str());
+			}
+		}
+
+		WHEN("output in temporary range cycle")
+		{
+			for (auto s : str)
+			{
+				output << s;
+			}
+			THEN("output stream must be equal to the string")
+			{
+				CHECK(str == output.str());
+			}
+		}
+
+		WHEN("add a first index to the iterator")
+		{
+			auto it = str.begin();
+			it = it + 1;
+			THEN("iterator must have a shifted value")
+			{
+				CHECK(*it == 'e');
+			}
+		}
+
+		WHEN("add a last index to the iterator")
+		{
+			auto it = str.begin();
+			it = it + 4;
+			THEN("iterator must have a shifted value")
+			{
+				CHECK(*it == 'o');
+			}
+		}
+
+		WHEN("add with assignment a first index to the iterator")
+		{
+			auto it = str.begin();
+			it += 1;
+			THEN("iterator must have a shifted value")
+			{
+				CHECK(*it == 'e');
+			}
+		}
+
+		WHEN("add with assignment a last index to the iterator")
+		{
+			auto it = str.begin();
+			it += 4;
+			THEN("iterator must have a shifted value")
+			{
+				CHECK(*it == 'o');
+			}
+		}
+
+		WHEN("check two identical iterators for equality")
+		{
+			auto it1 = str.begin();
+			auto it2 = str.begin();
+			THEN("comparison should return true")
+			{
+				CHECK(it1 == it2);
+			}
+		}
+
+		WHEN("check two different iterators for equality")
+		{
+			auto it1 = str.begin();
+			auto it2 = str.begin();
+			THEN("comparison should return false")
+			{
+				CHECK(!(it1 == it2));
+			}
+		}
+	}
+}

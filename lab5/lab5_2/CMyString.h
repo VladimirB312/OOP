@@ -1,9 +1,10 @@
 #pragma once
+#include "StringIterator.h"
 #include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include "StringIterator.h"
+#include <iterator>
 
 class CMyString
 {
@@ -40,8 +41,10 @@ public:
 
 	StringIterator<CMyString, char> begin();
 	StringIterator<CMyString, char> end();
-	StringIterator<const CMyString, const char> begin() const;
+	StringIterator<const CMyString, const char> begin() const;	
 	StringIterator<const CMyString, const char> end() const;
+	StringIterator<const CMyString, const char> cbegin() const;
+	StringIterator<const CMyString, const char> cend() const;
 
 private:
 	inline static char s_emptyString[] = { '\0' };
