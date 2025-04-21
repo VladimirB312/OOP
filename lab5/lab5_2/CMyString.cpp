@@ -163,8 +163,7 @@ bool CMyString::operator<(const CMyString& other) const
 {
 	return std::lexicographical_compare(
 		this->begin(), this->end(),
-		other.begin(), other.end(),
-		[](char a, char b) { return a < b; });
+		other.begin(), other.end());
 }
 
 bool CMyString::operator>(const CMyString& other) const
