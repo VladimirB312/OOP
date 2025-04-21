@@ -25,7 +25,7 @@ public:
 	StringIterator& operator++();
 	StringIterator operator++(int);
 	StringIterator& operator--();
-	StringIterator& operator--(int);
+	StringIterator operator--(int);
 	bool operator==(const StringIterator& other) const;
 	bool operator!=(const StringIterator& other) const;
 	StringIterator operator+(int shift) const;
@@ -90,7 +90,7 @@ StringIterator<T, V>& StringIterator<T, V>::operator--()
 }
 
 template <typename T, typename V>
-StringIterator<T, V>& StringIterator<T, V>::operator--(int)
+StringIterator<T, V> StringIterator<T, V>::operator--(int)
 {
 	assert(m_index > 0);
 	StringIterator tmp = *this;

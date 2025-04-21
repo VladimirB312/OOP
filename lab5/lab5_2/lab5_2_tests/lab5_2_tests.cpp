@@ -142,7 +142,7 @@ SCENARIO("test construct with std::string")
 	WHEN("construct with empty std::string")
 	{
 		std::string empty;
-		CMyString str = empty;
+		CMyString str(empty);
 		THEN("string should be an equal")
 		{
 			CHECK(str.GetCapacity() == 0);
@@ -154,7 +154,7 @@ SCENARIO("test construct with std::string")
 	WHEN("construct with std::string contains one char")
 	{
 		std::string copiedStr("a");
-		CMyString str = copiedStr;
+		CMyString str(copiedStr);
 		THEN("string should be an equal")
 		{
 			CHECK(str.GetCapacity() == 1);
@@ -166,7 +166,7 @@ SCENARIO("test construct with std::string")
 	WHEN("construct with std::string contains string hello")
 	{
 		std::string copiedStr("hello");
-		CMyString str = copiedStr;
+		CMyString str(copiedStr);
 		THEN("string should be an equal")
 		{
 			CHECK(str.GetCapacity() == 5);
@@ -181,7 +181,7 @@ SCENARIO("test copying constructor")
 	WHEN("construct with empty CMyString")
 	{
 		CMyString empty;
-		CMyString str = empty;
+		CMyString str(empty);
 		THEN("string should be an equal")
 		{
 			CHECK(str.GetCapacity() == 0);
@@ -193,7 +193,7 @@ SCENARIO("test copying constructor")
 	WHEN("construct with CMyString contains one char")
 	{
 		CMyString copiedStr("a");
-		CMyString str = copiedStr;
+		CMyString str(copiedStr);
 		THEN("string should be an equal")
 		{
 			CHECK(str.GetCapacity() == 1);
@@ -205,7 +205,7 @@ SCENARIO("test copying constructor")
 	WHEN("construct with CMyString contains string hello")
 	{
 		CMyString copiedStr("hello");
-		CMyString str = copiedStr;
+		CMyString str(copiedStr);
 		THEN("string should be an equal")
 		{
 			CHECK(str.GetCapacity() == 5);
@@ -270,14 +270,14 @@ SCENARIO("test move operator")
 		CMyString empty;
 		CMyString str("content");
 		str = std::move(empty);
-		THEN("strings should swap contents")
+		THEN("strings should exchange contents")
 		{
 			CHECK(str.GetCapacity() == 0);
 			CHECK(str.GetLength() == 0);
 			CHECK(std::string(str.GetStringData()) == "");
-			CHECK(empty.GetCapacity() == 7);
-			CHECK(empty.GetLength() == 7);
-			CHECK(std::string(empty.GetStringData()) == "content");
+			CHECK(empty.GetCapacity() == 0);
+			CHECK(empty.GetLength() == 0);
+			CHECK(std::string(empty.GetStringData()) == "");
 		}
 	}
 
@@ -286,14 +286,14 @@ SCENARIO("test move operator")
 		CMyString copiedStr("a");
 		CMyString str("content");
 		str = std::move(copiedStr);
-		THEN("strings should swap contents")
+		THEN("strings should exchange contents")
 		{
 			CHECK(str.GetCapacity() == 1);
 			CHECK(str.GetLength() == 1);
 			CHECK(std::string(str.GetStringData()) == "a");
-			CHECK(copiedStr.GetCapacity() == 7);
-			CHECK(copiedStr.GetLength() == 7);
-			CHECK(std::string(copiedStr.GetStringData()) == "content");
+			CHECK(copiedStr.GetCapacity() == 0);
+			CHECK(copiedStr.GetLength() == 0);
+			CHECK(std::string(copiedStr.GetStringData()) == "");
 		}
 	}
 
@@ -302,14 +302,14 @@ SCENARIO("test move operator")
 		CMyString copiedStr("hello");
 		CMyString str("content");
 		str = std::move(copiedStr);
-		THEN("strings should swap contents")
+		THEN("strings should exchange contents")
 		{
 			CHECK(str.GetCapacity() == 5);
 			CHECK(str.GetLength() == 5);
 			CHECK(std::string(str.GetStringData()) == "hello");
-			CHECK(copiedStr.GetCapacity() == 7);
-			CHECK(copiedStr.GetLength() == 7);
-			CHECK(std::string(copiedStr.GetStringData()) == "content");
+			CHECK(copiedStr.GetCapacity() == 0);
+			CHECK(copiedStr.GetLength() == 0);
+			CHECK(std::string(copiedStr.GetStringData()) == "");
 		}
 	}
 
@@ -347,7 +347,7 @@ SCENARIO("assignment operator testing")
 		str = empty;
 		THEN("string must be assigned the value of another string and the capacity should not change")
 		{
-			CHECK(str.GetCapacity() == 7);
+			CHECK(str.GetCapacity() == 0);
 			CHECK(str.GetLength() == 0);
 			CHECK(std::string(str.GetStringData()) == "");
 		}
@@ -360,7 +360,7 @@ SCENARIO("assignment operator testing")
 		str = copiedStr;
 		THEN("string must be assigned the value of another string and the capacity should not change")
 		{
-			CHECK(str.GetCapacity() == 7);
+			CHECK(str.GetCapacity() == 1);
 			CHECK(str.GetLength() == 1);
 			CHECK(std::string(str.GetStringData()) == "a");
 		}
@@ -373,7 +373,7 @@ SCENARIO("assignment operator testing")
 		str = copiedStr;
 		THEN("string must be assigned the value of another string and the capacity should not change")
 		{
-			CHECK(str.GetCapacity() == 7);
+			CHECK(str.GetCapacity() == 5);
 			CHECK(str.GetLength() == 5);
 			CHECK(std::string(str.GetStringData()) == "hello");
 		}
@@ -871,7 +871,7 @@ SCENARIO("indexed access")
 			str[4] = 'd';
 			THEN("string should change")
 			{
-				CHECK(str == "World");
+				CHECK(std::string(str.GetStringData()) == "World");
 			}
 		}
 	}
@@ -889,7 +889,7 @@ SCENARIO("string output test")
 			output << str;
 			THEN("output stream should not contain anything")
 			{
-				CHECK(str == "");
+				CHECK(std::string(str.GetStringData()) == "");
 			}
 		}
 	}
@@ -902,7 +902,7 @@ SCENARIO("string output test")
 			output << str;
 			THEN("output stream should contain a")
 			{
-				CHECK(str == "a");
+				CHECK(std::string(str.GetStringData()) == "a");
 			}
 		}
 	}
@@ -915,7 +915,7 @@ SCENARIO("string output test")
 			output << str;
 			THEN("output stream should contain Hello world")
 			{
-				CHECK(str == "Hello world");
+				CHECK(std::string(str.GetStringData()) == "Hello world");
 			}
 		}
 	}
@@ -932,7 +932,7 @@ SCENARIO("string input test")
 			input >> str;
 			THEN("string should be an empty")
 			{
-				CHECK(str == "");
+				CHECK(std::string(str.GetStringData()) == "");
 			}
 		}
 	}
@@ -946,7 +946,7 @@ SCENARIO("string input test")
 			input >> str;
 			THEN("string must contain char a")
 			{
-				CHECK(str == "a");
+				CHECK(std::string(str.GetStringData()) == "a");
 			}
 		}
 	}
@@ -960,7 +960,7 @@ SCENARIO("string input test")
 			input >> str;
 			THEN("string must contain hello")
 			{
-				CHECK(str == "hello");
+				CHECK(std::string(str.GetStringData()) == "hello");
 			}
 		}
 	}
@@ -1036,7 +1036,7 @@ SCENARIO("iterators test")
 			}
 			THEN("output stream must be equal to the string")
 			{
-				CHECK(str == output.str());
+				CHECK(std::string(str.GetStringData()) == output.str());
 			}
 		}
 
@@ -1048,7 +1048,7 @@ SCENARIO("iterators test")
 			}
 			THEN("output stream must be equal to the string")
 			{
-				CHECK(str == output.str());
+				CHECK(std::string(str.GetStringData()) == output.str());
 			}
 		}
 
@@ -1163,6 +1163,69 @@ SCENARIO("iterators test")
 				CHECK(it[2] == 'r');
 				CHECK(it[3] == 'l');
 				CHECK(it[4] == 'd');
+			}
+		}
+	}
+}
+
+SCENARIO("test reverse iterators")
+{
+	std::ostringstream output;
+
+	GIVEN("string contains 'hello'")
+	{
+		CMyString str("hello");
+		WHEN("output in for range cycle")
+		{
+			for (auto it = str.rbegin(); it != str.rend(); ++it)
+			{
+				output << *it;
+			}
+			THEN("output stream must be equal to the reverse string")
+			{
+				CHECK("olleh" == output.str());
+			}
+		}
+
+		WHEN("prefix increment and dereference iterators one by one")
+		{
+			auto it = str.begin();
+			THEN("iterators must have a valid value")
+			{
+				CHECK(*it++ == 'h');
+				CHECK(*it++ == 'e');
+				CHECK(*it++ == 'l');
+				CHECK(*it++ == 'l');
+				CHECK(*it == 'o');
+
+				AND_WHEN("prefix decrement and dereference iterators one by one")
+				{
+					CHECK(*it-- == 'o');
+					CHECK(*it-- == 'l');
+					CHECK(*it-- == 'l');
+					CHECK(*it-- == 'e');
+					CHECK(*it == 'h');
+				}
+			}
+		}
+
+		WHEN("postfix increment and dereference iterators one by one")
+		{
+			auto it = str.rbegin();
+			THEN("iterators must have a valid value")
+			{
+				CHECK(*++it == 'l');
+				CHECK(*++it == 'l');
+				CHECK(*++it == 'e');
+				CHECK(*++it == 'h');
+
+				AND_WHEN("postfix increment and dereference one by one")
+				{
+					CHECK(*--it == 'e');
+					CHECK(*--it == 'l');
+					CHECK(*--it == 'l');
+					CHECK(*--it == 'o');
+				}
 			}
 		}
 	}

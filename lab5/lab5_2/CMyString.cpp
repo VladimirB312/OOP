@@ -1,6 +1,7 @@
 #include "CMyString.h"
 #include <algorithm>
 #include <cassert>
+#include <iterator>
 
 namespace
 {
@@ -18,7 +19,7 @@ CMyString::CMyString() noexcept
 	: m_chars{ s_emptyString } {};
 
 CMyString::CMyString(const char* pString)
-	: CMyString(pString, std::strlen(pString)) {};
+	: CMyString(pString, std::strlen(pString)){};
 
 CMyString::CMyString(const char* pString, size_t length)
 	: m_size{ length }
@@ -41,36 +42,26 @@ CMyString::CMyString(CMyString&& other) noexcept
 {
 }
 
-CMyString& CMyString::operator=(CMyString&& other) noexcept // через перемещающий конструктор
+CMyString& CMyString::operator=(CMyString&& other) noexcept
 {
 	if (this != &other)
 	{
-		std::swap(m_size, other.m_size);
-		std::swap(m_capacity, other.m_capacity);
-		std::swap(m_chars, other.m_chars);
+		m_size = std::exchange(other.m_size, 0);
+		m_capacity = std::exchange(other.m_capacity, 0);
+		m_chars = std::exchange(other.m_chars, s_emptyString);
 	}
 
 	return *this;
 }
 
-CMyString& CMyString::operator=(const CMyString& other) // также через копирующий
+CMyString& CMyString::operator=(const CMyString& other)
 {
 	if (this != &other)
 	{
-		//CMyString copy(other);
-		//*this = std::move(copy);
-		if (m_capacity >= other.m_capacity && m_chars != s_emptyString)
-		{
-			std::uninitialized_copy_n(other.m_chars, other.m_size + 1, m_chars);
-			m_size = other.m_size;
-		}
-		else
-		{
-			CMyString copy{ other };
-			std::swap(m_size, copy.m_size);
-			std::swap(m_capacity, copy.m_capacity);
-			std::swap(m_chars, copy.m_chars);
-		}
+		CMyString copy(other);
+		std::swap(m_size, copy.m_size);
+		std::swap(m_capacity, copy.m_capacity);
+		std::swap(m_chars, copy.m_chars);
 	}
 
 	return *this;
@@ -81,12 +72,9 @@ CMyString::CMyString(const std::string& stlString)
 {
 }
 
-CMyString::~CMyString() // вызов Clear
+CMyString::~CMyString()
 {
-	if (m_chars != s_emptyString) // сравнение с длинной chars а не с empty sring
-	{
-		Deallocate(m_chars);
-	}
+	Clear();
 };
 
 size_t CMyString::GetLength() const
@@ -173,22 +161,10 @@ bool CMyString::operator!=(const CMyString& other) const
 
 bool CMyString::operator<(const CMyString& other) const
 {
-	for (size_t i = 0; i < std::min(m_size, other.m_size); i++)
-	{
-		if (m_chars[i] > other.m_chars[i])
-		{
-			return false;
-		}
-
-		if (m_chars[i] < other.m_chars[i])
-		{
-			return true;
-		}
-	}
-
-	 return m_size < other.m_size;
-
-	//return std::lexicographical_compare(this->begin(), other.begin(), [](char a, char b) { return a < b; });
+	return std::lexicographical_compare(
+		this->begin(), this->end(),
+		other.begin(), other.end(),
+		[](char a, char b) { return a < b; });
 }
 
 bool CMyString::operator>(const CMyString& other) const
@@ -234,6 +210,16 @@ StringIterator<CMyString, char> CMyString::begin()
 	return StringIterator<CMyString, char>(this, 0);
 }
 
+std::reverse_iterator<StringIterator<CMyString, char>> CMyString::rbegin()
+{
+	return std::make_reverse_iterator(end());
+}
+
+std::reverse_iterator<StringIterator<CMyString, char>> CMyString::rend()
+{
+	return std::make_reverse_iterator(begin());
+}
+
 StringIterator<CMyString, char> CMyString::end()
 {
 	return StringIterator<CMyString, char>(this, m_size);
@@ -257,6 +243,26 @@ StringIterator<const CMyString, const char> CMyString::cbegin() const
 StringIterator<const CMyString, const char> CMyString::cend() const
 {
 	return StringIterator<const CMyString, const char>(this, m_size);
+}
+
+std::reverse_iterator<StringIterator<const CMyString, const char>> CMyString::rbegin() const
+{
+	return std::reverse_iterator<StringIterator<const CMyString, const char>>(end());
+}
+
+std::reverse_iterator<StringIterator<const CMyString, const char>> CMyString::rend() const
+{
+	return std::reverse_iterator<StringIterator<const CMyString, const char>>(begin());
+}
+
+std::reverse_iterator<StringIterator<const CMyString, const char>> CMyString::crbegin() const
+{
+	return std::reverse_iterator<StringIterator<const CMyString, const char>>(end());
+}
+
+std::reverse_iterator<StringIterator<const CMyString, const char>> CMyString::crend() const
+{
+	return std::reverse_iterator<StringIterator<const CMyString, const char>>(begin());
 }
 
 std::ostream& operator<<(std::ostream& stream, const CMyString& str)
