@@ -1,10 +1,10 @@
 #pragma once
 #include "Operand.h"
-#include "Subscriber.h"
+#include "Observable.h"
 #include <cmath>
 
 class Variable : public Operand
-	, public Subscriber
+	, public Observable
 {
 public:
 	Variable() = default;

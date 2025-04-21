@@ -58,6 +58,19 @@ void CheckDate(int day, int month, int year)
 		throw CDateException("Invalid day!");
 	}
 }
+
+int CalculateTimestamp(int day, int month, int year)
+{
+	CheckDate(day, month, year);
+	year -= month <= 2 ? 1 : 0;
+	month = month > 2 ? month - 3 : month + 9;
+	int era = year / 400;
+	int yoe = year - era * 400;
+	int doy = (153 * month + 2) / 5 + day - 1;
+	int doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+
+	return era * constants::DAYS_IN_ERA + doe - constants::DAYS_BEFORE_EPOCH;
+}
 } // namespace
 
 CDate::CDate(int day, Month month, int year)
@@ -89,19 +102,6 @@ CDate::DateDTO CDate::CalculateDate() const
 	year += month <= 2 ? 1 : 0;
 
 	return { day, static_cast<Month>(month), year };
-}
-
-int CDate::CalculateTimestamp(int day, int month, int year)
-{
-	CheckDate(day, month, year);
-	year -= month <= 2 ? 1 : 0;
-	month = month > 2 ? month - 3 : month + 9;
-	int era = year / 400;
-	int yoe = year - era * 400;
-	int doy = (153 * month + 2) / 5 + day - 1;
-	int doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
-
-	return era * constants::DAYS_IN_ERA + doe - constants::DAYS_BEFORE_EPOCH;
 }
 
 int CDate::GetDay() const

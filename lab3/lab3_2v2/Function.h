@@ -1,6 +1,6 @@
 #pragma once
 #include "Operand.h"
-#include "Subscriber.h"
+#include "Observable.h"
 #include <cmath>
 
 enum class Operation
@@ -12,7 +12,7 @@ enum class Operation
 };
 
 class Function : public Operand
-	, public Subscriber
+	, public Observable
 	, public std::enable_shared_from_this<Function>
 {
 public:

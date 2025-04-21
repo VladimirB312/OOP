@@ -18,12 +18,12 @@ Function::Function(std::shared_ptr<Operand> operandOne, std::shared_ptr<Operand>
 
 void Function::Subscribe()
 {
-	if (auto subOne = std::dynamic_pointer_cast<Subscriber>(m_operandOne))
+	if (auto subOne = std::dynamic_pointer_cast<Observable>(m_operandOne))
 	{
 		subOne->AddSubscriber(shared_from_this());
 	}
 
-	if (auto subTwo = std::dynamic_pointer_cast<Subscriber>(m_operandTwo))
+	if (auto subTwo = std::dynamic_pointer_cast<Observable>(m_operandTwo))
 	{
 		subTwo->AddSubscriber(shared_from_this());
 	}

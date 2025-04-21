@@ -1,12 +1,12 @@
-#include "Subscriber.h"
+#include "Observable.h"
 #include "Operand.h"
 
-void Subscriber::AddSubscriber(std::shared_ptr<Operand> operand)
+void Observable::AddSubscriber(std::shared_ptr<Operand> operand)
 {
 	m_subsicribers.push_back(operand);
 }
 
-void Subscriber::UpdateSubscribers()
+void Observable::UpdateSubscribers()
 {
 	for (const auto& sub : m_subsicribers)
 	{

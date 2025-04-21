@@ -312,6 +312,18 @@ SCENARIO("test move operator")
 			CHECK(std::string(copiedStr.GetStringData()) == "content");
 		}
 	}
+
+	WHEN("move self to self")
+	{
+		CMyString str("hello");
+		str = std::move(str);
+		THEN("strings should unchanged")
+		{
+			CHECK(str.GetCapacity() == 5);
+			CHECK(str.GetLength() == 5);
+			CHECK(std::string(str.GetStringData()) == "hello");
+		}
+	}
 }
 
 SCENARIO("assignment operator testing")
@@ -984,6 +996,15 @@ SCENARIO("iterators test")
 				CHECK(*it++ == 'l');
 				CHECK(*it++ == 'l');
 				CHECK(*it == 'o');
+
+				AND_WHEN("prefix decrement and dereference iterators one by one")
+				{
+					CHECK(*it-- == 'o');
+					CHECK(*it-- == 'l');
+					CHECK(*it-- == 'l');
+					CHECK(*it-- == 'e');
+					CHECK(*it == 'h');
+				}
 			}
 		}
 
@@ -996,6 +1017,14 @@ SCENARIO("iterators test")
 				CHECK(*++it == 'l');
 				CHECK(*++it == 'l');
 				CHECK(*++it == 'o');
+
+				AND_WHEN("postfix increment and dereference one by one")
+				{
+					CHECK(*--it == 'l');
+					CHECK(*--it == 'l');
+					CHECK(*--it == 'e');
+					CHECK(*--it == 'h');
+				}
 			}
 		}
 
@@ -1070,16 +1099,70 @@ SCENARIO("iterators test")
 			THEN("comparison should return true")
 			{
 				CHECK(it1 == it2);
+				CHECK(!(it1 != it2));
 			}
 		}
 
 		WHEN("check two different iterators for equality")
 		{
 			auto it1 = str.begin();
-			auto it2 = str.begin();
+			auto it2 = it1 + 1;
 			THEN("comparison should return false")
 			{
 				CHECK(!(it1 == it2));
+				CHECK(it1 != it2);
+			}
+		}
+
+		WHEN("subtract from the second iterator which is greater than the first by 3")
+		{
+			auto it1 = str.begin();
+			auto it2 = it1 + 3;
+			THEN("the difference should be 3")
+			{
+				CHECK(it2 - it1 == 3);
+			}
+		}
+
+		WHEN("subtract from the first iterator which is less than the first by 3")
+		{
+			auto it1 = str.begin();
+			auto it2 = it1 + 3;
+			THEN("the difference should be -3")
+			{
+				CHECK(it1 - it2 == -3);
+			}
+		}
+
+		WHEN("read the iterator by index")
+		{
+			auto it = str.begin();
+			THEN("iterator must have a correct value")
+			{
+				CHECK(it[0] == 'h');
+				CHECK(it[1] == 'e');
+				CHECK(it[2] == 'l');
+				CHECK(it[3] == 'l');
+				CHECK(it[4] == 'o');
+			}
+		}
+
+		WHEN("write the iterator by index")
+		{
+			auto it = str.begin();
+			it[0] = 'w';
+			it[1] = 'o';
+			it[2] = 'r';
+			it[3] = 'l';
+			it[4] = 'd';
+
+			THEN("iterator must have a correct value")
+			{
+				CHECK(it[0] == 'w');
+				CHECK(it[1] == 'o');
+				CHECK(it[2] == 'r');
+				CHECK(it[3] == 'l');
+				CHECK(it[4] == 'd');
 			}
 		}
 	}

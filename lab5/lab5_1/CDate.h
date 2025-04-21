@@ -76,7 +76,6 @@ private:
 	};
 	int m_timestamp = 0;
 	DateDTO CalculateDate() const;
-	int CalculateTimestamp(int m_day, int m_month, int m_year);
 };
 
 std::ostream& operator<<(std::ostream& stream, const CDate& date);

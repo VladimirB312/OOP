@@ -8,7 +8,7 @@ template <typename T, typename V>
 class StringIterator
 {
 public:
-	using iterator_category = std::contiguous_iterator_tag;
+	using iterator_category = std::random_access_iterator_tag;
 	using value_type = V;
 	using element_type = V;
 	using pointer = V*;
@@ -33,8 +33,7 @@ public:
 	int operator-(const StringIterator& other) const;
 
 	V& operator[](size_t index);
-	const V& operator[](size_t index) const;
-	
+	const V& operator[](size_t index) const;	
 	V& operator*();
 	const V& operator*() const;
 
@@ -138,7 +137,9 @@ int StringIterator<T, V>::operator-(const StringIterator& other) const
 template <typename T, typename V>
 V& StringIterator<T, V>::operator[](size_t index)
 {
-	return (*this)[index];
+	assert(index < m_string->GetLength());
+
+	return (*m_string)[index];
 }
 
 template <typename T, typename V>

@@ -3,10 +3,10 @@
 #include <memory>
 #include <vector>
 
-class Subscriber
+class Observable
 {
 public:
-	~Subscriber() = default;
+	~Observable() = default;
 	void AddSubscriber(std::shared_ptr<Operand> operand);
 	void UpdateSubscribers();
 

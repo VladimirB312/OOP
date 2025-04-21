@@ -18,7 +18,7 @@ CMyString::CMyString() noexcept
 	: m_chars{ s_emptyString } {};
 
 CMyString::CMyString(const char* pString)
-	: CMyString(pString, std::strlen(pString)){};
+	: CMyString(pString, std::strlen(pString)) {};
 
 CMyString::CMyString(const char* pString, size_t length)
 	: m_size{ length }
@@ -41,7 +41,7 @@ CMyString::CMyString(CMyString&& other) noexcept
 {
 }
 
-CMyString& CMyString::operator=(CMyString&& other) noexcept
+CMyString& CMyString::operator=(CMyString&& other) noexcept // через перемещающий конструктор
 {
 	if (this != &other)
 	{
@@ -53,10 +53,12 @@ CMyString& CMyString::operator=(CMyString&& other) noexcept
 	return *this;
 }
 
-CMyString& CMyString::operator=(const CMyString& other)
+CMyString& CMyString::operator=(const CMyString& other) // также через копирующий
 {
 	if (this != &other)
 	{
+		//CMyString copy(other);
+		//*this = std::move(copy);
 		if (m_capacity >= other.m_capacity && m_chars != s_emptyString)
 		{
 			std::uninitialized_copy_n(other.m_chars, other.m_size + 1, m_chars);
@@ -79,9 +81,9 @@ CMyString::CMyString(const std::string& stlString)
 {
 }
 
-CMyString::~CMyString()
+CMyString::~CMyString() // вызов Clear
 {
-	if (m_chars != s_emptyString)
+	if (m_chars != s_emptyString) // сравнение с длинной chars а не с empty sring
 	{
 		Deallocate(m_chars);
 	}
@@ -184,7 +186,9 @@ bool CMyString::operator<(const CMyString& other) const
 		}
 	}
 
-	return m_size < other.m_size;
+	 return m_size < other.m_size;
+
+	//return std::lexicographical_compare(this->begin(), other.begin(), [](char a, char b) { return a < b; });
 }
 
 bool CMyString::operator>(const CMyString& other) const
