@@ -986,7 +986,7 @@ SCENARIO("iterators test")
 	GIVEN("string contains 'hello'")
 	{
 		CMyString str("hello");
-		WHEN("prefix increment and dereference iterators one by one")
+		WHEN("postfix increment and dereference iterators one by one")
 		{
 			auto it = str.begin();
 			THEN("iterators must have a valid value")
@@ -997,7 +997,7 @@ SCENARIO("iterators test")
 				CHECK(*it++ == 'l');
 				CHECK(*it == 'o');
 
-				AND_WHEN("prefix decrement and dereference iterators one by one")
+				AND_WHEN("postfix decrement and dereference iterators one by one")
 				{
 					CHECK(*it-- == 'o');
 					CHECK(*it-- == 'l');
@@ -1008,7 +1008,7 @@ SCENARIO("iterators test")
 			}
 		}
 
-		WHEN("postfix increment and dereference iterators one by one")
+		WHEN("prefix increment and dereference iterators one by one")
 		{
 			auto it = str.begin();
 			THEN("iterators must have a valid value")
@@ -1018,7 +1018,7 @@ SCENARIO("iterators test")
 				CHECK(*++it == 'l');
 				CHECK(*++it == 'o');
 
-				AND_WHEN("postfix increment and dereference one by one")
+				AND_WHEN("prefix increment and dereference one by one")
 				{
 					CHECK(*--it == 'l');
 					CHECK(*--it == 'l');
