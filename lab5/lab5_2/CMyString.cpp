@@ -59,9 +59,7 @@ CMyString& CMyString::operator=(const CMyString& other)
 	if (this != &other)
 	{
 		CMyString copy(other);
-		std::swap(m_size, copy.m_size);
-		std::swap(m_capacity, copy.m_capacity);
-		std::swap(m_chars, copy.m_chars);
+		*this = std::move(copy);
 	}
 
 	return *this;

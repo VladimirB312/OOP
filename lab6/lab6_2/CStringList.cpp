@@ -83,21 +83,17 @@ void CStringList::Clear()
 
 void CStringList::PushFront(const std::string& data)
 {
-	auto newNode = new Node(data, m_sentinel, m_sentinel->m_next);
-	m_sentinel->m_next->m_prev = newNode;
-	m_sentinel->m_next = newNode;
-	m_size++;
+	auto it = begin();
+	Insert(it, data);
 }
 
 void CStringList::PushBack(const std::string& data)
 {
-	auto newNode = new Node(data, m_sentinel->m_prev, m_sentinel);
-	m_sentinel->m_prev->m_next = newNode;
-	m_sentinel->m_prev = newNode;
-	m_size++;
+	auto it = end();
+	Insert(it, data);
 }
 
-void CStringList::Insert(CIterator<Node*, std::string>& it, const std::string& data)
+void CStringList::Insert(Iterator& it, const std::string& data)
 {
 	auto newNode = new Node(data, it.m_node->m_prev, it.m_node);
 	it.m_node->m_prev->m_next = newNode;
@@ -105,7 +101,7 @@ void CStringList::Insert(CIterator<Node*, std::string>& it, const std::string& d
 	m_size++;
 }
 
-void CStringList::Erase(CIterator<Node*, std::string>& it)
+void CStringList::Erase(Iterator& it)
 {
 	if (it.m_node == nullptr || it.m_node == m_sentinel)
 	{
@@ -129,62 +125,62 @@ bool CStringList::IsEmpty() const
 	return m_size == 0;
 }
 
-CIterator<Node*, std::string> CStringList::begin()
+Iterator CStringList::begin()
 {
-	return CIterator<Node*, std::string>{ m_sentinel->m_next, m_sentinel };
+	return Iterator{ m_sentinel->m_next, m_sentinel };
 }
 
-CIterator<Node*, std::string> CStringList::end()
+Iterator CStringList::end()
 {
-	return CIterator<Node*, std::string>{ m_sentinel, m_sentinel };
+	return Iterator{ m_sentinel, m_sentinel };
 }
 
-CIterator<const Node*, const std::string> CStringList::begin() const
-{
-	return CIterator<const Node*, const std::string>{ m_sentinel->m_next, m_sentinel };
-}
-
-CIterator<const Node*, const std::string> CStringList::end() const
-{
-	return CIterator<const Node*, const std::string>{ m_sentinel, m_sentinel };
-}
-
-CIterator<const Node*, const std::string> CStringList::cbegin() const
+ConstIterator CStringList::begin() const
 {
 	return CIterator<const Node*, const std::string>{ m_sentinel->m_next, m_sentinel };
 }
 
-CIterator<const Node*, const std::string> CStringList::cend() const
+ConstIterator CStringList::end() const
 {
 	return CIterator<const Node*, const std::string>{ m_sentinel, m_sentinel };
 }
 
-std::reverse_iterator<CIterator<Node*, std::string>> CStringList::rbegin()
+ConstIterator CStringList::cbegin() const
+{
+	return CIterator<const Node*, const std::string>{ m_sentinel->m_next, m_sentinel };
+}
+
+ConstIterator CStringList::cend() const
+{
+	return CIterator<const Node*, const std::string>{ m_sentinel, m_sentinel };
+}
+
+ReverseIterator CStringList::rbegin()
 {
 	return std::reverse_iterator<CIterator<Node*, std::string>>(end());
 }
 
-std::reverse_iterator<CIterator<Node*, std::string>> CStringList::rend()
+ReverseIterator CStringList::rend()
 {
 	return std::reverse_iterator<CIterator<Node*, std::string>>(begin());
 }
 
-std::reverse_iterator<CIterator<const Node*, const std::string>> CStringList::rbegin() const
+ConstReverseIterator CStringList::rbegin() const
 {
 	return std::reverse_iterator<CIterator<const Node*, const std::string>>(end());
 }
 
-std::reverse_iterator<CIterator<const Node*, const std::string>> CStringList::rend() const
+ConstReverseIterator CStringList::rend() const
 {
 	return std::reverse_iterator<CIterator<const Node*, const std::string>>(begin());
 }
 
-std::reverse_iterator<CIterator<const Node*, const std::string>> CStringList::rñbegin() const
+ConstReverseIterator CStringList::rñbegin() const
 {
 	return std::reverse_iterator<CIterator<const Node*, const std::string>>(end());
 }
 
-std::reverse_iterator<CIterator<const Node*, const std::string>> CStringList::rñend() const
+ConstReverseIterator CStringList::rñend() const
 {
 	return std::reverse_iterator<CIterator<const Node*, const std::string>>(begin());
 }

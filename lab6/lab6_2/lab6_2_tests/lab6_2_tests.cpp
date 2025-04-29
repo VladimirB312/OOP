@@ -852,7 +852,7 @@ SCENARIO("testing move assignment operator")
 
 		WHEN("assign an element to itself")
 		{
-			l = l;
+			l = std::move(l);
 			THEN("list should not change")
 			{
 				CHECK(ListToString(l) == "ABC");

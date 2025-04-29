@@ -1,6 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include "../../../catch2/catch.hpp"
 #include "../CMyString.h"
+#include "../StringIterator.h"
 
 SCENARIO("create string")
 {
@@ -1212,6 +1213,69 @@ SCENARIO("test reverse iterators")
 		WHEN("postfix increment and dereference iterators one by one")
 		{
 			auto it = str.rbegin();
+			THEN("iterators must have a valid value")
+			{
+				CHECK(*++it == 'l');
+				CHECK(*++it == 'l');
+				CHECK(*++it == 'e');
+				CHECK(*++it == 'h');
+
+				AND_WHEN("postfix increment and dereference one by one")
+				{
+					CHECK(*--it == 'e');
+					CHECK(*--it == 'l');
+					CHECK(*--it == 'l');
+					CHECK(*--it == 'o');
+				}
+			}
+		}
+	}
+}
+
+SCENARIO("test ñreverse iterators")
+{
+	std::ostringstream output;
+
+	GIVEN("string contains 'hello'")
+	{
+		CMyString str("hello");
+		WHEN("output in for range cycle")
+		{
+			for (auto it = str.crbegin(); it != str.crend(); ++it)
+			{
+				output << *it;
+			}
+			THEN("output stream must be equal to the reverse string")
+			{
+				CHECK("olleh" == output.str());
+			}
+		}
+
+		WHEN("prefix increment and dereference iterators one by one")
+		{
+			auto it = str.cbegin();
+			THEN("iterators must have a valid value")
+			{
+				CHECK(*it++ == 'h');
+				CHECK(*it++ == 'e');
+				CHECK(*it++ == 'l');
+				CHECK(*it++ == 'l');
+				CHECK(*it == 'o');
+
+				AND_WHEN("prefix decrement and dereference iterators one by one")
+				{
+					CHECK(*it-- == 'o');
+					CHECK(*it-- == 'l');
+					CHECK(*it-- == 'l');
+					CHECK(*it-- == 'e');
+					CHECK(*it == 'h');
+				}
+			}
+		}
+
+		WHEN("postfix increment and dereference iterators one by one")
+		{
+			auto it = str.crbegin();
 			THEN("iterators must have a valid value")
 			{
 				CHECK(*++it == 'l');
