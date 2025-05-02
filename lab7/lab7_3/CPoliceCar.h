@@ -1,7 +1,8 @@
 #pragma once
 #include "CCarImpl.h"
-#include "CPoliceMan.h"
+#include "IPoliceCar.h"
 
-class CPoliceCar : public CCarImpl<CPoliceCar, CPoliceMan>
+class CPoliceCar : public CCarImpl<IPoliceCar, IPoliceMan>
 {
+    using CCarImpl::CCarImpl;
 };

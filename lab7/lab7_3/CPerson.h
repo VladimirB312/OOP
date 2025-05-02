@@ -4,4 +4,5 @@
 
 class CPerson : public CPersonImpl<IPerson>
 {
+    using CPersonImpl::CPersonImpl;
 };

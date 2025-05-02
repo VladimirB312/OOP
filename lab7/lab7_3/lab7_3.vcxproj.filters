@@ -104,5 +104,8 @@
     <ClInclude Include="CRacingCar.h">
       <Filter>Header Files\Implementation\Vehicle</Filter>
     </ClInclude>
+    <ClInclude Include="CBus.h">
+      <Filter>Header Files\Implementation\Vehicle</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

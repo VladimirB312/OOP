@@ -1,10 +1,11 @@
 #pragma once
 #include <string>
 
-// человек
+// С‡РµР»РѕРІРµРє
 class IPerson
 {
 public:
-	// имя
+	virtual ~IPerson() = default;
+	// РёРјСЏ
 	virtual std::string GetName() const = 0;
 };

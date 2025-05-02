@@ -4,6 +4,8 @@
 class IBasicVehicle
 {
 public:
+	virtual ~IBasicVehicle() = default;
+
 	// сигнализирует о том, пусто ли транспортное средство
 	virtual bool IsEmpty() const = 0;
 

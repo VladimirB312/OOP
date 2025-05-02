@@ -1,8 +1,8 @@
 #pragma once
 #include "CCarImpl.h"
-#include "CRacer.h"
+#include "IRacingCar.h"
 
-class CRacingCar : public CCarImpl<CRacingCar, CRacer>
+class CRacingCar : public CCarImpl<IRacingCar, IRacer>
 {
-
+    using CCarImpl::CCarImpl;
 };
