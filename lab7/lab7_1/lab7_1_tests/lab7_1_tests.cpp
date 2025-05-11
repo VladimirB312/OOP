@@ -70,8 +70,8 @@ SCENARIO("test sportsmen")
 		int weight;
 	};
 
-	auto heightCmp = [](const Sportsman& s1, const Sportsman& s2) { return s1.height < s2.height; };
-	auto weightCmp = [](const Sportsman& s1, const Sportsman& s2) { return s1.weight < s2.weight; };
+	auto heightCmp = [](const Sportsman& s1, const Sportsman& s2) noexcept { return s1.height < s2.height; };
+	auto weightCmp = [](const Sportsman& s1, const Sportsman& s2) noexcept { return s1.weight < s2.weight; };
 
 	WHEN("array is empty")
 	{

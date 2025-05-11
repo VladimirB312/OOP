@@ -130,7 +130,7 @@ void MyArray<T>::Clear()
 	{
 		return;
 	}
-	std::destroy(m_items, m_items + m_size);
+	std::destroy(begin(), end()); // begin end вместо указателей
 	Deallocate(m_items);
 	m_items = nullptr;
 	m_size = 0;
@@ -161,11 +161,21 @@ template <typename T>
 void MyArray<T>::Resize(size_t newSize)
 {
 	T* newItems = Allocate(newSize);
-	auto end = std::uninitialized_copy_n(m_items, std::min(m_size, newSize), newItems);
-	while (end != newItems + newSize)
+	try
 	{
-		new (end++) T();
+		auto end = std::uninitialized_copy_n(m_items, std::min(m_size, newSize), newItems); // обернуть в try catch
+		while (end != newItems + newSize)
+		{
+			new (end++) T();
+		}
 	}
+	catch (...)
+	{
+		std::destroy(newItems, newItems + newSize);
+		Deallocate(newItems);
+		throw;
+	}
+
 	Clear();
 	m_items = newItems;
 	m_size = newSize;
@@ -182,16 +192,25 @@ void MyArray<T>::Push(T value)
 		return;
 	}
 
-	size_t newCapacity = std::max(static_cast<size_t>(1), m_capacity * 2);
-	size_t new_size = m_size + 1;
+	size_t newCapacity = std::max(size_t(1), m_capacity * 2);
+	size_t newSize = m_size + 1;
 	T* newItems = Allocate(newCapacity);
-	auto end = std::uninitialized_copy_n(m_items, m_size, newItems);
-	new (end) T(std::move(value));
+
+	try {
+		auto end = std::uninitialized_copy_n(m_items, m_size, newItems);
+		new (end) T(std::move(value));
+	}
+	catch (...)
+	{
+		std::destroy(newItems, newItems + newSize);
+		Deallocate(newItems);
+		throw;
+	}
 
 	Clear();
 	m_items = newItems;
 	m_capacity = newCapacity;
-	m_size = new_size;
+	m_size = newSize;
 }
 
 template <typename T>
@@ -257,4 +276,3 @@ typename MyArray<T>::ReverseIterator MyArray<T>::rend()
 {
 	return ReverseIterator(begin());
 }
-
